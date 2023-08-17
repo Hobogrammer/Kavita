@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5000/api/',
-  hubUrl: 'http://localhost:5000/hubs/',
+  apiUrl: 'http://192.168.50.9:5000/api/',
+  hubUrl: 'http://192.168.50.9:5000/hubs/',
   buyLink: 'https://buy.stripe.com/test_9AQ5mi058h1PcIo3cf?prefilled_promo_code=FREETRIAL',
   manageLink: 'https://billing.stripe.com/p/login/test_14kfZocuh6Tz5ag7ss'
 };
