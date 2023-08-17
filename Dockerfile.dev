@@ -1,0 +1,16 @@
+FROM mcr.microsoft.com/dotnet/sdk:7.0
+
+# Swagger only works in Devlopment
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS http://*:5000
+ENV DOTNET_RUNNING_IN_CONTAINER=true
+
+COPY . .
+ENV PATH="${PATH}:/root/.dotnet/tools"
+RUN dotnet tool install -g Swashbuckle.AspNetCore.Cli \
+    && dotnet msbuild -restore Kavita.sln -p:Configuration=Debug -p:Platform="x64"
+
+EXPOSE 5000
+
+WORKDIR API/
+CMD ["dotnet", "run", "-c", "Debug"]

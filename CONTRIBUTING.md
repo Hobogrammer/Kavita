@@ -18,6 +18,8 @@ Setup guides, FAQ, the more information we have on the [wiki](https://wiki.kavit
 
 ### Getting started ###
 
+#### Local Install ####
+
 1. Fork Kavita
 2. Clone the repository into your development machine. [*info*](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository-from-github)
 3. Install the required Node Packages
@@ -33,6 +35,16 @@ Setup guides, FAQ, the more information we have on the [wiki](https://wiki.kavit
 
 ### Debugging on Device ###
 - Update `IP` constant in `Web/UI/src/environments/environment.ts` to your dev machine's ip instead of `localhost`.
+
+#### Docker Install ####
+
+1. Fork Kavita
+2. Clone the repository into your development machine. [*info*](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository-from-github)
+3. Build the project `docker compose -f docker-compose.dev.yml build`
+4. Build the node modules required for running the UI `docker compose -f docker-compose.dev.yml run --rm web npm ci --legacy-peer-deps`
+5. Install angular `docker compose -f docker-compose.dev.yml run --rm web npm install -g @angular/cli`
+6. Run the project `docker compose -f docker-compose.dev.yml up`
+7. Open http://localhost:4200
 
 
 ### Contributing Code ###
