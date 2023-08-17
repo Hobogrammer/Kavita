@@ -1,0 +1,45 @@
+version: '3'
+networks:
+    kavita-network:
+
+services:
+    api:
+        container_name: kavita-api
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        volumes:
+            - ./manga:/manga
+            - ./epub:/epub
+            - ./config:/kavita/config
+            - ./UI/Web/dist:/API/wwwroot
+        ports:
+            - "5000:5000"
+        networks:
+            - kavita-network
+        restart: unless-stopped
+    web:
+        container_name: kavita-ui
+        build:
+            context: ./UI/Web
+            dockerfile: Dockerfile
+        volumes:
+          - ./UI/Web:/app/kavita
+          - ../../epub:/epub
+          - type: volume
+            source: nodemodules
+            target: /app/kavita/node_modules
+            volume:
+              nocopy: true
+
+        ports:
+            - "4200:4200"
+        networks:
+            - kavita-network
+        command: ng serve --host 0.0.0.0
+        restart: unless-stopped
+        depends_on:
+            - api
+
+volumes:
+  nodemodules:
