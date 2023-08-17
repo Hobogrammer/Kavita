@@ -534,3 +534,6 @@ UI/Web/.vscode/settings.json
 /API.Tests/Services/Test Data/ArchiveService/CoverImages/output/*
 UI/Web/.angular/
 BenchmarkDotNet.Artifacts
+
+*.swp
+*.swo

@@ -328,7 +328,7 @@ public class Startup
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials() // For SignalR token query param
-                .WithOrigins("http://localhost:4200", $"http://{GetLocalIpAddress()}:4200", $"http://{GetLocalIpAddress()}:5000")
+                .SetIsOriginAllowed(origin => true)
                 .WithExposedHeaders("Content-Disposition", "Pagination"));
         }
         else
