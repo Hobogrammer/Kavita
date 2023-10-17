@@ -1,6 +1,6 @@
+import { BookReaderComponent } from '../app/_components/book-reader/';
 import TestBed from '@angular/core/testing'; 
 
-import { BookReaderComponent } from '../../../src/app/_components/book-reader/';
 
 describe('BookReaderComponent', () => {
 

@@ -9,7 +9,8 @@
     "prod": "ng build --configuration production --aot --output-hashing=all && npm run minify-langs",
     "explore": "ng build --stats-json && webpack-bundle-analyzer dist/stats.json",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "test": "jest"
   },
   "private": true,
   "dependencies": {
@@ -70,17 +71,16 @@
     "@angular/cli": "^16.2.9",
     "@angular/compiler-cli": "^16.2.12",
     "@types/d3": "^7.4.2",
+    "@types/jest": "^29.5.5",
     "@types/luxon": "^3.3.3",
     "@types/node": "^20.8.10",
     "@typescript-eslint/eslint-plugin": "^6.7.5",
     "@typescript-eslint/parser": "^6.7.5",
     "eslint": "^8.52.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-preset-angular": "^13.1.2",
     "jsonminify": "^0.4.2",
-    "karma": "^6.3.0",
-    "karma-chrome-launcher": "~3.1.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~4.0.0",
-    "karma-jasmine-html-reporter": "^1.5.0",
     "ts-node": "~10.9.1",
     "typescript": "^5.1.6",
     "webpack-bundle-analyzer": "^4.9.1"
