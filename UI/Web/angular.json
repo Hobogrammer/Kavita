@@ -116,7 +116,36 @@
               "src/**/*.html"
             ]
           }
-        }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "test/test.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "inlineStyleLanguage": "scss",
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "src/assets",
+              "src/site.webmanifest",
+              {
+                "glob": "**/*",
+                "input": "node_modules/ngx-extended-pdf-viewer/assets/",
+                "output": "/assets/"
+              }
+            ],
+            "styles": [
+              "src/styles.scss",
+              "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+            ],
+            "scripts": [
+              "node_modules/lazysizes/lazysizes.min.js",
+              "node_modules/lazysizes/plugins/rias/ls.rias.min.js",
+              "node_modules/lazysizes/plugins/attrchange/ls.attrchange.min.js"
+            ]
+          }
+        } 
       }
     }
   }
