@@ -22,7 +22,7 @@
     "lib": [
       "ES2022",
       "dom"
-    ],
+    ]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -32,8 +32,9 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "extendedDiagnostics": {
-      "nullishCoalescingNotNullable": "warning",
+      "nullishCoalescingNotNullable": "warning"
     }
-    
-  }
+  },
+  "resolveJsonModule": true,
+  "esModuleInterop": true
 }
