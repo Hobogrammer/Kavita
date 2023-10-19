@@ -2,8 +2,10 @@ import type {Config} from '@jest/types';
 
 const config: Config.InitialOptions = {
   verbose: true,
+  preset: 'jest-preset-angular',
+  setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
   transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.(ts|js|html)$': 'jest-preset-angular'
   },
 };
 

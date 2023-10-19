@@ -1,16 +1,16 @@
-import { BookReaderComponent } from '../app/_components/book-reader/';
-import TestBed from '@angular/core/testing'; 
+import { BookReaderComponent } from './book-reader.component';
+import { TestBed } from '@angular/core/testing';
 
 
 describe('BookReaderComponent', () => {
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
         declarations: [ BookReaderComponent ],
     });
 
-    fixture = TestBed.createComponent(BookReaderComponent);
-    testReaderComponent = fixture.componentInstance;
+    let fixture = TestBed.createComponent(BookReaderComponent);
+    let testReaderComponent = fixture.componentInstance;
   });
 
 
