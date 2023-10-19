@@ -34,7 +34,5 @@
     "extendedDiagnostics": {
       "nullishCoalescingNotNullable": "warning"
     }
-  },
-  "resolveJsonModule": true,
-  "esModuleInterop": true
+  }
 }
