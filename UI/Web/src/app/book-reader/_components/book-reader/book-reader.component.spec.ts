@@ -13,42 +13,25 @@ import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MockInstance, MockProvider } from 'ng-mocks';
+import { MockBuilder, MockRender, NG_MOCKS_ROOT_PROVIDERS } from 'ng-mocks';
 import {FilterUtilitiesService} from 'src/app/shared/_services/filter-utilities.service';
 import { EMPTY } from 'rxjs';
+import { HttpClientModule } from '@angular/common/http';
 
-describe('BookReaderComponent', () => {
-  let component: BookReaderComponent;
-  let fixture: ComponentFixture<BookReaderComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [BookReaderComponent, HttpClientTestingModule, RouterTestingModule],
-      providers: [
-        MockProvider(AccountService),
-        MockProvider(SeriesService),
-        MockProvider(NavService),
-        MockProvider(ToastrService),
-        MockProvider(MemberService),
-        MockProvider(BookService),
-        MockProvider(ScrollService),
-        MockProvider(UtilityService),
-        MockProvider(LibraryService),
-        MockProvider(ThemeService)
-      ]
-    }).compileComponents();
-  });
-
-  beforeAll(() => MockInstance(AccountService, 'currentUser$', EMPTY));
-
+describe(BookReaderComponent.name, () => {
   beforeEach(() => {
-    fixture = TestBed.createComponent(BookReaderComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    return MockBuilder(BookReaderComponent)
+      .replace(HttpClientModule, HttpClientTestingModule)
+      .keep(RouterTestingModule.withRoutes([]))
+      .keep(NG_MOCKS_ROOT_PROVIDERS)
+      .mock(ToastrService)
+      .mock(UtilityService)
+      .mock() // bookContainerElemRef.nativeElement should like the actual rendered book;
   });
 
 
   it('should always progress linearly, not skipping pages in two column mode', () => {
-    expect(component).toBeTruthy();
+    const fixture = MockRender(BookReaderComponent, {});
+    expect(fixture).toBeTruthy();
   });
 });
