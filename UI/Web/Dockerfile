@@ -1,4 +1,3 @@
-# TODO: try alpine or a node image
 FROM node:20-alpine3.17
 RUN apk update
 
