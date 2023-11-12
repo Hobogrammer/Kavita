@@ -1624,9 +1624,9 @@ export class BookReaderComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    if (this.isCursorOverLeftPaginationArea(event)) {
+    if (this.clickToPaginate && this.isCursorOverLeftPaginationArea(event)) {
       this.movePage(this.readingDirection === ReadingDirection.LeftToRight ? PAGING_DIRECTION.BACKWARDS : PAGING_DIRECTION.FORWARD);
-    } else if (this.isCursorOverRightPaginationArea(event)) {
+    } else if (this.clickToPaginate && this.isCursorOverRightPaginationArea(event)) {
       this.movePage(this.readingDirection === ReadingDirection.LeftToRight ? PAGING_DIRECTION.FORWARD : PAGING_DIRECTION.BACKWARDS)
     } else {
       this.toggleMenu(event);
