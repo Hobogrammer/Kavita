@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -134,7 +134,7 @@ public class LibraryController : BaseApiController
     /// <returns></returns>
     [Authorize(Policy = "RequireAdminRole")]
     [HttpGet("list")]
-    public ActionResult<IEnumerable<DirectoryDto>> GetDirectories(string path)
+    public ActionResult<IEnumerable<DirectoryDto>> GetDirectories(string? path)
     {
         if (string.IsNullOrEmpty(path))
         {

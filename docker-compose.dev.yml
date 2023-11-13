@@ -11,7 +11,7 @@ services:
         volumes:
             - ./manga:/manga
             - ./epub:/epub
-            - ./config:/kavita/config
+            - ./config:/API/config
             - ./UI/Web/dist:/API/wwwroot
         ports:
             - "5000:5000"
@@ -31,7 +31,6 @@ services:
             target: /app/kavita/node_modules
             volume:
               nocopy: true
-
         ports:
             - "4200:4200"
         networks:

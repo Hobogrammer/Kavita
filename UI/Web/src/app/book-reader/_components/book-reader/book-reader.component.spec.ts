@@ -1,5 +1,7 @@
 import { BookReaderComponent } from './book-reader.component';
+import { BookLineOverlayComponent } from '../book-line-overlay/book-line-overlay.component'
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ChangeDetectorRef, ElementRef } from '@angular/core';
 import { AccountService } from 'src/app/_services/account.service';
 import { BookService } from '../../_services/book.service';
 import { NavService } from 'src/app/_services/nav.service';
@@ -13,20 +15,23 @@ import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MockBuilder, MockRender, NG_MOCKS_ROOT_PROVIDERS } from 'ng-mocks';
+import { MockBuilder, MockRender, ngMocks, NG_MOCKS_ROOT_PROVIDERS } from 'ng-mocks';
 import {FilterUtilitiesService} from 'src/app/shared/_services/filter-utilities.service';
 import { EMPTY } from 'rxjs';
 import { HttpClientModule } from '@angular/common/http';
 
 describe(BookReaderComponent.name, () => {
   beforeEach(() => {
-    return MockBuilder(BookReaderComponent)
+    // Maybe need to mock render the BookLineOverlay compoenent
+    // atm there is nothing in the component so instantiation fails
+    return MockBuilder(BookReaderComponent, BookLineOverlayComponent)
       .replace(HttpClientModule, HttpClientTestingModule)
       .keep(RouterTestingModule.withRoutes([]))
       .keep(NG_MOCKS_ROOT_PROVIDERS)
       .mock(ToastrService)
       .mock(UtilityService)
-      .mock() // bookContainerElemRef.nativeElement should like the actual rendered book;
+      .mock(ChangeDetectorRef)
+      .mock(ElementRef)
   });
 
 
