@@ -19,4 +19,22 @@ public class KeyBindingController : BaseApiController
     {
 
     }
+
+    [HttpPost("update")]
+    public async Task<ActionResult> UpdateKeyBinding(UpdateKeyBindingDto keyBinding)
+    {
+
+    }
+    
+    [HttpGet]
+    public ActionResult<KeyBindingDto> GetKeybinding() // This only returns a single obj atm
+    {
+       return Ok(_unitOfWork.AppUserKeyBindingRepository.GetAllDtosByUserId(User.GetUserId())); // GetDtosByUserIdAndType
+    }
+
+    [HttpDelete]
+    public async Task<ActionResult> DeleteKeyBinding(int keyBindingId)
+    {
+
+    }
 }
