@@ -6,7 +6,7 @@ using API.Constants;
 
 namespace API.Entities;
 
-public class BookReaderKeyActionMap
+public class AppUserBookReaderKeyBinding
 {
     // Initialize the hashset with the default key shortcuts
     public HashSet<string, string> set = new HashSet<string, string>()

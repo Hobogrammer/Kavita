@@ -1,5 +1,6 @@
 using System;
 using API.Data;
+using API.Data.Repositories;
 using API.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,27 +15,59 @@ public class KeyBindingController : BaseApiController
         _unitOfWork = unitOfWork;
     }
    
-    [HttpPost("create")]
-    public async Task<ActionResult> CreateKeyBinding(BookReaderKeyBindingDto keyBinding) // I will need to make a generic keybindingdto class if I want to continue this route
-    {
-
-    }
-
     [HttpPost("update")]
-    public async Task<ActionResult> UpdateKeyBinding(UpdateKeyBindingDto keyBinding)
+    public async Task<ActionResult> CreateOrUpdateBookReaderKeyBinding(BookReaderKeyBindingDto keyBindingDto)
     {
+       var user = await _unitOfWork.UserRepository.GetUserByIdAsync(User.GetUserId());
+       if (user == null) return Unauthorized();
 
+       var exisitingKeyBinding = user.KeyBindings.FirstOrDefault(); // not finished
+       if (exisitingKeyBinding != null)
+       {
+           exisitingKeyBinding.Next = keyBindingDto.Next;
+           exisitingKeyBinding.Previous = keyBindingDto.Previous;
+           exisitingKeyBinding.Close = keyBindingDto.Close;
+           exisitingKeyBinding.ToggleMenu = keyBindingDto.ToggleMenu;
+           exisitingKeyBinding.GoToPage = keyBindingDto.GoToPage;
+           exisitingKeyBinding.FullScreen = keyBindingDto.FullScreen;
+
+           _unitOfWork.AppUserKeyBindingRepository.Update(exisitingKeyBinding);
+       }
+       else
+       {
+           var keyBinding = new BookReaderKeyBinding()
+           {
+               Next = keyBindingDto.Next,
+               Previous = keyBindingDto.Previous,
+               Close = keyBindingDto.Close,
+               ToggleMenu = keyBindingDto.ToggleMenu,
+               GoToPage = keyBindingDto.GoToPage,
+               FullScreen = keyBindingDto.FullScreen
+           };
+           user.KeyBinding.Add(keyBinding);
+           _unitOfWork.UserRepository.Update(user);
+       }
+
+        if (!_unitOfWork.HasChanges()) return Ok();
+        await _unitOfWork.CommitAsync();
+
+        return Ok();
     }
     
     [HttpGet]
-    public ActionResult<KeyBindingDto> GetKeybinding() // This only returns a single obj atm
+    public ActionResult<KeyBindingDto> GetBookReaderKeybinding()
     {
-       return Ok(_unitOfWork.AppUserKeyBindingRepository.GetAllDtosByUserId(User.GetUserId())); // GetDtosByUserIdAndType
+       return Ok(_unitOfWork.AppUserKeyBindingRepository.GetAllDtosByUserIdAndType(User.GetUserId(), ReaderType.Book));
     }
 
     [HttpDelete]
     public async Task<ActionResult> DeleteKeyBinding(int keyBindingId)
     {
+        var keyBinding = await _unitOfWork.AppUserKeyBindingRepository.GetById(keyBindingId);
+        if (keyBinding == null) return Ok();
 
+        _unitOfWork.AppUserKeyBindingRepository.Delete(keyBinding);
+        await _unitOfWork.CommitAsync();
+        return Ok();
     }
 }
