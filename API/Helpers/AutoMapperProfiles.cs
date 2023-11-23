@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using API.Data.Migrations;
 using API.DTOs;
@@ -245,5 +245,6 @@ public class AutoMapperProfiles : Profile
         CreateMap<AppUserDashboardStream, AppUserDashboardStream>();
         CreateMap<AppUserSideNavStream, AppUserSideNavStream>();
 
+        CreateMap<AppUserBookReaderKeyBinding, BookReaderKeyBindingDto>();
     }
 }
