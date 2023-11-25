@@ -6,9 +6,10 @@ using API.Constants;
 
 namespace API.Entities;
 
-public class AppUserBookReaderKeyBinding
+public class AppUserKeyBinding
 {
     // Initialize the hashset with the default key shortcuts
+    // NO LONGER VALID
     public HashSet<string, string> set = new HashSet<string, string>()
     {
         { "ArrowRight" , BookReaderActions.Forward},
@@ -20,7 +21,8 @@ public class AppUserBookReaderKeyBinding
     };
 
     public override string ToString() => JsonSerializer.Serialize(set);
-    
+   
+    // Probs dont need any of this honestly
     public void UpdateShortcut(string KeyCode, string Action)
     {
         if (set.TryGetValue(KeyCode)) {
