@@ -1,6 +1,6 @@
 namespace API.Constants;
 
-public static class BookReaderActions
+public static class ReaderActions
 {
     public const string NextPage = "NextPage";
     public const string PreviousPage = "PrevPage";
