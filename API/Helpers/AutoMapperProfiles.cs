@@ -245,6 +245,6 @@ public class AutoMapperProfiles : Profile
         CreateMap<AppUserDashboardStream, AppUserDashboardStream>();
         CreateMap<AppUserSideNavStream, AppUserSideNavStream>();
 
-        CreateMap<AppUserBookReaderKeyBinding, BookReaderKeyBindingDto>();
+        CreateMap<AppUserBinding, KeyBindingDto>();
     }
 }
