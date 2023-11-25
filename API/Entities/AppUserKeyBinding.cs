@@ -8,28 +8,49 @@ namespace API.Entities;
 
 public class AppUserKeyBinding
 {
-    // Initialize the hashset with the default key shortcuts
-    // NO LONGER VALID
-    public HashSet<string, string> set = new HashSet<string, string>()
-    {
-        { "ArrowRight" , BookReaderActions.Forward},
-        { "ArrowLeft" , BookReaderActions.Backward},
-        { "Escape" , BookReaderActions.Close},
-        { " " , BookReaderActions.ToggleMenu},
-        { "g" , BookReaderActions.GoToPage},
-        { "f" , BookReaderActions.Fullscreen}
-    };
-
-    public override string ToString() => JsonSerializer.Serialize(set);
+    public string _readerType;
+    public string Next;
+    public string Previous;
+    public string Close;
+    public string ToggleMenu;
+    public string GoToPage;
+    public string Fullscreen;
    
-    // Probs dont need any of this honestly
-    public void UpdateShortcut(string KeyCode, string Action)
+    public AppUserKeyBinding(string readerType)
     {
-        if (set.TryGetValue(KeyCode)) {
-            set.Remove(KeyCode);
-            set.Add(KeyValuePair<KeyCode, Action>);
-        } else {
-            set.Add(KeyValuePair<KeyCode, Action>);
+        // Probably the incorrect syntax
+        if(ReaderType[readerType] != null)
+        {
+            _readerType = readerType;
         }
+        else
+        {
+            throw new; // Bad request exception prease
+        }
+    }
+
+    public void mapActionKey(string actionString, string keyCode)
+    {
+        if (isValidActionForReader(actionString))
+        {
+            // handle setting keymap
+        }
+
+    }
+
+    public bool isValidActionForReader(string actionString)
+    {
+      switch(_readerType)
+      {
+          case ReaderType.Book
+              return ReaderConstants.BookReaderActionList.include(actionString);
+              break;
+          case ReaderType.Manga
+              return ReaderConstants.MangaReaderActionList.include(actionString);
+          case ReaderType.Pdf
+              return ReaderConstants.PdfReaderActionList.include(actionString);
+      }
+
+      return false;
     }
 }
