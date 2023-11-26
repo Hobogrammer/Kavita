@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,7 +38,8 @@ public enum AppUserIncludes
     SmartFilters = 1024,
     DashboardStreams = 2048,
     SideNavStreams = 4096,
-    ExternalSources = 8192 // 2^13
+    ExternalSources = 8192, // 2^13
+    KeyBindings = 16384
 }
 
 public interface IUserRepository

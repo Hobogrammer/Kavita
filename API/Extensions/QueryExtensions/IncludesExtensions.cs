@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using API.Data.Repositories;
 using API.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -151,6 +151,11 @@ public static class IncludesExtensions
         if (includeFlags.HasFlag(AppUserIncludes.ExternalSources))
         {
             query = query.Include(u => u.ExternalSources);
+        }
+
+        if (includeFlags.HasFlag(AppUserIncludes.KeyBindings))
+        {
+            query = query.Include(u => u.KeyBindings);
         }
 
         return query.AsSplitQuery();
