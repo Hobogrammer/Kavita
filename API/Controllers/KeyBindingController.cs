@@ -16,7 +16,7 @@ public class KeyBindingController : BaseApiController
     }
    
     [HttpPost("update")]
-    public async Task<ActionResult> CreateOrUpdateBookReaderKeyBinding(BookReaderKeyBindingDto keyBindingDto)
+    public async Task<ActionResult> CreateOrUpdateKeyBinding(KeyBindingDto keyBindingDto)
     {
        var user = await _unitOfWork.UserRepository.GetUserByIdAsync(User.GetUserId());
        if (user == null) return Unauthorized();
