@@ -333,6 +333,6 @@ public class AutoMapperProfiles : Profile
         CreateMap<ExternalRecommendation, ExternalSeriesDto>();
 
         CreateMap<MangaFile, FileExtensionExportDto>();
-        CreateMap<AppUserBinding, KeyBindingDto>();
+        CreateMap<AppUserKeyBinding, KeyBindingDto>();
     }
 }
