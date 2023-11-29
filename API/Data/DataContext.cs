@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -58,6 +58,7 @@ public sealed class DataContext : IdentityDbContext<AppUser, AppRole, int,
     public DbSet<AppUserDashboardStream> AppUserDashboardStream { get; set; } = null!;
     public DbSet<AppUserSideNavStream> AppUserSideNavStream { get; set; } = null!;
     public DbSet<AppUserExternalSource> AppUserExternalSource { get; set; } = null!;
+    public DbSet<AppUserKeyBinding> AppUserKeyBinding { get; set; } = null!;
 
 
     protected override void OnModelCreating(ModelBuilder builder)

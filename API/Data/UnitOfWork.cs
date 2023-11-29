@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using API.Data.Repositories;
 using API.Entities;
@@ -30,6 +30,7 @@ public interface IUnitOfWork
     IUserTableOfContentRepository UserTableOfContentRepository { get; }
     IAppUserSmartFilterRepository AppUserSmartFilterRepository { get; }
     IAppUserExternalSourceRepository AppUserExternalSourceRepository { get; }
+    IAppUserKeyBindingRepository AppUserKeyBindingRepository { get; }
     bool Commit();
     Task<bool> CommitAsync();
     bool HasChanges();
@@ -72,6 +73,7 @@ public class UnitOfWork : IUnitOfWork
     public IUserTableOfContentRepository UserTableOfContentRepository => new UserTableOfContentRepository(_context, _mapper);
     public IAppUserSmartFilterRepository AppUserSmartFilterRepository => new AppUserSmartFilterRepository(_context, _mapper);
     public IAppUserExternalSourceRepository AppUserExternalSourceRepository => new AppUserExternalSourceRepository(_context, _mapper);
+    public IAppUserKeyBindingRepository AppUserKeyBindingRepository => new AppUserKeyBindingRepository(_context, _mapper);
 
     /// <summary>
     /// Commits changes to the DB. Completes the open transaction.

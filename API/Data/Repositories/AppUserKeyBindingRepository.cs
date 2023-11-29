@@ -1,8 +1,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using API.Entities;
+using API.DTOs;
 using AutoMapper;
-using Automapper.QueryableExtensions;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Data.Repositories;
 
@@ -25,7 +27,7 @@ public class AppUserKeyBindingRepository : IAppUserKeyBindingRepository
         _mapper = mapper;
     }
 
-    public void Update(AppUserBinding keyBinding)
+    public void Update(AppUserKeyBinding keyBinding)
     {
         _context.Entry(keyBinding).State = EntityState.Modified;
     }
@@ -37,7 +39,7 @@ public class AppUserKeyBindingRepository : IAppUserKeyBindingRepository
 
     public async Task<KeyBindingDto?> GetByUserId(int userId)
     {
-        return await _context.KeyBinding
+        return await _context.AppUserKeyBinding
             .Where(b => b.AppUserId == userId)
             .ProjectTo<KeyBindingDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
@@ -45,7 +47,9 @@ public class AppUserKeyBindingRepository : IAppUserKeyBindingRepository
 
     public async Task<KeyBindingDto?> GetById(int keyBindingId)
     {
-        return await _context.AppUserKeyBinding.FirstOrDefaultAsync(k => k.Id == keyBindingId);
+        return await _context.AppUserKeyBinding
+            .FirstOrDefaultAsync(k => k.Id == keyBindingId)
+            .ProjectTo<KeyBindingDto>(_mapper.ConfigurationProvider);
     }
 }
 

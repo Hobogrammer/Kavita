@@ -1,10 +1,10 @@
-using System;
+using System.Threading.Tasks;
 using API.Data;
 using API.Data.Repositories;
 using API.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
-namespace API.Controller;
+namespace API.Controllers;
 
 public class KeyBindingController : BaseApiController
 {
