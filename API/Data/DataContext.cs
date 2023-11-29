@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -64,6 +64,7 @@ public sealed class DataContext : IdentityDbContext<AppUser, AppRole, int,
     public DbSet<ExternalRecommendation> ExternalRecommendation { get; set; } = null!;
     public DbSet<ManualMigrationHistory> ManualMigrationHistory { get; set; } = null!;
     public DbSet<SeriesBlacklist> SeriesBlacklist { get; set; } = null!;
+    public DbSet<AppUserKeyBinding> AppUserKeyBinding { get; set; } = null!;
 
 
     protected override void OnModelCreating(ModelBuilder builder)

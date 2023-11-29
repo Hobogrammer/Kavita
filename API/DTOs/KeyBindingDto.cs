@@ -1,17 +1,19 @@
-using System;
+using System.ComponentModel.DataAnnotations;
 using API.Constants;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.DTOs;
+#nullable enable
 
 public class KeyBindingDto
 {
-    public char? Close { get; set; }
-    public char? FullScreen { get; set; }
-    public char? GoToPage { get; set; }
-    public char? Previous { get; set; }
-    public char? Next { get; set; }
-    public char? ToggleMenu { get; set; }
+    public string? Close { get; set; }
+    public string? FullScreen { get; set; }
+    public string? GoToPage { get; set; }
+    public string? Previous { get; set; }
+    public string? Next { get; set; }
+    public string? ToggleMenu { get; set; }
 
-    [required]
+    [Required]
     public string ReaderType { get; set; }
 }

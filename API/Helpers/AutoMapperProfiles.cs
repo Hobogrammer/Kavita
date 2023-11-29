@@ -282,6 +282,6 @@ public class AutoMapperProfiles : Profile
                     opt.MapFrom(src => ReviewService.GetCharacters(src.Body)));
 
         CreateMap<ExternalRecommendation, ExternalSeriesDto>();
-        CreateMap<AppUserBinding, KeyBindingDto>();
+        CreateMap<AppUserKeyBinding, KeyBindingDto>();
     }
 }
