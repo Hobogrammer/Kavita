@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Entities;
 using API.DTOs;
@@ -12,8 +13,9 @@ public interface IAppUserKeyBindingRepository
 {
     void Update(AppUserKeyBinding keyBinding);
     void Delete(AppUserKeyBinding keyBinding);
-    Task<KeyBindingDto?> GetByUserId(int userId);
-    Task<KeyBindingDto?> GetById(int keyBindingId);
+    Task<IList<KeyBindingDto?>> GetAllDtosByUserId(int userId);
+    Task<AppUserKeyBinding?> GetById(int keyBindingId);
+    Task<AppUserKeyBinding?> GetByUserIdAndReaderType(int userid, int readerType);
 }
 
 public class AppUserKeyBindingRepository : IAppUserKeyBindingRepository
@@ -37,19 +39,28 @@ public class AppUserKeyBindingRepository : IAppUserKeyBindingRepository
         _context.AppUserKeyBinding.Remove(keyBinding);
     }
 
-    public async Task<KeyBindingDto?> GetByUserId(int userId)
+    public async Task<IList<KeyBindingDto?>> GetAllDtosByUserId(int userId)
     {
         return await _context.AppUserKeyBinding
-            .Where(b => b.AppUserId == userId)
+            .Where(k => k.AppUserId == userId)
             .ProjectTo<KeyBindingDto>(_mapper.ConfigurationProvider)
+            .ToListAsync();
+    }
+
+    public async Task<AppUserKeyBinding?> GetById(int keyBindingId)
+    {
+        return await _context.AppUserKeyBinding
+            .Where(k => k.Id == keyBindingId)
             .FirstOrDefaultAsync();
     }
 
-    public async Task<KeyBindingDto?> GetById(int keyBindingId)
+    public async Task<AppUserKeyBinding?> GetByUserIdAndReaderType(int userId, int readerType)
     {
         return await _context.AppUserKeyBinding
-            .FirstOrDefaultAsync(k => k.Id == keyBindingId)
-            .ProjectTo<KeyBindingDto>(_mapper.ConfigurationProvider);
+            .Where(u => u.AppUserId == userId)
+            .Where(k => k.Type == readerType)
+            .FirstOrDefaultAsync();
     }
+
 }
 
