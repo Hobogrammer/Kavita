@@ -15,5 +15,5 @@ public class KeyBindingDto
     public string? ToggleMenu { get; set; }
 
     [Required]
-    public string ReaderType { get; set; }
+    public int Type { get; set; }
 }
