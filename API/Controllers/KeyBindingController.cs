@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Data;
 using API.Data.Repositories;
 using API.DTOs;
-using AutoMapper;
+using API.Entities;
+using API.Entities.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -11,12 +13,10 @@ namespace API.Controllers;
 public class KeyBindingController : BaseApiController
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
 
-    public KeyBindingController(IUnitOfWork unitOfWork, IMapper mapper)
+    public KeyBindingController(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
-        _mapper = mapper;
     }
 
     [HttpPost("update")]
@@ -24,24 +24,34 @@ public class KeyBindingController : BaseApiController
     {
         var user = await _unitOfWork.UserRepository.GetUserByIdAsync(userId);
         if (user == null) return Unauthorized();
+        Enum.TryParse(keyBindingDto.Type, out ReaderType enumReaderType);
 
-        var exisitingKeyBinding = await _unitOfWork
-            .AppUserKeyBindingRepository.GetByUserIdAndReaderType(userId, keyBindingDto.Type);
+        var existingKeyBinding = await _unitOfWork
+            .AppUserKeyBindingRepository.GetByUserIdAndReaderType(userId, enumReaderType);
         // Update
-        if (exisitingKeyBinding != null)
+        if (existingKeyBinding != null)
         {
-            exisitingKeyBinding.Next = keyBindingDto.Next;
-            exisitingKeyBinding.Previous = keyBindingDto.Previous;
-            exisitingKeyBinding.Close = keyBindingDto.Close;
-            exisitingKeyBinding.GoToPage = keyBindingDto.GoToPage;
-            exisitingKeyBinding.ToggleMenu = keyBindingDto.ToggleMenu;
-            exisitingKeyBinding.FullScreen = keyBindingDto.FullScreen;
+            existingKeyBinding.Next = keyBindingDto.Next;
+            existingKeyBinding.Previous = keyBindingDto.Previous;
+            existingKeyBinding.Close = keyBindingDto.Close;
+            existingKeyBinding.GoToPage = keyBindingDto.GoToPage;
+            existingKeyBinding.ToggleMenu = keyBindingDto.ToggleMenu;
+            existingKeyBinding.FullScreen = keyBindingDto.FullScreen;
 
-            _unitOfWork.AppUserKeyBindingRepository.Update(exisitingKeyBinding);
+            _unitOfWork.AppUserKeyBindingRepository.Update(existingKeyBinding);
         }
         else // New
         {
-            var keyBinding = _mapper.Map<KeyBindingDto,AppUserKeyBinding>(keyBindingDto, keyBinding); // wrong. search for examples in code base next session
+            var keyBinding = new AppUserKeyBinding() { Type = enumReaderType};
+            var readerTypeActionList = keyBinding.ApplicableActionList;
+
+            if (readerTypeActionList.Contains(ReaderAction.NextPage)) keyBinding.Next = keyBindingDto.Next;
+            if (readerTypeActionList.Contains(ReaderAction.PreviousPage)) keyBinding.Previous = keyBindingDto.Previous;
+            if (readerTypeActionList.Contains(ReaderAction.Close)) keyBinding.Close = keyBindingDto.Close;
+            if (readerTypeActionList.Contains(ReaderAction.GoToPage)) keyBinding.GoToPage = keyBindingDto.GoToPage;
+            if (readerTypeActionList.Contains(ReaderAction.ToggleMenu)) keyBinding.ToggleMenu = keyBindingDto.ToggleMenu;
+            if (readerTypeActionList.Contains(ReaderAction.FullScreen)) keyBinding.FullScreen = keyBindingDto.FullScreen;
+
             user.KeyBindings.Add(keyBinding);
             _unitOfWork.UserRepository.Update(user);
         }
@@ -53,10 +63,11 @@ public class KeyBindingController : BaseApiController
     }
 
     [HttpGet]
-    public ActionResult<KeyBindingDto?> GetReaderKeybinding(int userId, int readerType)
+    public ActionResult<KeyBindingDto?> GetReaderKeybinding(int userId, string readerType)
     {
-        var keyBinding = _unitOfWork.AppUserKeyBindingRepository.GetByUserIdAndReaderType(userId, readerType);
-        return Ok(_mapper.Map(keyBinding));
+        Enum.TryParse(readerType, out ReaderType enumReaderType);
+        var keyBinding = _unitOfWork.AppUserKeyBindingRepository.GetDtoByUserIdAndReaderType(userId, enumReaderType);
+        return Ok(keyBinding);
     }
 
     // Should there be some user verification?

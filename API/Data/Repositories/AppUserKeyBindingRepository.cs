@@ -2,6 +2,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Entities;
+using API.Entities.Enums;
 using API.DTOs;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
@@ -15,7 +16,8 @@ public interface IAppUserKeyBindingRepository
     void Delete(AppUserKeyBinding keyBinding);
     Task<IList<KeyBindingDto?>> GetAllDtosByUserId(int userId);
     Task<AppUserKeyBinding?> GetById(int keyBindingId);
-    Task<AppUserKeyBinding?> GetByUserIdAndReaderType(int userid, int readerType);
+    Task<AppUserKeyBinding?> GetByUserIdAndReaderType(int userId, ReaderType readerType);
+    Task<KeyBindingDto?> GetDtoByUserIdAndReaderType(int userId, ReaderType readerType);
 }
 
 public class AppUserKeyBindingRepository : IAppUserKeyBindingRepository
@@ -54,7 +56,7 @@ public class AppUserKeyBindingRepository : IAppUserKeyBindingRepository
             .FirstOrDefaultAsync();
     }
 
-    public async Task<AppUserKeyBinding?> GetByUserIdAndReaderType(int userId, int readerType)
+    public async Task<AppUserKeyBinding?> GetByUserIdAndReaderType(int userId, ReaderType readerType)
     {
         return await _context.AppUserKeyBinding
             .Where(u => u.AppUserId == userId)
@@ -62,5 +64,13 @@ public class AppUserKeyBindingRepository : IAppUserKeyBindingRepository
             .FirstOrDefaultAsync();
     }
 
+    public async Task<KeyBindingDto?> GetDtoByUserIdAndReaderType(int userId, ReaderType readerType)
+    {
+        return await _context.AppUserKeyBinding
+            .Where(u => u.AppUserId == userId)
+            .Where(k => k.Type == readerType)
+            .ProjectTo<KeyBindingDto>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
+    }
 }
 
