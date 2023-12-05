@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using API.Constants;
 using Microsoft.EntityFrameworkCore;
+using API.Entities.Enums;
 
 namespace API.DTOs;
 #nullable enable
@@ -15,5 +16,5 @@ public class KeyBindingDto
     public string? ToggleMenu { get; set; }
 
     [Required]
-    public int Type { get; set; }
+    public string Type { get; set; }
 }
