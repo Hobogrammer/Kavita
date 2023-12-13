@@ -15,6 +15,7 @@ services:
             - ./UI/Web/dist:/API/wwwroot
         ports:
             - "5000:5000"
+            - "2222:22"
         networks:
             - kavita-network
         restart: unless-stopped
