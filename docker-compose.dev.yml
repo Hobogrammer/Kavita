@@ -16,6 +16,7 @@ services:
         ports:
             - "5000:5000"
             - "2222:22"
+            - "4711:4711"
         networks:
             - kavita-network
         restart: unless-stopped

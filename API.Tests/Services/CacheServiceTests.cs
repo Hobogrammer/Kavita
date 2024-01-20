@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
 using System.IO.Abstractions.TestingHelpers;
@@ -12,6 +12,7 @@ using API.Helpers.Builders;
 using API.Services;
 using API.Services.Tasks.Scanner.Parser;
 using API.SignalR;
+using API.Tests;
 using AutoMapper;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.Sqlite;
@@ -71,10 +72,12 @@ public class CacheServiceTests
     private readonly DbConnection _connection;
     private readonly DataContext _context;
 
-    private const string CacheDirectory = "C:/kavita/config/cache/";
-    private const string CoverImageDirectory = "C:/kavita/config/covers/";
-    private const string BackupDirectory = "C:/kavita/config/backups/";
-    private const string DataDirectory = "C:/data/";
+    private static string CacheDirectory = TestHelper.GetOsSafeDirPath(TestHelper.CacheDirectory);
+    private static string CoverImageDirectory = TestHelper.GetOsSafeDirPath(TestHelper.CoverImageDirectory);
+    private static string BackupDirectory = TestHelper.GetOsSafeDirPath(TestHelper.BackupDirectory);
+    private static string DataDirectory = TestHelper.GetOsSafeDirPath(TestHelper.DataDirectory);
+    private static string KavitaRootDirectory = TestHelper.GetOsSafeDirPath(TestHelper.KavitaRootDirectory);
+    private static string KavitaConfigDirectory = TestHelper.GetOsSafeDirPath(TestHelper.KavitaConfigDirectory);
 
     public CacheServiceTests()
     {
@@ -93,7 +96,7 @@ public class CacheServiceTests
 
     private static DbConnection CreateInMemoryDatabase()
     {
-        var connection = new SqliteConnection("Filename=:memory:");
+        var connection = new SqliteConnection(TestHelper.Memory);
 
         connection.Open();
 

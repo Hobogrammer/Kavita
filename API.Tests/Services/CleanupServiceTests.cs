@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
@@ -18,6 +18,7 @@ using API.Services;
 using API.Services.Plus;
 using API.Services.Tasks;
 using API.SignalR;
+using API.Tests;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
@@ -34,7 +35,7 @@ public class CleanupServiceTests : AbstractDbTest
     public CleanupServiceTests() : base()
     {
         _context.Library.Add(new LibraryBuilder("Manga")
-            .WithFolderPath(new FolderPathBuilder("C:/data/").Build())
+            .WithFolderPath(new FolderPathBuilder(TestHelper.GetOsSafeDirPath(TestHelper.DataDirectory)).Build())
             .Build());
 
         _readerService = new ReaderService(_unitOfWork, Substitute.For<ILogger<ReaderService>>(), Substitute.For<IEventHub>(),

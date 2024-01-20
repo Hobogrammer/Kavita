@@ -12,26 +12,6 @@ RUN dotnet tool install -g Swashbuckle.AspNetCore.Cli \
 
 EXPOSE 5000
 
-# Install ssh to enable remote debugging
-RUN apt-get update && apt-get -y install openssh-server unzip \
-    && mkdir /var/run/sshd && chmod 0755 /var/run/sshd \
-    && echo 'root:' | chpasswd -e \
-    && sed -i 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' /etc/pam.d/sshd \
-    && echo 'export NOTVISIBLE="in users profile"' >> ~/.bashrc \
-    && echo 'export VISIBLE=now' >> /etc/profile \
-    && sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config \
-    && sed -i 's/#StrictModes yes/StrictModes no/g' /etc/ssh/sshd_config \
-    && sed -i 's/#PasswordAuthentication yes/PasswordAuthentication yes/g' /etc/ssh/sshd_config \
-    && sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords yes/g' /etc/ssh/sshd_config \
-    && sed -i 's/#UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config \
-    && service ssh restart
-
-RUN mkdir /root/.vs-debugger && chmod 0755 /root/.vs-debugger \
-    && curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v vs2017u1 -l /root/.vs-debugger/
-
-EXPOSE 22
-
 WORKDIR API/
 
-ENTRYPOINT [ "/bin/bash" ]
-CMD ["/entry.sh"]
+CMD ["dotnet", "run", "-c", "Debug"]

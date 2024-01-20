@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using API.Entities.Enums;
 using API.Services;
 using API.Services.Tasks.Scanner.Parser;
+using API.Tests;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
@@ -444,9 +445,9 @@ public class DefaultParserTests
     [Fact]
     public void Parse_ParseInfo_Comic()
         {
-            const string rootPath = @"E:/Comics/";
+            string rootPath = TestHelper.GetOsSafeDirPath(@"E:/Comics/");
             var expected = new Dictionary<string, ParserInfo>();
-            var filepath = @"E:/Comics/Teen Titans/Teen Titans v1 Annual 01 (1967) SP01.cbr";
+            var filepath = TestHelper.GetOsSafeDirPath(@"E:/Comics/Teen Titans/Teen Titans v1 Annual 01 (1967) SP01.cbr");
              expected.Add(filepath, new ParserInfo
              {
                  Series = "Teen Titans", Volumes = "0",
@@ -455,7 +456,7 @@ public class DefaultParserTests
              });
 
              // Fallback test with bad naming
-             filepath = @"E:\Comics\Comics\Babe\Babe Vol.1 #1-4\Babe 01.cbr";
+             filepath = TestHelper.GetOsSafeDirPath(@"E:\Comics\Comics\Babe\Babe Vol.1 #1-4\Babe 01.cbr");
              expected.Add(filepath, new ParserInfo
              {
                  Series = "Babe", Volumes = "0", Edition = "",
@@ -463,7 +464,7 @@ public class DefaultParserTests
                  FullFilePath = filepath, IsSpecial = false
              });
 
-             filepath = @"E:\Comics\Comics\Publisher\Batman the Detective (2021)\Batman the Detective - v6 - 11 - (2021).cbr";
+             filepath = TestHelper.GetOsSafeDirPath(@"E:\Comics\Comics\Publisher\Batman the Detective (2021)\Batman the Detective - v6 - 11 - (2021).cbr");
              expected.Add(filepath, new ParserInfo
              {
                  Series = "Batman the Detective", Volumes = "6", Edition = "",
@@ -471,7 +472,7 @@ public class DefaultParserTests
                  FullFilePath = filepath, IsSpecial = false
              });
 
-             filepath = @"E:\Comics\Comics\Batman - The Man Who Laughs #1 (2005)\Batman - The Man Who Laughs #1 (2005).cbr";
+             filepath = TestHelper.GetOsSafeDirPath(@"E:\Comics\Comics\Batman - The Man Who Laughs #1 (2005)\Batman - The Man Who Laughs #1 (2005).cbr");
              expected.Add(filepath, new ParserInfo
              {
                  Series = "Batman - The Man Who Laughs", Volumes = "0", Edition = "",
@@ -489,6 +490,7 @@ public class DefaultParserTests
                     continue;
                 }
                 Assert.NotNull(actual);
+                _testOutputHelper.WriteLine("I don'tneed to rebuild do i?");
                 _testOutputHelper.WriteLine($"Validating {file}");
                 Assert.Equal(expectedInfo.Format, actual.Format);
                 _testOutputHelper.WriteLine("Format ✓");

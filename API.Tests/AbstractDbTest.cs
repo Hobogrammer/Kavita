@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
@@ -9,6 +9,7 @@ using API.Entities.Enums;
 using API.Helpers;
 using API.Helpers.Builders;
 using API.Services;
+using API.Tests;
 using AutoMapper;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -25,14 +26,16 @@ public abstract class AbstractDbTest
     protected readonly IUnitOfWork _unitOfWork;
 
 
-    protected const string CacheDirectory = "C:/kavita/config/cache/";
-    protected const string CoverImageDirectory = "C:/kavita/config/covers/";
-    protected const string BackupDirectory = "C:/kavita/config/backups/";
-    protected const string LogDirectory = "C:/kavita/config/logs/";
-    protected const string BookmarkDirectory = "C:/kavita/config/bookmarks/";
-    protected const string SiteThemeDirectory = "C:/kavita/config/themes/";
-    protected const string TempDirectory = "C:/kavita/config/temp/";
-    protected const string DataDirectory = "C:/data/";
+    protected static string CacheDirectory = TestHelper.GetOsSafeDirPath(TestHelper.CacheDirectory);
+    protected static string CoverImageDirectory = TestHelper.GetOsSafeDirPath(TestHelper.CoverImageDirectory);
+    protected static string BackupDirectory = TestHelper.GetOsSafeDirPath(TestHelper.BackupDirectory);
+    protected static string LogDirectory = TestHelper.GetOsSafeDirPath(TestHelper.LogDirectory);
+    protected static string BookmarkDirectory = TestHelper.GetOsSafeDirPath(TestHelper.BookmarkDirectory);
+    protected static string SiteThemeDirectory = TestHelper.GetOsSafeDirPath(TestHelper.SiteThemeDirectory);
+    protected static string TempDirectory = TestHelper.GetOsSafeDirPath(TestHelper.TempDirectory);
+    protected static string DataDirectory = TestHelper.GetOsSafeDirPath(TestHelper.DataDirectory);
+    protected static string KavitaRootDirectory = TestHelper.GetOsSafeDirPath(TestHelper.KavitaRootDirectory);
+    protected static string KavitaConfigDirectory = TestHelper.GetOsSafeDirPath(TestHelper.KavitaConfigDirectory);
 
     protected AbstractDbTest()
     {
@@ -52,7 +55,7 @@ public abstract class AbstractDbTest
 
     private static DbConnection CreateInMemoryDatabase()
     {
-        var connection = new SqliteConnection("Filename=:memory:");
+        var connection = new SqliteConnection(TestHelper.Memory);
         connection.Open();
 
         return connection;
