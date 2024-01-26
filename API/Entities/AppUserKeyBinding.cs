@@ -6,6 +6,8 @@ using API.Entities.Enums;
 
 namespace API.Entities;
 
+// TODO: Investigate turning this into a dynamic class: 
+// https://haacked.com/archive/2009/08/26/method-missing-csharp-4.aspx
 public class AppUserKeyBinding
 {
     public int Id { get; set; }
