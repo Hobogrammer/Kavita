@@ -1,4 +1,6 @@
+using System.Dynamic;
 using System.Collections.Immutable;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Microsoft.EntityFrameworkCore;
 using Kavita.Common;
@@ -6,22 +8,47 @@ using API.Entities.Enums;
 
 namespace API.Entities;
 
-// TODO: Investigate turning this into a dynamic class: 
-// https://haacked.com/archive/2009/08/26/method-missing-csharp-4.aspx
-public class AppUserKeyBinding
+public class AppUserKeyBinding : DynamicObject
 {
+    private HashSet<ReaderAction> UsedActions { get; } // Probably don't need this here. Maybe front end
+    private HashSet<string> UsedKeys { get; } // ditto maybe here for validations?
+
     public int Id { get; set; }
     public AppUser AppUser { get; set; }
     public int AppUserId { get; set; }
     public required ReaderType Type { get; set; }
+    public Dictionary<ReaderAction, string> Bindings { get; } //TODO: This fucking variable name
 
-    public string Next { get; set; }
-    public string Previous { get; set; }
-    public string Close { get; set; }
-    public string ToggleMenu { get; set; }
-    public string GoToPage { get; set; }
-    public string FullScreen { get; set; }
     public ImmutableList<ReaderAction> ApplicableActionList { get; }
+
+    public AppUserKeyBinding(ReaderType readerType)
+    {
+        Type = readerType;
+        ApplicableActionList = getActionListForType();
+    }
+
+    public void Add(ReaderAction action, string key)
+    {
+        // Check if ReaderAction is valid for ReaderType
+        if (ApplicableActionList.Exists(action)
+        {
+            Bindings.Add(action, key);
+        }
+        else
+        {
+        // Throw invalid action exception
+        }
+    }
+
+    public List<ReaderAction> Values()
+    {
+
+    }
+
+    public List<string> Keys()
+    {
+
+    }
 
     private ImmutableList<ReaderAction> getActionListForType()
     {
@@ -34,6 +61,9 @@ public class AppUserKeyBinding
                 break;
             case ReaderType.Pdf:
                 return ImmutableList.Create(new ReaderAction[] { ReaderAction.Close });
+                break;
+            default:
+                // Throw new exception
                 break;
         }
         return ImmutableList.Create(new ReaderAction[] {});
