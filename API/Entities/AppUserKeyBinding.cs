@@ -17,24 +17,4 @@ public class AppUserKeyBinding
     [KeyBindingUniqueKey]
     [KeyBindingTypeAction]
     public Dictionary<ReaderAction, string> Bindings { get; } //TODO: This fucking variable name
-
-    private ImmutableList<ReaderAction> getActionListForType()
-    {
-        switch(this.Type)
-        {
-            case ReaderType.Book:
-                return ReaderTypeActionSet.BookActions;
-                break;
-            case ReaderType.Manga:
-                return ReaderTypeActionSet.MangaActions;
-                break;
-            case ReaderType.Pdf:
-                return ReaderTypeActionSet.PdfActions;
-                break;
-            default:
-                // Throw new exception
-                break;
-        }
-        return ImmutableList.Create(new ReaderAction[] {});
-    }
 }

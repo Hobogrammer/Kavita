@@ -8,7 +8,7 @@ public static class ReaderTypeActionSet
     /// <summary>
     /// Actions available to the Epub reader
     /// </summary>
-    public const ImmutableList<ReaderAction> BookActions = ImmutableList.Create(new ReaderAction[] { 
+    public const ImmutableSet<ReaderAction> BookActions = ImmutableSet.Create(new ReaderAction[] {
             ReaderAction.NextPage, 
             ReaderAction.PreviousPage,
             ReaderAction.Close,
@@ -20,7 +20,7 @@ public static class ReaderTypeActionSet
     /// <summary>
     /// Actions available to the manga reader
     /// </summary>
-    public const ImmutableList<ReaderAction> MangaActions = ImmutableList.Create(new ReaderAction[] { 
+    public const ImmutableSet<ReaderAction> MangaActions = ImmutableSet.Create(new ReaderAction[] {
             ReaderAction.NextPage, 
             ReaderAction.PreviousPage,
             ReaderAction.Close,
@@ -32,7 +32,7 @@ public static class ReaderTypeActionSet
     /// <summary>
     /// Actions available to the Pdf reader
     /// </summary>
-    public const ImmutableList<ReaderAction> PdfActions = ImmutableList.Create(new ReaderAction[] {
+    public const ImmutableSet<ReaderAction> PdfActions = ImmutableSet.Create(new ReaderAction[] {
             ReaderAction.Close
     });
 }
