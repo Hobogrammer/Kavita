@@ -14,7 +14,6 @@ public class AppUserKeyBinding
     public int AppUserId { get; set; }
     public required ReaderType Type { get; set; }
 
-    [KeyBindingUniqueAction]
     [KeyBindingUniqueKey]
     [KeyBindingTypeAction]
     public Dictionary<ReaderAction, string> Bindings { get; } //TODO: This fucking variable name
