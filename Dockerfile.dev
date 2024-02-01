@@ -7,8 +7,7 @@ ENV DOTNET_RUNNING_IN_CONTAINER=true
 
 COPY . .
 ENV PATH="${PATH}:/root/.dotnet/tools"
-RUN dotnet tool install -g Swashbuckle.AspNetCore.Cli \
-    && dotnet msbuild -restore Kavita.sln -p:Configuration=Debug -p:Platform="x64"
+RUN dotnet msbuild -restore Kavita.sln -p:Configuration=Debug -p:Platform="x64"
 
 EXPOSE 5000
 
