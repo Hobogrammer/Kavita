@@ -6,7 +6,7 @@ using API.Entities.Enums;
 namespace API.Validators;
 
 // Validate that actions used are allowed for given ReaderType
-public class ValidReaderActions: ValidationAttribute
+public class ValidReaderActionsAttribute: ValidationAttribute
 {
     public Dictionary<ReaderAction, string> Bindings { get; }
 
@@ -39,7 +39,6 @@ public class ValidReaderActions: ValidationAttribute
         {
             if (!validActions.Contains(action))
             {
-
                 return new ValidationResult($"{action} is not allowed for ReaderType {readerType}");
             }
         }

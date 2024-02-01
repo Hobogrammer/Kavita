@@ -1,9 +1,8 @@
-using System.Collections.Immutable;
 using System.Collections.Generic;
 using System.ComponentModel;
 using Microsoft.EntityFrameworkCore;
 using Kavita.Common;
-using API.Constants.ReaderTypeActionSet;
+using API.Entities.Enums;
 using API.Validators;
 
 namespace API.Entities;
