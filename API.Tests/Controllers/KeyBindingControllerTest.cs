@@ -1,9 +1,16 @@
 using Xunit;
+using System.Data.Common;
+using System.Threading.Tasks;
 
 namespace API.Tests.Controllers;
 
 public class KeyBindingControllerTests
 {
+
+    public KeyBindingControllerTests()
+    {
+
+    }
 
     [Fact]
     public async Task CreatingKeyBinding_ShouldCreateDto()

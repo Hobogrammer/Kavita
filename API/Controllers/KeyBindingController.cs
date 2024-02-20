@@ -31,26 +31,13 @@ public class KeyBindingController : BaseApiController
         // Update
         if (existingKeyBinding != null)
         {
-            existingKeyBinding.Next = keyBindingDto.Next;
-            existingKeyBinding.Previous = keyBindingDto.Previous;
-            existingKeyBinding.Close = keyBindingDto.Close;
-            existingKeyBinding.GoToPage = keyBindingDto.GoToPage;
-            existingKeyBinding.ToggleMenu = keyBindingDto.ToggleMenu;
-            existingKeyBinding.FullScreen = keyBindingDto.FullScreen;
-
+            existingKeyBinding.Bindings = keyBindingDto.Bindings;
             _unitOfWork.AppUserKeyBindingRepository.Update(existingKeyBinding);
         }
         else // New
         {
             var keyBinding = new AppUserKeyBinding() { Type = enumReaderType};
-            var readerTypeActionList = keyBinding.ApplicableActionList;
-
-            if (readerTypeActionList.Contains(ReaderAction.NextPage)) keyBinding.Next = keyBindingDto.Next;
-            if (readerTypeActionList.Contains(ReaderAction.PreviousPage)) keyBinding.Previous = keyBindingDto.Previous;
-            if (readerTypeActionList.Contains(ReaderAction.Close)) keyBinding.Close = keyBindingDto.Close;
-            if (readerTypeActionList.Contains(ReaderAction.GoToPage)) keyBinding.GoToPage = keyBindingDto.GoToPage;
-            if (readerTypeActionList.Contains(ReaderAction.ToggleMenu)) keyBinding.ToggleMenu = keyBindingDto.ToggleMenu;
-            if (readerTypeActionList.Contains(ReaderAction.FullScreen)) keyBinding.FullScreen = keyBindingDto.FullScreen;
+            keyBinding.Bindings = keyBindingDto.Bindings;
 
             user.KeyBindings.Add(keyBinding);
             _unitOfWork.UserRepository.Update(user);
