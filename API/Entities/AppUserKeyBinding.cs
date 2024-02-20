@@ -23,20 +23,7 @@ public class AppUserKeyBinding : IValidateableObject
     public string GoToPage { get; set; }
     public string FullScreen { get; set; }
 
-    public Dictionary<ReaderAction, string> ToActionKeyDictionary()
-    {
-
-        Dictionary<ReaderAction, string> actionKeyDictionary;
-
-        if (NextPage != null ) actionKeyDictionary.Add(NextPage, ReaderAction.NextPage);
-        if (PreviousPage != null ) actionKeyDictionary.Add(PreviousPage, ReaderAction.PreviousPage);
-        if (Close != null ) actionKeyDictionary.Add(Close, ReaderAction.Close);
-        if (ToggleMenu != null ) actionKeyDictionary.Add(ToggleMenu, ReaderAction.ToggleMenu);
-        if (GoToPage != null ) actionKeyDictionary.Add(GoToPage, ReaderAction.GoToPage);
-        if (FullScreen != null ) actionKeyDictionary.Add(FullScreen, ReaderAction.FullScreen);
-        return actionKeyDictionary;
-    }
-
+    // Convert action fields and values to shortcut key action pair for front end use
     public string ToKeyActionJson()
     {
         Dictionary<String, ReaderAction> keyActionMap;
@@ -72,7 +59,8 @@ public class AppUserKeyBinding : IValidateableObject
         var actionDic = ToActionKeyDictionary();
         var actions = actionDic.Keys;
 
-        foreach(ReaderAction action in actions) // Can you loop through dictionarys like this?
+        // Validate that actions used are allowed for given ReaderType
+        foreach(ReaderAction action in actions)
         {
             if (!ValidActions.Contains(action))
             {
@@ -80,11 +68,27 @@ public class AppUserKeyBinding : IValidateableObject
             }
         }
 
+        // Validate that all keys tied to actions are unique and non-repeating
         var keys = actionDic.Values;
 
         if (actionDic.Values.Distinct().Count() != keys.Count)
         {
-            return new ValidationResult(ErrorMessage);
+            yield return new ValidationResult(ErrorMessage);
         }
+    }
+
+    // Convert action fields and values to dictionary for validation
+    private Dictionary<ReaderAction, string> ToActionKeyDictionary()
+    {
+        Dictionary<ReaderAction, string> actionKeyDictionary;
+
+        if (NextPage != null ) actionKeyDictionary.Add(NextPage, ReaderAction.NextPage);
+        if (PreviousPage != null ) actionKeyDictionary.Add(PreviousPage, ReaderAction.PreviousPage);
+        if (Close != null ) actionKeyDictionary.Add(Close, ReaderAction.Close);
+        if (ToggleMenu != null ) actionKeyDictionary.Add(ToggleMenu, ReaderAction.ToggleMenu);
+        if (GoToPage != null ) actionKeyDictionary.Add(GoToPage, ReaderAction.GoToPage);
+        if (FullScreen != null ) actionKeyDictionary.Add(FullScreen, ReaderAction.FullScreen);
+
+        return actionKeyDictionary;
     }
 }
