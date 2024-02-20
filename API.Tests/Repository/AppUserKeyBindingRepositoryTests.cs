@@ -1,6 +1,13 @@
+using API.Entities;
 using API.Data;
+using API.Helpers;
 using AutoMapper;
 using System.Threading.Tasks;
+using System.Linq;
+using System.Data.Common;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Xunit;
 
 namespace API.Tests.Repository;
@@ -11,7 +18,7 @@ public class AppUserKeyBindingRepositoryTests
     private readonly DbConnection? _connection;
     private readonly DataContext _context;
 
-    public AppUserKeybindingRepositoryTests()
+    public AppUserKeyBindingRepositoryTests()
     {
         var contextOptions = new DbContextOptionsBuilder().UseSqlite(CreateInMemoryDatabase()).Options;
         _connection = RelationalOptionsExtension.Extract(contextOptions).Connection;
@@ -44,25 +51,25 @@ public class AppUserKeyBindingRepositoryTests
         return await _context.SaveChangesAsync() > 0;
     }
 
-    [Theory]
-    public async Task GetAllDtosByUserId_ShouldReturnAllKeybindingsForUser(int userId)
+    [Fact]
+    public async Task GetAllDtosByUserId_ShouldReturnAllKeybindingsForUser()
     {
         // Verify that all expected keybindings exist
         // Verify all keybindings belong to the specified user
     }
 
-    [Theory]
-    public async Task GetById_ShouldReturnExpectedObject(int keyBindingId)
+    [Fact]
+    public async Task GetById_ShouldReturnExpectedObject()
     {
     }
 
-    [Theory]
-    public async Task GetByUserIdAndReaderType_ShouldReturnCorrectKeyBindingObjects(int userId, ReaderType readerType)
+    [Fact]
+    public async Task GetByUserIdAndReaderType_ShouldReturnCorrectKeyBindingObjects()
     {
     }
 
-    [Theory]
-    public async Task GetDtoByUserIdAndReaderType_ShouldReturnCorrectKeyBindingDTOs(int userId, ReaderType readerType)
+    [Fact]
+    public async Task GetDtoByUserIdAndReaderType_ShouldReturnCorrectKeyBindingDTOs()
     {
     }
 }

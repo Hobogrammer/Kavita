@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using API.Entities;
 using API.Entities.Enums;
@@ -10,7 +11,7 @@ public class ValidReaderActionsAttributeTests
     [Fact]
     public void KeyBinding_FailsValidationForInvalidReaderActions()
     {
-        var keyBinding = new AppUserKeyBinding(ReaderType.Pdf);
+        var keyBinding = new AppUserKeyBinding() { Type = ReaderType.Pdf};
         keyBinding.Bindings.Add(ReaderAction.NextPage, "K");
 
         var context = new ValidationContext(keyBinding);
