@@ -9,16 +9,12 @@ namespace API.Validators;
 public class UniqueKeysAttribute : ValidationAttribute
 {
     public const string ErrorMessage = "Keys cannot be assigned to multiple actions.";
-    public Dictionary<ReaderAction, string> Bindings { get; }
 
-    public UniqueKeysAttribute(Dictionary<ReaderAction, string> bindings)
+    protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
     {
-        Bindings = bindings;
-    }
+        var bindings = (Dictionary<ReaderAction, string>)value;
 
-    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
-    {
-        if (!Bindings.Values.Distinct().Count() == Bindings.Count)
+        if (bindings.Values.Distinct().Count() != bindings.Count)
         {
             return new ValidationResult(ErrorMessage);
         }
