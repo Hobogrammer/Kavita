@@ -35,7 +35,6 @@ public class AppUserKeyBinding : IValidateableObject
         if (GoToPage != null ) keyActionMap.Add(GoToPage, ReaderAction.GoToPage);
         if (FullScreen != null ) keyActionMap.Add(FullScreen, ReaderAction.FullScreen);
 
-        var option = new JsonSerializerOptions{ WriteIndented = true };
         return JsonSerializer.Serialize(ToKeyActionMap(), option);
     }
 
@@ -73,7 +72,7 @@ public class AppUserKeyBinding : IValidateableObject
 
         if (actionDic.Values.Distinct().Count() != keys.Count)
         {
-            yield return new ValidationResult(ErrorMessage);
+            yield return new ValidationResult("All keys assigned to actions must be unique.");
         }
     }
 
