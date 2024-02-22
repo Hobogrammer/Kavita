@@ -1,15 +1,17 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Kavita.Common;
+using API.Constants;
 using API.Entities.Enums;
-using API.Validators;
 
 namespace API.Entities;
 
-public class AppUserKeyBinding : IValidateableObject
+public class AppUserKeyBinding : IValidatableObject
 {
     public int Id { get; set; }
     public AppUser AppUser { get; set; }
@@ -26,7 +28,7 @@ public class AppUserKeyBinding : IValidateableObject
     // Convert action fields and values to shortcut key action pair for front end use
     public string ToKeyActionJson()
     {
-        Dictionary<String, ReaderAction> keyActionMap;
+        Dictionary<string, ReaderAction> keyActionMap = new Dictionary<string, ReaderAction>();
 
         if (NextPage != null ) keyActionMap.Add(NextPage, ReaderAction.NextPage);
         if (PreviousPage != null ) keyActionMap.Add(PreviousPage, ReaderAction.PreviousPage);
@@ -35,12 +37,12 @@ public class AppUserKeyBinding : IValidateableObject
         if (GoToPage != null ) keyActionMap.Add(GoToPage, ReaderAction.GoToPage);
         if (FullScreen != null ) keyActionMap.Add(FullScreen, ReaderAction.FullScreen);
 
-        return JsonSerializer.Serialize(ToKeyActionMap(), option);
+        return JsonSerializer.Serialize(keyActionMap);
     }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        ImmutableHashSet ValidActions;
+        ImmutableHashSet<ReaderAction> ValidActions = ImmutableHashSet.Create<ReaderAction>();
 
         switch(Type)
         {
@@ -63,7 +65,7 @@ public class AppUserKeyBinding : IValidateableObject
         {
             if (!ValidActions.Contains(action))
             {
-                yield return new ValidationResult($"{action} is not allowed for ReaderType {Type}");
+                yield return new ValidationResult($"{action} is not allowed for ReaderType: {Type}");
             }
         }
 
@@ -79,14 +81,14 @@ public class AppUserKeyBinding : IValidateableObject
     // Convert action fields and values to dictionary for validation
     private Dictionary<ReaderAction, string> ToActionKeyDictionary()
     {
-        Dictionary<ReaderAction, string> actionKeyDictionary;
+        Dictionary<ReaderAction, string> actionKeyDictionary = new Dictionary<ReaderAction, string>();
 
-        if (NextPage != null ) actionKeyDictionary.Add(NextPage, ReaderAction.NextPage);
-        if (PreviousPage != null ) actionKeyDictionary.Add(PreviousPage, ReaderAction.PreviousPage);
-        if (Close != null ) actionKeyDictionary.Add(Close, ReaderAction.Close);
-        if (ToggleMenu != null ) actionKeyDictionary.Add(ToggleMenu, ReaderAction.ToggleMenu);
-        if (GoToPage != null ) actionKeyDictionary.Add(GoToPage, ReaderAction.GoToPage);
-        if (FullScreen != null ) actionKeyDictionary.Add(FullScreen, ReaderAction.FullScreen);
+        if (NextPage != null ) actionKeyDictionary.Add(ReaderAction.NextPage, NextPage);
+        if (PreviousPage != null ) actionKeyDictionary.Add(ReaderAction.PreviousPage, PreviousPage);
+        if (Close != null ) actionKeyDictionary.Add(ReaderAction.Close, Close);
+        if (ToggleMenu != null ) actionKeyDictionary.Add(ReaderAction.ToggleMenu, ToggleMenu);
+        if (GoToPage != null ) actionKeyDictionary.Add(ReaderAction.GoToPage, GoToPage);
+        if (FullScreen != null ) actionKeyDictionary.Add(ReaderAction.FullScreen, FullScreen);
 
         return actionKeyDictionary;
     }

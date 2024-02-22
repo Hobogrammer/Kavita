@@ -31,13 +31,13 @@ public class KeyBindingController : BaseApiController
         // Update
         if (existingKeyBinding != null)
         {
-            existingKeyBinding.Bindings = keyBindingDto.Bindings;
+            //existingKeyBinding.Bindings = keyBindingDto.Bindings; use map? ...nah new constructor if map doesn't work
             _unitOfWork.AppUserKeyBindingRepository.Update(existingKeyBinding);
         }
         else // New
         {
             var keyBinding = new AppUserKeyBinding() { Type = enumReaderType};
-            keyBinding.Bindings = keyBindingDto.Bindings;
+            //keyBinding.Bindings = keyBindingDto.Bindings;
 
             user.KeyBindings.Add(keyBinding);
             _unitOfWork.UserRepository.Update(user);
