@@ -1,6 +1,7 @@
 using API.Constants;
 using API.Entities;
 using API.Entities.Enums;
+using System;
 using Xunit;
 
 public class AppUserKeyBindingTests
@@ -16,12 +17,12 @@ public class AppUserKeyBindingTests
         keyBinding.GoToPage = "G";
         keyBinding.FullScreen = "F";
 
-        expected = $"{keyBinding.NextPage}: {ReaderAction.NextPage},"
+        expected = $"{{{keyBinding.NextPage}: {ReaderAction.NextPage},"
                 + $"{keyBinding.PreviousPage}: {ReaderAction.NextPage},"
                 + $"{keyBinding.Close}: {ReaderAction.Close},"
                 + $"{keyBinding.ToggleMenu}: {ReaderAction.ToggleMenu},"
                 + $"{keyBinding.GoToPage}: {ReaderAction.GoToPage},"
-                + $"{keyBinding.FullScreen}: {ReaderAction.FullScreen}";
+                + $"{keyBinding.FullScreen}: {ReaderAction.FullScreen}}}";
 
         Assert.Equal(expected, keyBinding.ToKeyActionJson());
     }
@@ -58,6 +59,7 @@ public class AppUserKeyBindingTests
         Assert.Equal(validationErrors[0], expectedValidationError); 
     }
 
+    //TODO: Convert to 3 fact test cause static values can't be parameters :shrug:
     [Theory]
     [InlineData(ReaderType.Pdf, ReaderTypeActionSet.PdfActions)]
     [InlineData(ReaderType.Manga, ReaderTypeActionSet.MangaActions)]
@@ -68,11 +70,17 @@ public class AppUserKeyBindingTests
         var validationErrors = new List<ValidationResult>();
         var usedKeys = [];
 
-        foreach(ReaderAction action in actions)
+        foreach (ReaderAction action in actions)
         {
+            var flag = true;
             var key = new string();
-            // Get Random key
-            // Make sure random key is not in usedKeys list
+
+            while (flag)
+            {
+                key = GetRandomLetter();
+                flag = usedKeys.Contains(key);    
+            }
+
             AssignKeyToAction(keyBinding, action, key);
             usedKeys.Add(key);
         }
@@ -116,5 +124,11 @@ public class AppUserKeyBindingTests
                 binding.FullScreen = key;
                 break;
         }
+    }
+    
+    private string GetRandomLetter()
+    {
+        Random random = new Random();
+        return ((char)random.Next(97, 127)).toString();
     }
 }
