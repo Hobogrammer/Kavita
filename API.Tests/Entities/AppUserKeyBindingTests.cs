@@ -2,6 +2,8 @@ using API.Constants;
 using API.Entities;
 using API.Entities.Enums;
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using Xunit;
 
 public class AppUserKeyBindingTests
@@ -9,7 +11,7 @@ public class AppUserKeyBindingTests
     [Fact]
     public void ToKeyActionJson_ShouldReturnExpectedJsonString()
     {
-        var keyBinding = new AppUserKeyBinding(ReaderType.Book);
+        var keyBinding = new AppUserKeyBinding() { Type = ReaderType.Book };
         keyBinding.NextPage = "H";
         keyBinding.PreviousPage = "L";
         keyBinding.Close = "Escape";
@@ -17,7 +19,7 @@ public class AppUserKeyBindingTests
         keyBinding.GoToPage = "G";
         keyBinding.FullScreen = "F";
 
-        expected = $"{{{keyBinding.NextPage}: {ReaderAction.NextPage},"
+        var expected = $"{{{keyBinding.NextPage}: {ReaderAction.NextPage},"
                 + $"{keyBinding.PreviousPage}: {ReaderAction.NextPage},"
                 + $"{keyBinding.Close}: {ReaderAction.Close},"
                 + $"{keyBinding.ToggleMenu}: {ReaderAction.ToggleMenu},"
@@ -30,14 +32,15 @@ public class AppUserKeyBindingTests
     [Fact]
     public void Validation_ShouldFailForUnsupportedReaderActions()
     {
-        var keyBinding = new AppUserKeyBinding(ReaderType.Pdf);
+        var keyBinding = new AppUserKeyBinding() { Type = ReaderType.Pdf };
         var actions = ReaderTypeActionSet.BookActions;
+        var validationErrors = new List<ValidationResult>();
 
         keyBinding.GoToPage = "G";
         keyBinding.Close = "Escape";
 
-        var expectedValidationError = new ValidationError("GoToPage is not allowed for ReaderType: ReaderType.Pdf");
-        var validationErrors = Validator.ValidateObject(keyBinding, new ValidationContext(keyBinding), true);
+        var expectedValidationError = new ValidationResult("GoToPage is not allowed for ReaderType: ReaderType.Pdf");
+        Validator.TryValidateObject(keyBinding, new ValidationContext(keyBinding), validationErrors);
 
         Assert.Equal(validationErrors[0], expectedValidationError); 
     }
@@ -45,7 +48,7 @@ public class AppUserKeyBindingTests
     [Fact]
     public void Validation_ShouldFailForNonUniqueKeysAssignedToActions()
     {
-        var keyBinding = new AppUserKeyBinding(ReaderType.Book);
+        var keyBinding = new AppUserKeyBinding() { Type = ReaderType.Book};
         keyBinding.NextPage = "F";
         keyBinding.PreviousPage = "L";
         keyBinding.Close = "Escape";
@@ -53,27 +56,25 @@ public class AppUserKeyBindingTests
         keyBinding.GoToPage = "G";
         keyBinding.FullScreen = "F";
 
-        var expectedValidationError = new ValidationError("All keys assigned to actions must be unique");
-        var validationErrors = Validator.ValidateObject(keyBinding, new ValidationContext(keyBinding), true);
+        var validationErrors = new List<ValidationResult>();
+        var expectedValidationError = new ValidationResult("All keys assigned to actions must be unique");
+        Validator.TryValidateObject(keyBinding, new ValidationContext(keyBinding), validationErrors);
 
-        Assert.Equal(validationErrors[0], expectedValidationError); 
+        Assert.StartsWith("All keys", validationErrors[0].ErrorMessage);
     }
 
-    //TODO: Convert to 3 fact test cause static values can't be parameters :shrug:
-    [Theory]
-    [InlineData(ReaderType.Pdf, ReaderTypeActionSet.PdfActions)]
-    [InlineData(ReaderType.Manga, ReaderTypeActionSet.MangaActions)]
-    [InlineData(ReaderType.Book, ReaderTypeActionSet.BookActions)]
-    public void Validation_ShouldSucceedForSupportedReaderActions(ReaderType readerType, ReaderTypeActionSet actions)
+    [Fact]
+    public void Validation_ShouldSucceedForSupportedPdfReaderActions()
     {
-        var keyBinding = new AppUserKeyBinding(readerType);
+        var keyBinding = new AppUserKeyBinding(){ Type = ReaderType.Pdf};
+        var actions = ReaderTypeActionSet.PdfActions;
         var validationErrors = new List<ValidationResult>();
-        var usedKeys = [];
+        List<char> usedKeys = new List<char>();
 
         foreach (ReaderAction action in actions)
         {
             var flag = true;
-            var key = new string();
+            var key = '\0';
 
             while (flag)
             {
@@ -85,50 +86,94 @@ public class AppUserKeyBindingTests
             usedKeys.Add(key);
         }
 
-        validationErrors = Validator.ValidateObject(keyBinding, new ValidationContext(keyBinding), true);
-        Assert.IsEmpty(validationErrors);
+        Validator.TryValidateObject(keyBinding, new ValidationContext(keyBinding), validationErrors);
+        Assert.Empty(validationErrors);
     }
 
-    [Theory]
-    [InlineData(ReaderType.Pdf)]
-    [InlineData(ReaderType.Manga)]
-    [InlineData(ReaderType.Book)]
-    public void Validation_ShouldSucceedForUniqueKeysAssignedToActions()
+    [Fact]
+    public void Validation_ShouldSucceedForSupportedMangaReaderActions()
     {
+        var keyBinding = new AppUserKeyBinding(){ Type = ReaderType.Manga};
+        var actions = ReaderTypeActionSet.MangaActions;
+        List<char> usedKeys = new List<char>();
+
+        foreach (ReaderAction action in actions)
+        {
+            var flag = true;
+            var key = '\0';
+
+            while (flag)
+            {
+                key = GetRandomLetter();
+                flag = usedKeys.Contains(key);
+            }
+
+            AssignKeyToAction(keyBinding, action, key);
+            usedKeys.Add(key);
+        }
+
         var validationErrors = new List<ValidationResult>();
-
-        validationErrors = Validator.ValidateObject(keyBinding, new ValidationContext(keyBinding), true);
-        Assert.IsEmpty(validationErrors);
+        Validator.TryValidateObject(keyBinding, new ValidationContext(keyBinding), validationErrors);
+        Assert.Empty(validationErrors);
     }
 
-    private void AssignKeyToAction(AppUserKeyBinding binding, ReaderAction action, string key)
+    [Fact]
+    public void Validation_ShouldSucceedForSupportedBookReaderActions()
     {
+        var keyBinding = new AppUserKeyBinding(){ Type = ReaderType.Book};
+        var actions = ReaderTypeActionSet.BookActions;
+        List<char> usedKeys = new List<char>();
+
+        foreach (ReaderAction action in actions)
+        {
+            var flag = true;
+            var key = '\0';
+
+            while (flag)
+            {
+                key = GetRandomLetter();
+                flag = usedKeys.Contains(key);
+            }
+
+            AssignKeyToAction(keyBinding, action, key);
+            usedKeys.Add(key);
+        }
+
+        var validationErrors = new List<ValidationResult>();
+        Validator.TryValidateObject(keyBinding, new ValidationContext(keyBinding), validationErrors);
+        Assert.Empty(validationErrors);
+    }
+
+    private void AssignKeyToAction(AppUserKeyBinding binding, ReaderAction action, char key)
+    {
+        var keyString = Convert.ToString(key);
+
         switch (action)
         {
             case ReaderAction.NextPage:
-                binding.NextPage = key;
+                binding.NextPage = keyString;
                 break;
             case ReaderAction.PreviousPage:
-                binding.PreviousPage = key;
+                binding.PreviousPage = keyString;
                 break;
             case ReaderAction.Close:
-                binding.Close = key;
+                binding.Close = keyString;
                 break;
             case ReaderAction.GoToPage:
-                binding.GoToPage = key;
+                binding.GoToPage = keyString;
                 break;
             case ReaderAction.ToggleMenu:
-                binding.ToggleMenu = key;
+                binding.ToggleMenu = keyString;
                 break;
             case ReaderAction.FullScreen:
-                binding.FullScreen = key;
+                binding.FullScreen = keyString;
                 break;
         }
     }
     
-    private string GetRandomLetter()
+    private char GetRandomLetter()
     {
         Random random = new Random();
-        return ((char)random.Next(97, 127)).toString();
+        return (char)random.Next(97, 127);
     }
 }
