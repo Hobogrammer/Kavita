@@ -2,6 +2,7 @@ using API.Constants;
 using API.Entities;
 using API.Entities.Enums;
 using System;
+using System.Text;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using Xunit;
@@ -19,14 +20,16 @@ public class AppUserKeyBindingTests
         keyBinding.GoToPage = "G";
         keyBinding.FullScreen = "F";
 
-        var expected = $"{{{keyBinding.NextPage}: {ReaderAction.NextPage},"
-                + $"{keyBinding.PreviousPage}: {ReaderAction.NextPage},"
-                + $"{keyBinding.Close}: {ReaderAction.Close},"
-                + $"{keyBinding.ToggleMenu}: {ReaderAction.ToggleMenu},"
-                + $"{keyBinding.GoToPage}: {ReaderAction.GoToPage},"
-                + $"{keyBinding.FullScreen}: {ReaderAction.FullScreen}}}";
+        StringBuilder expected = new StringBuilder("{");
+        expected.AppendFormat("\"{0}\":\"{1}\",", keyBinding.NextPage, ReaderAction.NextPage.ToString());
+        expected.AppendFormat("\"{0}\":\"{1}\",", keyBinding.PreviousPage, ReaderAction.PreviousPage.ToString());
+        expected.AppendFormat("\"{0}\":\"{1}\",", keyBinding.Close, ReaderAction.Close.ToString());
+        expected.AppendFormat("\"{0}\":\"{1}\",", keyBinding.ToggleMenu, ReaderAction.ToggleMenu.ToString());
+        expected.AppendFormat("\"{0}\":\"{1}\",", keyBinding.GoToPage, ReaderAction.GoToPage.ToString());
+        expected.AppendFormat("\"{0}\":\"{1}\"", keyBinding.FullScreen, ReaderAction.FullScreen.ToString());
+        expected.Append("}");
 
-        Assert.Equal(expected, keyBinding.ToKeyActionJson());
+        Assert.Equal(expected.ToString(), keyBinding.ToKeyActionJson());
     }
 
     [Fact]
