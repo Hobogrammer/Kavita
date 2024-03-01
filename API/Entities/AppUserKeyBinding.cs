@@ -28,14 +28,14 @@ public class AppUserKeyBinding : IValidatableObject
     // Convert action fields and values to shortcut key action pair for front end use
     public string ToKeyActionJson()
     {
-        Dictionary<string, ReaderAction> keyActionMap = new Dictionary<string, ReaderAction>();
+        Dictionary<string, string> keyActionMap = new Dictionary<string, string>();
 
-        if (NextPage != null ) keyActionMap.Add(NextPage, ReaderAction.NextPage);
-        if (PreviousPage != null ) keyActionMap.Add(PreviousPage, ReaderAction.PreviousPage);
-        if (Close != null ) keyActionMap.Add(Close, ReaderAction.Close);
-        if (ToggleMenu != null ) keyActionMap.Add(ToggleMenu, ReaderAction.ToggleMenu);
-        if (GoToPage != null ) keyActionMap.Add(GoToPage, ReaderAction.GoToPage);
-        if (FullScreen != null ) keyActionMap.Add(FullScreen, ReaderAction.FullScreen);
+        if (NextPage != null ) keyActionMap.Add(NextPage, ReaderAction.NextPage.ToString());
+        if (PreviousPage != null ) keyActionMap.Add(PreviousPage, ReaderAction.PreviousPage.ToString());
+        if (Close != null ) keyActionMap.Add(Close, ReaderAction.Close.ToString());
+        if (ToggleMenu != null ) keyActionMap.Add(ToggleMenu, ReaderAction.ToggleMenu.ToString());
+        if (GoToPage != null ) keyActionMap.Add(GoToPage, ReaderAction.GoToPage.ToString());
+        if (FullScreen != null ) keyActionMap.Add(FullScreen, ReaderAction.FullScreen.ToString());
 
         return JsonSerializer.Serialize(keyActionMap);
     }
