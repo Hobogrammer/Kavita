@@ -42,10 +42,10 @@ public class AppUserKeyBindingTests
         keyBinding.GoToPage = "G";
         keyBinding.Close = "Escape";
 
-        var expectedValidationError = new ValidationResult("GoToPage is not allowed for ReaderType: ReaderType.Pdf");
+        var expectedValidationError = new ValidationResult(String.Format("GoToPage is not allowed for ReaderType: {0}", ReaderType.Pdf.ToString()));
         Validator.TryValidateObject(keyBinding, new ValidationContext(keyBinding), validationErrors);
 
-        Assert.Equal(validationErrors[0], expectedValidationError); 
+        Assert.Equal(validationErrors[0].ErrorMessage, expectedValidationError.ErrorMessage); 
     }
 
     [Fact]
