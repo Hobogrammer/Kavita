@@ -65,7 +65,7 @@ public class AppUserKeyBinding : IValidatableObject
         {
             if (!ValidActions.Contains(action))
             {
-                yield return new ValidationResult($"{action} is not allowed for ReaderType: {Type}");
+                yield return new ValidationResult($"{action} is not allowed for ReaderType: {Type.ToString()}");
             }
         }
 
