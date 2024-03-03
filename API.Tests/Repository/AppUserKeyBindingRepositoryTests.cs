@@ -3,7 +3,6 @@ using API.Data;
 using API.Helpers;
 using AutoMapper;
 using System.Threading.Tasks;
-using System.Linq;
 using System.Data.Common;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +23,7 @@ public class AppUserKeyBindingRepositoryTests
         _connection = RelationalOptionsExtension.Extract(contextOptions).Connection;
         _context = new DataContext(contextOptions);
 
-        Task.Run(SeedDb).GetAwaiter().GetResult();
+        Task.Run(PrepareDb).GetAwaiter().GetResult();
         var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfiles>());
         var mapper = config.CreateMapper();
         _unitOfWork = new UnitOfWork(_context, mapper, null!);
@@ -39,13 +38,18 @@ public class AppUserKeyBindingRepositoryTests
         return connection;
     }
 
-    private async Task<bool> SeedDb() // Needs a new name
+    private async Task<bool> PrepareDb() // Needs a new name
     {
         await _context.Database.MigrateAsync();
 
         _context.AppUser.Add(new AppUser()
         {
-            UserName = "majora2007"
+            UserName = "admin"
+        });
+
+        _context.AppUser.Add(new AppUser()
+        {
+            UserName = "user01"
         });
 
         return await _context.SaveChangesAsync() > 0;
@@ -54,6 +58,7 @@ public class AppUserKeyBindingRepositoryTests
     [Fact]
     public async Task GetAllDtosByUserId_ShouldReturnAllKeybindingsForUser()
     {
+        // Create some key bindings for both users
         // Verify that all expected keybindings exist
         // Verify all keybindings belong to the specified user
     }
@@ -61,15 +66,24 @@ public class AppUserKeyBindingRepositoryTests
     [Fact]
     public async Task GetById_ShouldReturnExpectedObject()
     {
+        //Create keybinging
+        // save id
+        // assert the correct keybinding is returned
     }
 
     [Fact]
     public async Task GetByUserIdAndReaderType_ShouldReturnCorrectKeyBindingObjects()
     {
+        // Create keybinding of multiple types for user
+        // Call for binding of certain type
+        // Assert correct keybinding
     }
 
     [Fact]
     public async Task GetDtoByUserIdAndReaderType_ShouldReturnCorrectKeyBindingDTOs()
     {
+        // Create keybinding of multiple types for user
+        // Call for binding of certain type
+        // Assert correct keybinding
     }
 }
