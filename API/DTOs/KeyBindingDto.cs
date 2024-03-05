@@ -1,7 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
-using API.Constants;
-using Microsoft.EntityFrameworkCore;
 using API.Entities.Enums;
 
 namespace API.DTOs;
