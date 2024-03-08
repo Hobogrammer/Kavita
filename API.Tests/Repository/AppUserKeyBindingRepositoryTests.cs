@@ -36,6 +36,7 @@ public class AppUserKeyBindingRepositoryTests
         var mapper = config.CreateMapper();
         _unitOfWork = new UnitOfWork(_context, mapper, null!);
         userRepo = new UserRepository(_context, userManager, mapper); // This can be mocked out later
+        appUserKeyBindingRepository = new AppUserKeyBindingRepository(_context, mapper);
     }
 
     private static DbConnection CreateInMemoryDatabase()
@@ -89,13 +90,14 @@ public class AppUserKeyBindingRepositoryTests
             Close = "Escape"
         };
         var adminId = await userRepo.GetUserIdByUsernameAsync("admin");
-        var user = await userRepo.GetUserByIdAsync(adminId);
+        var user = await userRepo.GetUserByIdAsync(adminId, AppUserIncludes.KeyBindings);
+        // KeyBindings have thier own repository. Use that to add in stead
         user.KeyBindings.Add(bookBinding);
         user.KeyBindings.Add(mangaBinding);
         user.KeyBindings.Add(pdfBinding);
 
         userId = await userRepo.GetUserIdByUsernameAsync("user01");
-        user = await userRepo.GetUserByIdAsync(userId);
+        user = await userRepo.GetUserByIdAsync(userId, AppUserIncludes.KeyBindings);
 
         user.KeyBindings.Add(pdfBinding);
         // Verify that all expected keybindings exist
@@ -118,9 +120,31 @@ public class AppUserKeyBindingRepositoryTests
     public async Task GetByUserIdAndReaderType_ShouldReturnCorrectKeyBindingObjects()
     {
         // Create keybinding of multiple types for user
+        var bookBinding = new AppUserKeyBinding() { 
+            Type = ReaderType.Book,
+            NextPage = "L",
+            PreviousPage = "H",
+            Close = "Escape",
+            FullScreen = "F",
+            ToggleMenu = "T"
+        };
+        var pdfBinding = new AppUserKeyBinding() { 
+            Type = ReaderType.Pdf,
+            Close = "Escape"
+        };
         // Call for binding of certain type
-
+        var adminId = await userRepo.GetUserIdByUsernameAsync("admin");
+        var user = await userRepo.GetUserByIdAsync(adminId, AppUserIncludes.KeyBindings);
+        user.KeyBindings.Add(bookBinding);
+        user.KeyBindings.Add(pdfBinding);
         // Assert correct keybinding
+
+        var keyBinding = await appUserKeyBindingRepository.GetByUserIdAndReaderType(adminId, ReaderType.Book);
+        Assert.Equal(ReaderType.Book.ToString(), keyBinding.Type.ToString());
+        keyBinding = await appUserKeyBindingRepository.GetByUserIdAndReaderType(adminId, ReaderType.Pdf);
+        Assert.Equal(ReaderType.Pdf.ToString(), keyBinding.Type.ToString());
+        keyBinding = await appUserKeyBindingRepository.GetByUserIdAndReaderType(adminId, ReaderType.Manga);
+        Assert.Null(keyBinding);
     }
 
     [Fact]
@@ -141,7 +165,7 @@ public class AppUserKeyBindingRepositoryTests
         };
         // Call for binding of certain type
         var adminId = await userRepo.GetUserIdByUsernameAsync("admin");
-        var user = await userRepo.GetUserByIdAsync(adminId);
+        var user = await userRepo.GetUserByIdAsync(adminId, AppUserIncludes.KeyBindings);
         user.KeyBindings.Add(bookBinding);
         user.KeyBindings.Add(pdfBinding);
         // Assert correct keybinding

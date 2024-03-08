@@ -35,6 +35,7 @@ using CollectionTag = API.Entities.CollectionTag;
 using MediaError = API.Entities.MediaError;
 using PublicationStatus = API.Entities.Enums.PublicationStatus;
 using SiteTheme = API.Entities.SiteTheme;
+using AppUserKeyBinding = API.Entities.AppUserKeyBinding;
 
 namespace API.Helpers;
 
