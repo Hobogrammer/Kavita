@@ -1,6 +1,6 @@
 using API.Constants;
 using API.Entities;
-using API.Entities.Enums;
+using API.Entities.Enums.KeyBindings;
 using System;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
