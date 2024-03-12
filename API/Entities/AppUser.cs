@@ -91,7 +91,7 @@ public class AppUser : IdentityUser<int>, IHasConcurrencyToken
     public IList<AppUserSideNavStream> SideNavStreams { get; set; } = null!;
     public IList<AppUserExternalSource> ExternalSources { get; set; } = null!;
 
-    public ICollection<AppUserKeyBinding> KeyBindings { get; set; } = null!;
+    public IList<AppUserKeyBinding> KeyBindings { get; set; } = null!;
 
 
     /// <inheritdoc />

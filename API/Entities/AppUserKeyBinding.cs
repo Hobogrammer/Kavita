@@ -1,13 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
-using Kavita.Common;
 using API.Constants;
-using API.Entities.Enums;
+using Kavita.Common.Extensions;
+using API.Entities.Enums.KeyBindings;
 
 namespace API.Entities;
 
@@ -65,7 +64,7 @@ public class AppUserKeyBinding : IValidatableObject
         {
             if (!ValidActions.Contains(action))
             {
-                yield return new ValidationResult($"{action} is not allowed for ReaderType: {Type.ToString()}");
+                yield return new ValidationResult($"{action} is not allowed for ReaderType: {Type}");
             }
         }
 

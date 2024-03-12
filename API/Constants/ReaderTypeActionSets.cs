@@ -1,5 +1,5 @@
 using System.Collections.Immutable;
-using API.Entities.Enums;
+using API.Entities.Enums.KeyBindings;
 
 namespace API.Constants;
 
@@ -9,7 +9,7 @@ public static class ReaderTypeActionSet
     /// Actions available to the Epub reader
     /// </summary>
     public static readonly ImmutableHashSet<ReaderAction> BookActions = ImmutableHashSet.Create(new ReaderAction[] {
-            ReaderAction.NextPage, 
+            ReaderAction.NextPage,
             ReaderAction.PreviousPage,
             ReaderAction.Close,
             ReaderAction.ToggleMenu,
@@ -21,7 +21,7 @@ public static class ReaderTypeActionSet
     /// Actions available to the manga reader
     /// </summary>
     public static readonly ImmutableHashSet<ReaderAction> MangaActions = ImmutableHashSet.Create(new ReaderAction[] {
-            ReaderAction.NextPage, 
+            ReaderAction.NextPage,
             ReaderAction.PreviousPage,
             ReaderAction.Close,
             ReaderAction.ToggleMenu,

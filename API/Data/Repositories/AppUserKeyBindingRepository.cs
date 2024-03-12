@@ -2,7 +2,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Entities;
-using API.Entities.Enums;
+using API.Entities.Enums.KeyBindings;
 using API.DTOs;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;

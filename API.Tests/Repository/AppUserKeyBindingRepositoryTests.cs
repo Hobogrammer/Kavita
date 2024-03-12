@@ -1,5 +1,5 @@
 using API.Entities;
-using API.Entities.Enums;
+using API.Entities.Enums.KeyBindings;
 using API.Data;
 using API.Helpers;
 using AutoMapper;
@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Xunit;
 using API.Data.Repositories;
 using Microsoft.AspNetCore.Identity;
-using API.DTOs;
 
 namespace API.Tests.Repository;
 
@@ -170,12 +169,12 @@ public class AppUserKeyBindingRepositoryTests
         user.KeyBindings.Add(pdfBinding);
         // Assert correct keybinding
         var dto = await appUserKeyBindingRepository.GetDtoByUserIdAndReaderType(adminId, ReaderType.Book);
-        Assert.Equal(ReaderType.Book.ToString(), dto.Type);
+        Assert.Equal(ReaderType.Book, dto.Type);
 
         dto = await appUserKeyBindingRepository.GetDtoByUserIdAndReaderType(adminId, ReaderType.Manga);
         Assert.Null(dto);
 
         dto = await appUserKeyBindingRepository.GetDtoByUserIdAndReaderType(adminId, ReaderType.Pdf);
-        Assert.Equal(ReaderType.Pdf.ToString(), dto.Type);
+        Assert.Equal(ReaderType.Pdf, dto.Type);
     }
 }
