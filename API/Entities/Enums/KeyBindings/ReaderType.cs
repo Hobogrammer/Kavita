@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace API.Entities.Enums;
+namespace API.Entities.Enums.KeyBindings;
 
 public enum ReaderType
 {

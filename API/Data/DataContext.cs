@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using API.Controllers;
 using API.Entities;
 using API.Entities.Enums;
 using API.Entities.Enums.UserPreferences;
@@ -138,6 +139,10 @@ public sealed class DataContext : IdentityDbContext<AppUser, AppRole, int,
         builder.Entity<AppUserSideNavStream>()
             .HasIndex(e => e.Visible)
             .IsUnique(false);
+
+        builder.Entity<AppUserKeyBinding>()
+            .Property(kb => kb.Type)
+            .IsRequired();
     }
 
 

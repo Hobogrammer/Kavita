@@ -5,7 +5,7 @@ using API.Data;
 using API.Data.Repositories;
 using API.DTOs;
 using API.Entities;
-using API.Entities.Enums;
+using API.Entities.Enums.KeyBindings;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -24,10 +24,9 @@ public class KeyBindingController : BaseApiController
     {
         var user = await _unitOfWork.UserRepository.GetUserByIdAsync(userId);
         if (user == null) return Unauthorized();
-        Enum.TryParse(keyBindingDto.Type, out ReaderType enumReaderType);
 
         var existingKeyBinding = await _unitOfWork
-            .AppUserKeyBindingRepository.GetByUserIdAndReaderType(userId, enumReaderType);
+            .AppUserKeyBindingRepository.GetByUserIdAndReaderType(userId, keyBindingDto.Type);
         // Update
         if (existingKeyBinding != null)
         {
@@ -36,8 +35,7 @@ public class KeyBindingController : BaseApiController
         }
         else // New
         {
-            var keyBinding = new AppUserKeyBinding() { Type = enumReaderType};
-            //keyBinding.Bindings = keyBindingDto.Bindings;
+            var keyBinding = new AppUserKeyBinding() { Type = keyBindingDto.Type};
 
             user.KeyBindings.Add(keyBinding);
             _unitOfWork.UserRepository.Update(user);
