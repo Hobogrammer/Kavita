@@ -59,16 +59,14 @@ public class AppUserKeyBindingRepository : IAppUserKeyBindingRepository
     public async Task<AppUserKeyBinding?> GetByUserIdAndReaderType(int userId, ReaderType readerType)
     {
         return await _context.AppUserKeyBinding
-            .Where(u => u.AppUserId == userId)
-            .Where(k => k.Type == readerType)
+            .Where(k => k.AppUserId == userId && k.Type == readerType)
             .FirstOrDefaultAsync();
     }
 
     public async Task<KeyBindingDto?> GetDtoByUserIdAndReaderType(int userId, ReaderType readerType)
     {
         return await _context.AppUserKeyBinding
-            .Where(u => u.AppUserId == userId)
-            .Where(k => k.Type == readerType)
+            .Where(k => k.AppUserId == userId && k.Type == readerType)
             .ProjectTo<KeyBindingDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync();
     }
