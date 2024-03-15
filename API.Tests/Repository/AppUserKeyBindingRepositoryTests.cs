@@ -68,8 +68,13 @@ public class AppUserKeyBindingRepositoryTests
     public async Task GetAllDtosByUserId_ShouldReturnAllKeyBindingDtosForUser()
     {
         // Create some key bindings for both users
+        var adminId = await userRepo.GetUserIdByUsernameAsync("admin");
+        var user = await userRepo.GetUserByIdAsync(adminId, AppUserIncludes.KeyBindings);
+
         var bookBinding = new AppUserKeyBinding() { 
             Type = ReaderType.Book,
+            AppUser = user,
+            AppUserId = adminId,
             NextPage = "L",
             PreviousPage = "H",
             Close = "Escape",
@@ -78,6 +83,8 @@ public class AppUserKeyBindingRepositoryTests
         };
         var mangaBinding = new AppUserKeyBinding() { 
             Type = ReaderType.Manga,
+            AppUser = user,
+            AppUserId = adminId,
             NextPage = "L",
             PreviousPage = "H",
             Close = "Escape",
@@ -85,20 +92,28 @@ public class AppUserKeyBindingRepositoryTests
             ToggleMenu = "T"
         };
         var pdfBinding = new AppUserKeyBinding() { 
+            AppUser = user,
+            AppUserId = adminId,
             Type = ReaderType.Pdf,
             Close = "Escape"
         };
-        var adminId = await userRepo.GetUserIdByUsernameAsync("admin");
-        var user = await userRepo.GetUserByIdAsync(adminId, AppUserIncludes.KeyBindings);
-        // KeyBindings have thier own repository. Use that to add in stead
         user.KeyBindings.Add(bookBinding);
         user.KeyBindings.Add(mangaBinding);
         user.KeyBindings.Add(pdfBinding);
+        await _context.SaveChangesAsync();
 
         userId = await userRepo.GetUserIdByUsernameAsync("user01");
         user = await userRepo.GetUserByIdAsync(userId, AppUserIncludes.KeyBindings);
 
+        pdfBinding = new AppUserKeyBinding() { 
+            Type = ReaderType.Pdf,
+            AppUser = user,
+            AppUserId = userId,
+            Close = "Escape"
+        };
+
         user.KeyBindings.Add(pdfBinding);
+        await _context.SaveChangesAsync();
         // Verify that all expected keybindings exist
         var dtos = await appUserKeyBindingRepository.GetAllDtosByUserId(adminId);
         Assert.Equal(3, dtos.Count);
@@ -111,8 +126,26 @@ public class AppUserKeyBindingRepositoryTests
     public async Task GetById_ShouldReturnExpectedObject()
     {
         //Create keybinging
+        var adminId = await userRepo.GetUserIdByUsernameAsync("admin");
+        var user = await userRepo.GetUserByIdAsync(adminId, AppUserIncludes.KeyBindings);
+
+        var bookBinding = new AppUserKeyBinding() { 
+            Type = ReaderType.Book,
+            AppUser = user,
+            AppUserId = user.Id,
+            NextPage = "L",
+            PreviousPage = "H",
+            Close = "Escape",
+            FullScreen = "F",
+            ToggleMenu = "T"
+        };
         // save id
+        user.KeyBindings.Add(bookBinding);
+        await _context.SaveChangesAsync();
         // assert the correct keybinding is returned
+        var keyBinding = await appUserKeyBindingRepository.GetById(1);
+
+        Assert.Equal(bookBinding, keyBinding);
     }
 
     [Fact]
