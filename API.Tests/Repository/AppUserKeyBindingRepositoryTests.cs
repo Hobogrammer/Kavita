@@ -169,6 +169,7 @@ public class AppUserKeyBindingRepositoryTests
         var user = await userRepo.GetUserByIdAsync(adminId, AppUserIncludes.KeyBindings);
         user.KeyBindings.Add(bookBinding);
         user.KeyBindings.Add(pdfBinding);
+        await _context.SaveChangesAsync();
         // Assert correct keybinding
 
         var keyBinding = await appUserKeyBindingRepository.GetByUserIdAndReaderType(adminId, ReaderType.Book);
@@ -201,6 +202,7 @@ public class AppUserKeyBindingRepositoryTests
         user.KeyBindings.Add(bookBinding);
         user.KeyBindings.Add(pdfBinding);
         // Assert correct keybinding
+        await _context.SaveChangesAsync();
         var dto = await appUserKeyBindingRepository.GetDtoByUserIdAndReaderType(adminId, ReaderType.Book);
         Assert.Equal(ReaderType.Book, dto.Type);
 
