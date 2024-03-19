@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using API.Data;
-using API.Data.Repositories;
 using API.DTOs;
 using API.Entities;
 using API.Entities.Enums.KeyBindings;
@@ -48,10 +45,9 @@ public class KeyBindingController : BaseApiController
     }
 
     [HttpGet]
-    public ActionResult<KeyBindingDto?> GetReaderKeybinding(int userId, string readerType)
+    public ActionResult<KeyBindingDto?> GetReaderKeybinding(int userId, ReaderType readerType)
     {
-        Enum.TryParse(readerType, out ReaderType enumReaderType);
-        var keyBinding = _unitOfWork.AppUserKeyBindingRepository.GetDtoByUserIdAndReaderType(userId, enumReaderType);
+        var keyBinding = _unitOfWork.AppUserKeyBindingRepository.GetDtoByUserIdAndReaderType(userId, readerType);
         return Ok(keyBinding);
     }
 
