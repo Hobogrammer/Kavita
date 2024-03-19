@@ -90,7 +90,7 @@ public class KeyBindingControllerTests
     }
 
     [Theory]
-    [InlineData(ReaderType.Book, 0)] //TODO: Requires passing complex params https://code-maze.com/xunit-how-to-pass-complex-parameters-to-theory/
+    [InlineData(ReaderType.Book, 1)]
     [InlineData(ReaderType.Manga, 2)]
     [InlineData(ReaderType.Pdf, 3)]
     public async Task GetReaderKeyBinding_ShouldReturnCorrectKeyBinding(ReaderType readerType, int keyBindingId)
