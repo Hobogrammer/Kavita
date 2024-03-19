@@ -12,13 +12,16 @@ public class AppUserKeyBindingTests
     [Fact]
     public void ToKeyActionJson_ShouldReturnExpectedJsonString()
     {
-        var keyBinding = new AppUserKeyBinding() { Type = ReaderType.Book };
-        keyBinding.NextPage = "H";
-        keyBinding.PreviousPage = "L";
-        keyBinding.Close = "Escape";
-        keyBinding.ToggleMenu = "M";
-        keyBinding.GoToPage = "G";
-        keyBinding.FullScreen = "F";
+        var keyBinding = new AppUserKeyBinding
+        {
+            Type = ReaderType.Book,
+            NextPage = "H",
+            PreviousPage = "L",
+            Close = "Escape",
+            ToggleMenu = "M",
+            GoToPage = "G",
+            FullScreen = "F"
+        };
 
         StringBuilder expected = new StringBuilder("{");
         expected.AppendFormat("\"{0}\":\"{1}\",", keyBinding.NextPage, ReaderAction.NextPage.ToString());
@@ -51,13 +54,16 @@ public class AppUserKeyBindingTests
     [Fact]
     public void Validation_ShouldFailForNonUniqueKeysAssignedToActions()
     {
-        var keyBinding = new AppUserKeyBinding() { Type = ReaderType.Book};
-        keyBinding.NextPage = "F";
-        keyBinding.PreviousPage = "L";
-        keyBinding.Close = "Escape";
-        keyBinding.ToggleMenu = "M";
-        keyBinding.GoToPage = "G";
-        keyBinding.FullScreen = "F";
+        var keyBinding = new AppUserKeyBinding
+        {
+            Type = ReaderType.Book,
+            NextPage = "F",
+            PreviousPage = "L",
+            Close = "Escape",
+            ToggleMenu = "M",
+            GoToPage = "G",
+            FullScreen = "F"
+        };
 
         var validationErrors = new List<ValidationResult>();
         var expectedValidationError = new ValidationResult("All keys assigned to actions must be unique");
