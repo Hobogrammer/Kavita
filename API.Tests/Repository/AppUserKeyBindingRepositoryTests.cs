@@ -75,27 +75,27 @@ public class AppUserKeyBindingRepositoryTests
             Type = ReaderType.Book,
             AppUser = user,
             AppUserId = adminId,
-            NextPage = "L",
-            PreviousPage = "H",
-            Close = "Escape",
-            FullScreen = "F",
-            ToggleMenu = "T"
+            NextPage = 55,
+            PreviousPage = 51,
+            Close = 13,
+            FullScreen = 49,
+            ToggleMenu = 63
         };
         var mangaBinding = new AppUserKeyBinding() { 
             Type = ReaderType.Manga,
             AppUser = user,
-            AppUserId = adminId,
-            NextPage = "L",
-            PreviousPage = "H",
-            Close = "Escape",
-            FullScreen = "F",
-            ToggleMenu = "T"
+            AppUserId = user.Id,
+            NextPage = 55,
+            PreviousPage = 51,
+            Close = 13,
+            FullScreen = 49,
+            ToggleMenu = 63
         };
         var pdfBinding = new AppUserKeyBinding() { 
             AppUser = user,
-            AppUserId = adminId,
+            AppUserId = user.Id,
             Type = ReaderType.Pdf,
-            Close = "Escape"
+            Close = 13
         };
         user.KeyBindings.Add(bookBinding);
         user.KeyBindings.Add(mangaBinding);
@@ -108,8 +108,8 @@ public class AppUserKeyBindingRepositoryTests
         pdfBinding = new AppUserKeyBinding() { 
             Type = ReaderType.Pdf,
             AppUser = user,
-            AppUserId = userId,
-            Close = "Escape"
+            AppUserId = user.Id,
+            Close = 13
         };
 
         user.KeyBindings.Add(pdfBinding);
@@ -133,11 +133,11 @@ public class AppUserKeyBindingRepositoryTests
             Type = ReaderType.Book,
             AppUser = user,
             AppUserId = user.Id,
-            NextPage = "L",
-            PreviousPage = "H",
-            Close = "Escape",
-            FullScreen = "F",
-            ToggleMenu = "T"
+            NextPage = 55,
+            PreviousPage = 51,
+            Close = 13,
+            FullScreen = 49,
+            ToggleMenu = 63
         };
         // save id
         user.KeyBindings.Add(bookBinding);
@@ -152,21 +152,25 @@ public class AppUserKeyBindingRepositoryTests
     public async Task GetByUserIdAndReaderType_ShouldReturnCorrectKeyBindingObjects()
     {
         // Create keybinding of multiple types for user
-        var bookBinding = new AppUserKeyBinding() { 
-            Type = ReaderType.Book,
-            NextPage = "L",
-            PreviousPage = "H",
-            Close = "Escape",
-            FullScreen = "F",
-            ToggleMenu = "T"
-        };
-        var pdfBinding = new AppUserKeyBinding() { 
-            Type = ReaderType.Pdf,
-            Close = "Escape"
-        };
         // Call for binding of certain type
         var adminId = await userRepo.GetUserIdByUsernameAsync("admin");
         var user = await userRepo.GetUserByIdAsync(adminId, AppUserIncludes.KeyBindings);
+        var bookBinding = new AppUserKeyBinding() { 
+            Type = ReaderType.Book,
+            AppUser = user,
+            AppUserId = user.Id,
+            NextPage = 55,
+            PreviousPage = 51,
+            Close = 13,
+            FullScreen = 49,
+            ToggleMenu = 63
+        };
+        var pdfBinding = new AppUserKeyBinding() { 
+            Type = ReaderType.Pdf,
+            AppUser = user,
+            AppUserId = user.Id,
+            Close = 13
+        };
         user.KeyBindings.Add(bookBinding);
         user.KeyBindings.Add(pdfBinding);
         await _context.SaveChangesAsync();
@@ -186,15 +190,15 @@ public class AppUserKeyBindingRepositoryTests
         // Create keybinding of multiple types for user
         var bookBinding = new AppUserKeyBinding() { 
             Type = ReaderType.Book,
-            NextPage = "L",
-            PreviousPage = "H",
-            Close = "Escape",
-            FullScreen = "F",
-            ToggleMenu = "T"
+            NextPage = 55,
+            PreviousPage = 51,
+            Close = 13,
+            FullScreen = 49,
+            ToggleMenu = 63
         };
         var pdfBinding = new AppUserKeyBinding() { 
             Type = ReaderType.Pdf,
-            Close = "Escape"
+            Close = 13
         };
         // Call for binding of certain type
         var adminId = await userRepo.GetUserIdByUsernameAsync("admin");
