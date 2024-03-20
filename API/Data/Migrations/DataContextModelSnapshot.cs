@@ -257,23 +257,23 @@ namespace API.Data.Migrations
                     b.Property<int>("AppUserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Close")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Close")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("FullScreen")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("FullScreen")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("GoToPage")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("GoToPage")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("NextPage")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("NextPage")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("PreviousPage")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("PreviousPage")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("ToggleMenu")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("ToggleMenu")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Type")
                         .HasColumnType("INTEGER");

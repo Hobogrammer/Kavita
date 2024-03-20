@@ -11,11 +11,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using AutoMapper;
 using Microsoft.Data.Sqlite;
 using API.Helpers;
-using API.Constants;
 using API.Controllers;
-using API.DTOs;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 
 namespace API.Tests.Controllers;
 
@@ -108,11 +104,11 @@ public class KeyBindingControllerTests
             Type = ReaderType.Book,
             AppUser = user,
             AppUserId = user.Id,
-            NextPage = "L",
-            PreviousPage = "H",
-            Close = "Escape",
-            FullScreen = "F",
-            ToggleMenu = "T"
+            NextPage = 55,
+            PreviousPage = 51,
+            Close = 13,
+            FullScreen = 49,
+            ToggleMenu = 63
         };
         user.KeyBindings.Add(kB);
         await _unitOfWork.CommitAsync();

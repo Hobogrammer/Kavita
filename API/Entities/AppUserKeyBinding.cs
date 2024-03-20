@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json;
 using API.Constants;
-using Kavita.Common.Extensions;
 using API.Entities.Enums.KeyBindings;
 
 namespace API.Entities;
@@ -17,24 +15,24 @@ public class AppUserKeyBinding : IValidatableObject
     public int AppUserId { get; set; }
     public required ReaderType Type { get; set; }
 
-    public string NextPage { get; set; }
-    public string PreviousPage { get; set; }
-    public string Close { get; set; }
-    public string ToggleMenu { get; set; }
-    public string GoToPage { get; set; }
-    public string FullScreen { get; set; }
+    public int NextPage { get; set; }
+    public int PreviousPage { get; set; }
+    public int Close { get; set; }
+    public int ToggleMenu { get; set; }
+    public int GoToPage { get; set; }
+    public int FullScreen { get; set; }
 
     // Convert action fields and values to shortcut key action pair for front end use
     public string ToKeyActionJson()
     {
-        Dictionary<string, string> keyActionMap = new Dictionary<string, string>();
+        Dictionary<int, string> keyActionMap = new Dictionary<int, string>();
 
-        if (NextPage != null ) keyActionMap.Add(NextPage, ReaderAction.NextPage.ToString());
-        if (PreviousPage != null ) keyActionMap.Add(PreviousPage, ReaderAction.PreviousPage.ToString());
-        if (Close != null ) keyActionMap.Add(Close, ReaderAction.Close.ToString());
-        if (ToggleMenu != null ) keyActionMap.Add(ToggleMenu, ReaderAction.ToggleMenu.ToString());
-        if (GoToPage != null ) keyActionMap.Add(GoToPage, ReaderAction.GoToPage.ToString());
-        if (FullScreen != null ) keyActionMap.Add(FullScreen, ReaderAction.FullScreen.ToString());
+        if (NextPage != 0 ) keyActionMap.Add(NextPage, ReaderAction.NextPage.ToString());
+        if (PreviousPage != 0 ) keyActionMap.Add(PreviousPage, ReaderAction.PreviousPage.ToString());
+        if (Close != 0 ) keyActionMap.Add(Close, ReaderAction.Close.ToString());
+        if (ToggleMenu != 0 ) keyActionMap.Add(ToggleMenu, ReaderAction.ToggleMenu.ToString());
+        if (GoToPage != 0 ) keyActionMap.Add(GoToPage, ReaderAction.GoToPage.ToString());
+        if (FullScreen != 0 ) keyActionMap.Add(FullScreen, ReaderAction.FullScreen.ToString());
 
         return JsonSerializer.Serialize(keyActionMap);
     }
@@ -64,7 +62,7 @@ public class AppUserKeyBinding : IValidatableObject
         {
             if (!ValidActions.Contains(action))
             {
-                yield return new ValidationResult($"{action} is not allowed for ReaderType: {Type}");
+                yield return new ValidationResult($"{action} action is not valid for ReaderType: {Type}");
             }
         }
 
@@ -78,16 +76,16 @@ public class AppUserKeyBinding : IValidatableObject
     }
 
     // Convert action fields and values to dictionary for validation
-    private Dictionary<ReaderAction, string> ToActionKeyDictionary()
+    private Dictionary<ReaderAction, int> ToActionKeyDictionary()
     {
-        Dictionary<ReaderAction, string> actionKeyDictionary = new Dictionary<ReaderAction, string>();
+        Dictionary<ReaderAction, int> actionKeyDictionary = new Dictionary<ReaderAction, int>();
 
-        if (NextPage != null ) actionKeyDictionary.Add(ReaderAction.NextPage, NextPage);
-        if (PreviousPage != null ) actionKeyDictionary.Add(ReaderAction.PreviousPage, PreviousPage);
-        if (Close != null ) actionKeyDictionary.Add(ReaderAction.Close, Close);
-        if (ToggleMenu != null ) actionKeyDictionary.Add(ReaderAction.ToggleMenu, ToggleMenu);
-        if (GoToPage != null ) actionKeyDictionary.Add(ReaderAction.GoToPage, GoToPage);
-        if (FullScreen != null ) actionKeyDictionary.Add(ReaderAction.FullScreen, FullScreen);
+        if (NextPage != 0 ) actionKeyDictionary.Add(ReaderAction.NextPage, NextPage);
+        if (PreviousPage != 0 ) actionKeyDictionary.Add(ReaderAction.PreviousPage, PreviousPage);
+        if (Close != 0 ) actionKeyDictionary.Add(ReaderAction.Close, Close);
+        if (ToggleMenu != 0 ) actionKeyDictionary.Add(ReaderAction.ToggleMenu, ToggleMenu);
+        if (GoToPage != 0 ) actionKeyDictionary.Add(ReaderAction.GoToPage, GoToPage);
+        if (FullScreen != 0 ) actionKeyDictionary.Add(ReaderAction.FullScreen, FullScreen);
 
         return actionKeyDictionary;
     }
