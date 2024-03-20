@@ -15,12 +15,12 @@ public class AppUserKeyBindingTests
         var keyBinding = new AppUserKeyBinding
         {
             Type = ReaderType.Book,
-            NextPage = "H",
-            PreviousPage = "L",
-            Close = "Escape",
-            ToggleMenu = "M",
-            GoToPage = "G",
-            FullScreen = "F"
+            NextPage = 51, // H
+            PreviousPage = 55, // L
+            Close = 13, // Escape
+            ToggleMenu = 56, // M
+            GoToPage = 50, // G
+            FullScreen = 49 // F
         };
 
         StringBuilder expected = new StringBuilder("{");
@@ -39,13 +39,12 @@ public class AppUserKeyBindingTests
     public void Validation_ShouldFailForUnsupportedReaderActions()
     {
         var keyBinding = new AppUserKeyBinding() { Type = ReaderType.Pdf };
-        var actions = ReaderTypeActionSet.BookActions;
         var validationErrors = new List<ValidationResult>();
 
-        keyBinding.GoToPage = "G";
-        keyBinding.Close = "Escape";
+        keyBinding.GoToPage = 50; // G
+        keyBinding.Close = 13; // Escape
 
-        var expectedValidationError = new ValidationResult(String.Format("GoToPage is not allowed for ReaderType: {0}", ReaderType.Pdf.ToString()));
+        var expectedValidationError = new ValidationResult(string.Format("GoToPage action is not valid for ReaderType: {0}", ReaderType.Pdf.ToString()));
         Validator.TryValidateObject(keyBinding, new ValidationContext(keyBinding), validationErrors);
 
         Assert.Equal(validationErrors[0].ErrorMessage, expectedValidationError.ErrorMessage); 
@@ -57,12 +56,12 @@ public class AppUserKeyBindingTests
         var keyBinding = new AppUserKeyBinding
         {
             Type = ReaderType.Book,
-            NextPage = "F",
-            PreviousPage = "L",
-            Close = "Escape",
-            ToggleMenu = "M",
-            GoToPage = "G",
-            FullScreen = "F"
+            NextPage = 20, // PageDown
+            PreviousPage = 19, // PageUp
+            Close = 13, // Escape
+            ToggleMenu = 56, // M
+            GoToPage = 50, // G
+            FullScreen = 49 // F
         };
 
         var validationErrors = new List<ValidationResult>();
@@ -78,16 +77,16 @@ public class AppUserKeyBindingTests
         var keyBinding = new AppUserKeyBinding(){ Type = ReaderType.Pdf};
         var actions = ReaderTypeActionSet.PdfActions;
         var validationErrors = new List<ValidationResult>();
-        List<char> usedKeys = new List<char>();
+        List<int> usedKeys = new List<int>();
 
         foreach (ReaderAction action in actions)
         {
             var flag = true;
-            var key = '\0';
+            var key = 0;
 
             while (flag)
             {
-                key = GetRandomLetter();
+                key = GetRandomKeyInt();
                 flag = usedKeys.Contains(key);    
             }
 
@@ -104,16 +103,16 @@ public class AppUserKeyBindingTests
     {
         var keyBinding = new AppUserKeyBinding(){ Type = ReaderType.Manga};
         var actions = ReaderTypeActionSet.MangaActions;
-        List<char> usedKeys = new List<char>();
+        List<int> usedKeys = new List<int>();
 
         foreach (ReaderAction action in actions)
         {
             var flag = true;
-            var key = '\0';
+            var key = 0;
 
             while (flag)
             {
-                key = GetRandomLetter();
+                key = GetRandomKeyInt();
                 flag = usedKeys.Contains(key);
             }
 
@@ -131,16 +130,16 @@ public class AppUserKeyBindingTests
     {
         var keyBinding = new AppUserKeyBinding(){ Type = ReaderType.Book};
         var actions = ReaderTypeActionSet.BookActions;
-        List<char> usedKeys = new List<char>();
+        List<int> usedKeys = new List<int>();
 
         foreach (ReaderAction action in actions)
         {
             var flag = true;
-            var key = '\0';
+            var key = 0;
 
             while (flag)
             {
-                key = GetRandomLetter();
+                key = GetRandomKeyInt();
                 flag = usedKeys.Contains(key);
             }
 
@@ -153,36 +152,34 @@ public class AppUserKeyBindingTests
         Assert.Empty(validationErrors);
     }
 
-    private void AssignKeyToAction(AppUserKeyBinding binding, ReaderAction action, char key)
+    private void AssignKeyToAction(AppUserKeyBinding binding, ReaderAction action, int key)
     {
-        var keyString = Convert.ToString(key);
-
         switch (action)
         {
             case ReaderAction.NextPage:
-                binding.NextPage = keyString;
+                binding.NextPage = key;
                 break;
             case ReaderAction.PreviousPage:
-                binding.PreviousPage = keyString;
+                binding.PreviousPage = key;
                 break;
             case ReaderAction.Close:
-                binding.Close = keyString;
+                binding.Close = key;
                 break;
             case ReaderAction.GoToPage:
-                binding.GoToPage = keyString;
+                binding.GoToPage = key;
                 break;
             case ReaderAction.ToggleMenu:
-                binding.ToggleMenu = keyString;
+                binding.ToggleMenu = key;
                 break;
             case ReaderAction.FullScreen:
-                binding.FullScreen = keyString;
+                binding.FullScreen = key;
                 break;
         }
     }
     
-    private char GetRandomLetter()
+    private int GetRandomKeyInt()
     {
         Random random = new Random();
-        return (char)random.Next(97, 127);
+        return random.Next(13, 127);
     }
 }
