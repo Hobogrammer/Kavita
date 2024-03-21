@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using API.Data.Migrations;
 using API.DTOs;
 using API.DTOs.Account;
@@ -246,6 +247,12 @@ public class AutoMapperProfiles : Profile
         CreateMap<AppUserDashboardStream, AppUserDashboardStream>();
         CreateMap<AppUserSideNavStream, AppUserSideNavStream>();
 
-        CreateMap<AppUserKeyBinding, KeyBindingDto>();
+        CreateMap<AppUserKeyBinding, KeyBindingDto>()
+            .ForMember(dest => dest.Type,
+                opt =>
+                    opt.MapFrom(src => src.Type))
+            .ForMember(dest => dest.Bindings,
+                opt =>
+                    opt.MapFrom(src => JsonSerializer.Deserialize<Dictionary<int, string>>(src.ToKeyActionJson()))); // TODO: Fixthis
     }
 }

@@ -7,11 +7,11 @@ using API.Entities;
 using API.Entities.Enums.KeyBindings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using AutoMapper;
 using Microsoft.Data.Sqlite;
 using API.Helpers;
 using API.Controllers;
+using System.Collections.Generic;
 
 namespace API.Tests.Controllers;
 
@@ -19,7 +19,6 @@ public class KeyBindingControllerTests
 {
 
     private readonly IUnitOfWork _unitOfWork;
-    private readonly DbConnection? _connection;
     private readonly DataContext _context;
     private readonly AppUserKeyBindingRepository appUserKeyBindingRepository;
     private readonly UserRepository userRepo;
@@ -29,7 +28,6 @@ public class KeyBindingControllerTests
     public KeyBindingControllerTests()
     {
         var contextOptions = new DbContextOptionsBuilder().UseSqlite(CreateInMemoryDatabase()).Options;
-        _connection = RelationalOptionsExtension.Extract(contextOptions).Connection;
         _context = new DataContext(contextOptions);
 
         Task.Run(PrepareDb).GetAwaiter().GetResult();
@@ -67,7 +65,38 @@ public class KeyBindingControllerTests
         return await _context.SaveChangesAsync() > 0;
     }
 
-    // TODO: Create a method to generate some default keybindings for the test
+    public static IEnumerable<object[]> GetKeyBindingData()
+    {
+        yield return new object[]
+        {
+            new AppUserKeyBinding
+            {
+                Id = 1,
+                Type = ReaderType.Book,
+                NextPage = 55,
+                PreviousPage = 51,
+                Close = 13,
+                FullScreen = 49,
+                ToggleMenu = 63
+            },
+            new AppUserKeyBinding
+            {
+                Id = 2,
+                Type = ReaderType.Manga,
+                NextPage = 55,
+                PreviousPage = 51,
+                Close = 13,
+                FullScreen = 49,
+                ToggleMenu = 63
+            },
+            new AppUserKeyBinding
+            {
+                Id = 3,
+                Type = ReaderType.Pdf,
+                Close = 13
+            }
+        };
+    }
 
 //    [Theory]
 //    [InlineData(new KeyBindingDto() { Type = ReaderType.Book})]

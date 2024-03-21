@@ -61,7 +61,7 @@ public class AppUserKeyBindingTests
             Close = 13, // Escape
             ToggleMenu = 56, // M
             GoToPage = 50, // G
-            FullScreen = 49 // F
+            FullScreen = 56 // M
         };
 
         var validationErrors = new List<ValidationResult>();
