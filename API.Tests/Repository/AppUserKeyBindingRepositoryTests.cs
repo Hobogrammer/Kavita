@@ -16,8 +16,6 @@ namespace API.Tests.Repository;
 
 public class AppUserKeyBindingRepositoryTests
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly DbConnection? _connection;
     private readonly DataContext _context;
     private readonly AppUserKeyBindingRepository appUserKeyBindingRepository;
     private readonly UserRepository userRepo;
@@ -27,13 +25,11 @@ public class AppUserKeyBindingRepositoryTests
     public AppUserKeyBindingRepositoryTests()
     {
         var contextOptions = new DbContextOptionsBuilder().UseSqlite(CreateInMemoryDatabase()).Options;
-        _connection = RelationalOptionsExtension.Extract(contextOptions).Connection;
         _context = new DataContext(contextOptions);
 
         Task.Run(PrepareDb).GetAwaiter().GetResult();
         var config = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfiles>());
         var mapper = config.CreateMapper();
-        _unitOfWork = new UnitOfWork(_context, mapper, null!);
         userRepo = new UserRepository(_context, userManager, mapper); // This can be mocked out later
         appUserKeyBindingRepository = new AppUserKeyBindingRepository(_context, mapper);
     }
