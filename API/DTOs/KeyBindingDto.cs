@@ -8,17 +8,12 @@ namespace API.DTOs;
 
 public class KeyBindingDto
 {
-    public Dictionary<int, string>? Bindings { get; set; }
-
-    [Required]
-    public ReaderType Type { get; set; }
-
-    public KeyBindingDto(ReaderType type, string keyActionJson)
-    {
-        Type = type;
-        Bindings = JsonSerializer.Deserialize<Dictionary<int, string>>(keyActionJson);
-    }
-
-    // Probably need to add the other fields (nextpage etc) and move the Jsonstring method here from the entity. 
-    // feels like that be sending extra data over the wire but the mapper seems to require it
+    public int AppUserId { get; set; }
+    public required ReaderType Type { get; set; }
+    public int NextPage { get; set; }
+    public int PreviousPage { get; set; }
+    public int Close { get; set; }
+    public int ToggleMenu { get; set; }
+    public int GoToPage { get; set; }
+    public int FullScreen { get; set; }
 }
