@@ -22,21 +22,6 @@ public class AppUserKeyBinding : IValidatableObject
     public int GoToPage { get; set; }
     public int FullScreen { get; set; }
 
-    // Convert action fields and values to shortcut key action pair for front end use
-    public string ToKeyActionJson()
-    {
-        Dictionary<int, string> keyActionMap = new Dictionary<int, string>();
-
-        if (NextPage != 0 ) keyActionMap.Add(NextPage, ReaderAction.NextPage.ToString());
-        if (PreviousPage != 0 ) keyActionMap.Add(PreviousPage, ReaderAction.PreviousPage.ToString());
-        if (Close != 0 ) keyActionMap.Add(Close, ReaderAction.Close.ToString());
-        if (ToggleMenu != 0 ) keyActionMap.Add(ToggleMenu, ReaderAction.ToggleMenu.ToString());
-        if (GoToPage != 0 ) keyActionMap.Add(GoToPage, ReaderAction.GoToPage.ToString());
-        if (FullScreen != 0 ) keyActionMap.Add(FullScreen, ReaderAction.FullScreen.ToString());
-
-        return JsonSerializer.Serialize(keyActionMap);
-    }
-
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         ImmutableHashSet<ReaderAction> ValidActions = ImmutableHashSet.Create<ReaderAction>();

@@ -10,32 +10,6 @@ using Xunit;
 public class AppUserKeyBindingTests
 {
     [Fact]
-    public void ToKeyActionJson_ShouldReturnExpectedJsonString()
-    {
-        var keyBinding = new AppUserKeyBinding
-        {
-            Type = ReaderType.Book,
-            NextPage = 51, // H
-            PreviousPage = 55, // L
-            Close = 13, // Escape
-            ToggleMenu = 56, // M
-            GoToPage = 50, // G
-            FullScreen = 49 // F
-        };
-
-        StringBuilder expected = new StringBuilder("{");
-        expected.AppendFormat("\"{0}\":\"{1}\",", keyBinding.NextPage, ReaderAction.NextPage.ToString());
-        expected.AppendFormat("\"{0}\":\"{1}\",", keyBinding.PreviousPage, ReaderAction.PreviousPage.ToString());
-        expected.AppendFormat("\"{0}\":\"{1}\",", keyBinding.Close, ReaderAction.Close.ToString());
-        expected.AppendFormat("\"{0}\":\"{1}\",", keyBinding.ToggleMenu, ReaderAction.ToggleMenu.ToString());
-        expected.AppendFormat("\"{0}\":\"{1}\",", keyBinding.GoToPage, ReaderAction.GoToPage.ToString());
-        expected.AppendFormat("\"{0}\":\"{1}\"", keyBinding.FullScreen, ReaderAction.FullScreen.ToString());
-        expected.Append("}");
-
-        Assert.Equal(expected.ToString(), keyBinding.ToKeyActionJson());
-    }
-
-    [Fact]
     public void Validation_ShouldFailForUnsupportedReaderActions()
     {
         var keyBinding = new AppUserKeyBinding() { Type = ReaderType.Pdf };
