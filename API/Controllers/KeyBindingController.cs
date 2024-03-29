@@ -45,13 +45,19 @@ public class KeyBindingController : BaseApiController
     }
 
     [HttpGet]
-    public ActionResult<KeyBindingDto?> GetReaderKeybinding(int userId, ReaderType readerType)
+    public ActionResult<KeyBindingDto?> GetReaderKeybindingByType(int userId, ReaderType readerType)
     {
         var keyBinding = _unitOfWork.AppUserKeyBindingRepository.GetDtoByUserIdAndReaderType(userId, readerType);
         return Ok(keyBinding);
     }
 
-    // Should there be some user verification?
+    [HttpGet]
+    public ActionResult<KeyBindingDto?> GetKeyBinding(int keyBindingId)
+    {
+        var keyBinding = _unitOfWork.AppUserKeyBindingRepository.GetById(keyBindingId);
+        return Ok(keyBinding);
+    }
+
     [HttpDelete]
     public async Task<ActionResult> DeleteKeyBinding(int keyBindingId)
     {
