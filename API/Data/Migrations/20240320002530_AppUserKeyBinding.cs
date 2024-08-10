@@ -36,35 +36,10 @@ namespace API.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "LibraryExcludePattern",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Pattern = table.Column<string>(type: "TEXT", nullable: true),
-                    LibraryId = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LibraryExcludePattern", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_LibraryExcludePattern_Library_LibraryId",
-                        column: x => x.LibraryId,
-                        principalTable: "Library",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AppUserKeyBinding_AppUserId",
                 table: "AppUserKeyBinding",
                 column: "AppUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_LibraryExcludePattern_LibraryId",
-                table: "LibraryExcludePattern",
-                column: "LibraryId");
         }
 
         /// <inheritdoc />
@@ -72,9 +47,6 @@ namespace API.Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AppUserKeyBinding");
-
-            migrationBuilder.DropTable(
-                name: "LibraryExcludePattern");
         }
     }
 }

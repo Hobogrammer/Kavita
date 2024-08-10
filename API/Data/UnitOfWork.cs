@@ -74,11 +74,8 @@ public class UnitOfWork : IUnitOfWork
     public IUserTableOfContentRepository UserTableOfContentRepository => new UserTableOfContentRepository(_context, _mapper);
     public IAppUserSmartFilterRepository AppUserSmartFilterRepository => new AppUserSmartFilterRepository(_context, _mapper);
     public IAppUserExternalSourceRepository AppUserExternalSourceRepository => new AppUserExternalSourceRepository(_context, _mapper);
-<<<<<<< HEAD
     public IExternalSeriesMetadataRepository ExternalSeriesMetadataRepository => new ExternalSeriesMetadataRepository(_context, _mapper);
-=======
     public IAppUserKeyBindingRepository AppUserKeyBindingRepository => new AppUserKeyBindingRepository(_context, _mapper);
->>>>>>> 1bb98185 (Fix some build errors)
 
     /// <summary>
     /// Commits changes to the DB. Completes the open transaction.
