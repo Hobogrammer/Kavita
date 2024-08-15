@@ -4,5 +4,10 @@
         {{t('title')}}
       </h2>
     </app-side-nav-companion-bar>
+    <ul>
+    @for (keyBinding of keyBindings; track keyBinding) {
+      <span>{{keyBinding.readerType}}</span>
+    }
+    </ul>
   </ng-container>
   
