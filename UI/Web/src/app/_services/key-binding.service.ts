@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import {HttpClient} from '@angular/common/http';
-import {KeyBinding} from "../_models/key-binding";
-import {ReaderType} from "../models/reader-type";
+import {KeyBinding} from "../_models/key-binding/key-binding";
+import { ReaderType } from '../_models/key-binding/reader-type';
 
 @Injectable({
     providedIn: 'root'

@@ -45,6 +45,10 @@ const routes: Routes = [
         loadChildren: () => import('./_routes/all-filters-routing.module').then(m => m.routes)
       },
       {
+        path: 'all-key-bindings',
+        loadChildren: () => import('./_routes/all-key-bindings-routing.module').then(m => m.routes)
+      },
+      {
         path: 'want-to-read',
         loadChildren: () => import('./_routes/want-to-read-routing.module').then(m => m.routes)
       },

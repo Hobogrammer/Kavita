@@ -3,6 +3,7 @@ import { SideNavCompanionBarComponent } from "../sidenav/_components/side-nav-co
 import { TranslocoDirective } from "@ngneat/transloco";
 import { Router, RouterLink } from "@angular/router";
 import { KeyBindingService } from "../_services/key-binding.service";
+import { KeyBinding } from "../_models/key-binding/key-binding";
 
 @Component({
     selector: 'app-all-key-bindings',
@@ -15,7 +16,13 @@ export class AllKeyBindingsComponent implements OnInit {
     private readonly router = inject(Router);
     private readonly keyBindingService = inject(KeyBindingService);
 
+    keyBindings: KeyBinding[] = [];
+
     ngOnInit(): void {
        this.loadData(); 
+    }
+
+    loadData() {
+        const keyBindings = this.keyBindingService.getAllKeyBindings();
     }
 }
