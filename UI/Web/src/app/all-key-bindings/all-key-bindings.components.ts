@@ -4,6 +4,7 @@ import { TranslocoDirective } from "@ngneat/transloco";
 import { Router, RouterLink } from "@angular/router";
 import { KeyBindingService } from "../_services/key-binding.service";
 import { KeyBinding } from "../_models/key-binding/key-binding";
+import { ReaderType } from "../_models/key-binding/reader-type";
 
 @Component({
     selector: 'app-all-key-bindings',
@@ -23,6 +24,7 @@ export class AllKeyBindingsComponent implements OnInit {
     }
 
     loadData() {
-        const keyBindings = this.keyBindingService.getAllKeyBindings();
+        // const keyBindings = this.keyBindingService.getAllKeyBindings();
+        this.keyBindings.push({id: 1, readerType: 0, nextPage: 55, previousPage: 51, close: 13, fullScreen: 49, toggleMenu: 63 } as KeyBinding);
     }
 }

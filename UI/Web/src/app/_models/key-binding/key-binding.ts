@@ -1,6 +1,6 @@
 export interface KeyBinding {
     id: number;
-    readerType: string;
+    readerType: number;
     nextPage: number;
     previousPage: number;
     close: number;

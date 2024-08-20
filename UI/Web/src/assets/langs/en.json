@@ -1557,7 +1557,8 @@
         "help": "{{common.help}}",
         "announcements": "Announcements",
         "logout": "Logout",
-        "all-filters": "Smart Filters"
+        "all-filters": "Smart Filters",
+        "all-keybindings": "Key Bindings"
     },
 
     "promoted-icon": {
@@ -2339,6 +2340,9 @@
         "chapter-num-shorthand": "Ch {{num}}",
         "issue-num-shorthand": "#{{num}}",
         "volume-num-shorthand": "Vol {{num}}"
-    }
+    },
 
+    "all-keybindings": {
+        "title": "Manage KeyBindings"
+    }
 }

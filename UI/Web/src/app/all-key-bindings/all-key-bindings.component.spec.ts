@@ -17,6 +17,6 @@ describe('AllKeyBindingComponent', () => {
 
     it('should display title', () => {
         const titleElement: HTMLElement = fixture.nativeElement;
-        expect(titleElement.textContent).toContain('KeyBindings');
+        expect(titleElement.textContent).toContain('Manage KeyBindings');
     });
 });
