@@ -1,5 +1,5 @@
 import {ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { AllKeyBindingsComponent } from './all-key-bindings.components';
+import { AllKeyBindingsComponent } from './all-key-bindings.component';
 
 describe('AllKeyBindingComponent', () => {
     let component: AllKeyBindingsComponent;

@@ -1,15 +1,16 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
-import { SideNavCompanionBarComponent } from "../sidenav/_components/side-nav-companion-bar/side-nav-companion-bar.component";
+import { SideNavCompanionBarComponent } from "../../../sidenav/_components/side-nav-companion-bar/side-nav-companion-bar.component";
 import { TranslocoDirective } from "@ngneat/transloco";
 import { Router, RouterLink } from "@angular/router";
-import { KeyBindingService } from "../_services/key-binding.service";
-import { KeyBinding } from "../_models/key-binding/key-binding";
-import { ReaderType } from "../_models/key-binding/reader-type";
+import { KeyBindingService } from "../../../_services/key-binding.service";
+import { KeyBinding } from "../../../_models/key-binding/key-binding";
+import { ReaderType } from "../../../_models/key-binding/reader-type";
+import { ManageKeyBindingsComponent } from "../manage-key-bindings/manage-key-bindings.component";
 
 @Component({
     selector: 'app-all-key-bindings',
     standalone: true,
-    imports: [TranslocoDirective, SideNavCompanionBarComponent, RouterLink],
+    imports: [TranslocoDirective, SideNavCompanionBarComponent, RouterLink, ManageKeyBindingsComponent],
     templateUrl: './all-key-bindings.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })

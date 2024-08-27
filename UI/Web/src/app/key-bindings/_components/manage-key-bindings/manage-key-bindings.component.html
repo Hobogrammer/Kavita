@@ -1,0 +1,12 @@
+<ng-container *transloco="let t; read:'manage-key-bindings'">
+
+    <ul>
+      @for(k of keyBindings; track k.readerType ) {
+        <li class="list-group-item">
+            <span>
+                {{ k.readerType }}
+            </span>
+        </li>
+      }
+    </ul>
+</ng-container>

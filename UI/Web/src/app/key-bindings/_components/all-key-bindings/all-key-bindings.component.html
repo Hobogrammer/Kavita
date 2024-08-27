@@ -4,10 +4,6 @@
         {{t('title')}}
       </h2>
     </app-side-nav-companion-bar>
-    <ul>
-    @for (keyBinding of keyBindings; track keyBinding) {
-      <span>{{keyBinding.nextPage}}</span>
-    }
-    </ul>
+    <app-manage-key-bindings></app-manage-key-bindings>
   </ng-container>
   
