@@ -121,7 +121,7 @@ public class KeyBindingControllerTests
     public async Task GetReaderKeyBinding_ShouldReturnCorrectKeyBinding(ReaderType readerType, int keyBindingId)
     {
         //Verify expected keybinding and readerType
-        var result = controller.GetReaderKeybinding(keyBindingId, readerType);
+        var result = controller.GetReaderKeybindingByType(keyBindingId, readerType);
         Assert.Equal(result.Value.Type, readerType);
     }
 

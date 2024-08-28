@@ -1,10 +1,10 @@
 <ng-container *transloco="let t; read:'manage-key-bindings'">
 
     <ul>
-      @for(k of keyBindings; track k.readerType ) {
+      @for(keyBinding of keyBindings; track keyBinding) {
         <li class="list-group-item">
             <span>
-                {{ k.readerType }}
+                <kbd>{{ keyBinding.nextPage | asciiCharacter }}</kbd>
             </span>
         </li>
       }
