@@ -1,10 +1,10 @@
 export interface KeyBinding {
     id: number;
-    readerType: number;
-    nextPage: number;
-    previousPage: number;
-    close: number;
-    toggleMenu: number;
-    goToPage: number;
-    fullScreen: number;
+    readerType: string;
+    nextPage: string;
+    previousPage: string;
+    close: string;
+    toggleMenu: string;
+    goToPage: string;
+    fullScreen: string;
 }

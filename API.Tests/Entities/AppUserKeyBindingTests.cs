@@ -2,7 +2,6 @@ using API.Constants;
 using API.Entities;
 using API.Entities.Enums.KeyBindings;
 using System;
-using System.Text;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using Xunit;
@@ -15,8 +14,8 @@ public class AppUserKeyBindingTests
         var keyBinding = new AppUserKeyBinding() { Type = ReaderType.Pdf };
         var validationErrors = new List<ValidationResult>();
 
-        keyBinding.GoToPage = 50; // G
-        keyBinding.Close = 13; // Escape
+        keyBinding.GoToPage = "G";
+        keyBinding.Close = "Escape";
 
         var expectedValidationError = new ValidationResult(string.Format("GoToPage action is not valid for ReaderType: {0}", ReaderType.Pdf.ToString()));
         Validator.TryValidateObject(keyBinding, new ValidationContext(keyBinding), validationErrors);
@@ -30,12 +29,12 @@ public class AppUserKeyBindingTests
         var keyBinding = new AppUserKeyBinding
         {
             Type = ReaderType.Book,
-            NextPage = 20, // PageDown
-            PreviousPage = 19, // PageUp
-            Close = 13, // Escape
-            ToggleMenu = 56, // M
-            GoToPage = 50, // G
-            FullScreen = 56 // M
+            NextPage = "PageDown",
+            PreviousPage = "PageUp",
+            Close = "Escape",
+            ToggleMenu = "M",
+            GoToPage = "G",
+            FullScreen = "M"
         };
 
         var validationErrors = new List<ValidationResult>();
@@ -51,16 +50,16 @@ public class AppUserKeyBindingTests
         var keyBinding = new AppUserKeyBinding(){ Type = ReaderType.Pdf};
         var actions = ReaderTypeActionSet.PdfActions;
         var validationErrors = new List<ValidationResult>();
-        List<int> usedKeys = new List<int>();
+        List<string> usedKeys = new List<string>();
 
         foreach (ReaderAction action in actions)
         {
             var flag = true;
-            var key = 0;
+            var key = "";
 
             while (flag)
             {
-                key = GetRandomKeyInt();
+                key = GetRandomKey();
                 flag = usedKeys.Contains(key);    
             }
 
@@ -77,16 +76,16 @@ public class AppUserKeyBindingTests
     {
         var keyBinding = new AppUserKeyBinding(){ Type = ReaderType.Manga};
         var actions = ReaderTypeActionSet.MangaActions;
-        List<int> usedKeys = new List<int>();
+        List<string> usedKeys = new List<string>();
 
         foreach (ReaderAction action in actions)
         {
             var flag = true;
-            var key = 0;
+            var key = "";
 
             while (flag)
             {
-                key = GetRandomKeyInt();
+                key = GetRandomKey();
                 flag = usedKeys.Contains(key);
             }
 
@@ -104,16 +103,16 @@ public class AppUserKeyBindingTests
     {
         var keyBinding = new AppUserKeyBinding(){ Type = ReaderType.Book};
         var actions = ReaderTypeActionSet.BookActions;
-        List<int> usedKeys = new List<int>();
+        List<string> usedKeys = new List<string>();
 
         foreach (ReaderAction action in actions)
         {
             var flag = true;
-            var key = 0;
+            var key = "";
 
             while (flag)
             {
-                key = GetRandomKeyInt();
+                key = GetRandomKey();
                 flag = usedKeys.Contains(key);
             }
 
@@ -126,7 +125,7 @@ public class AppUserKeyBindingTests
         Assert.Empty(validationErrors);
     }
 
-    private void AssignKeyToAction(AppUserKeyBinding binding, ReaderAction action, int key)
+    private void AssignKeyToAction(AppUserKeyBinding binding, ReaderAction action, string key)
     {
         switch (action)
         {
@@ -151,9 +150,17 @@ public class AppUserKeyBindingTests
         }
     }
     
-    private int GetRandomKeyInt()
+    private string GetRandomKey()
     {
+        var keyList = new List<string> {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
+            "Escape", " ", "PageUp", "PageDown", "Alt", "Control", "Enter", "Tab", "ArrowDown",
+            "ArrowUp", "ArrowLeft", "ArrowRight", "A", "B", "C", "D", "E", "F", "G", "H", "I",
+            "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+            "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q",
+            "r", "s", "t", "u", "v", "w", "x", "y", "z"
+        };
+
         Random random = new Random();
-        return random.Next(13, 127);
+        return keyList[random.Next(0, keyList.Count)];
     }
 }

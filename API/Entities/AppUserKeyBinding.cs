@@ -15,12 +15,12 @@ public class AppUserKeyBinding : IValidatableObject
     public int AppUserId { get; set; }
     public required ReaderType Type { get; set; }
 
-    public int NextPage { get; set; }
-    public int PreviousPage { get; set; }
-    public int Close { get; set; }
-    public int ToggleMenu { get; set; }
-    public int GoToPage { get; set; }
-    public int FullScreen { get; set; }
+    public string NextPage { get; set; }
+    public string PreviousPage { get; set; }
+    public string Close { get; set; }
+    public string ToggleMenu { get; set; }
+    public string GoToPage { get; set; }
+    public string FullScreen { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
@@ -61,16 +61,16 @@ public class AppUserKeyBinding : IValidatableObject
     }
 
     // Convert action fields and values to dictionary for validation
-    private Dictionary<ReaderAction, int> ToActionKeyDictionary()
+    private Dictionary<ReaderAction, string> ToActionKeyDictionary()
     {
-        Dictionary<ReaderAction, int> actionKeyDictionary = new Dictionary<ReaderAction, int>();
+        Dictionary<ReaderAction, string> actionKeyDictionary = new Dictionary<ReaderAction, string>();
 
-        if (NextPage != 0 ) actionKeyDictionary.Add(ReaderAction.NextPage, NextPage);
-        if (PreviousPage != 0 ) actionKeyDictionary.Add(ReaderAction.PreviousPage, PreviousPage);
-        if (Close != 0 ) actionKeyDictionary.Add(ReaderAction.Close, Close);
-        if (ToggleMenu != 0 ) actionKeyDictionary.Add(ReaderAction.ToggleMenu, ToggleMenu);
-        if (GoToPage != 0 ) actionKeyDictionary.Add(ReaderAction.GoToPage, GoToPage);
-        if (FullScreen != 0 ) actionKeyDictionary.Add(ReaderAction.FullScreen, FullScreen);
+        if (NextPage != "") actionKeyDictionary.Add(ReaderAction.NextPage, NextPage);
+        if (PreviousPage != "") actionKeyDictionary.Add(ReaderAction.PreviousPage, PreviousPage);
+        if (Close != "") actionKeyDictionary.Add(ReaderAction.Close, Close);
+        if (ToggleMenu != "") actionKeyDictionary.Add(ReaderAction.ToggleMenu, ToggleMenu);
+        if (GoToPage != "") actionKeyDictionary.Add(ReaderAction.GoToPage, GoToPage);
+        if (FullScreen != "") actionKeyDictionary.Add(ReaderAction.FullScreen, FullScreen);
 
         return actionKeyDictionary;
     }

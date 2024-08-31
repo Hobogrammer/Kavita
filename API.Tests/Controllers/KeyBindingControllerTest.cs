@@ -73,27 +73,27 @@ public class KeyBindingControllerTests
             {
                 Id = 1,
                 Type = ReaderType.Book,
-                NextPage = 55,
-                PreviousPage = 51,
-                Close = 13,
-                FullScreen = 49,
-                ToggleMenu = 63
+                NextPage = "PageDown",
+                PreviousPage = "PageUp",
+                Close = "Escape",
+                FullScreen = "f",
+                ToggleMenu = "t"
             },
             new AppUserKeyBinding
             {
                 Id = 2,
                 Type = ReaderType.Manga,
-                NextPage = 55,
-                PreviousPage = 51,
-                Close = 13,
-                FullScreen = 49,
-                ToggleMenu = 63
+                NextPage = "PageDown",
+                PreviousPage = "PageUp",
+                Close = "Escape",
+                FullScreen = "f",
+                ToggleMenu = "t"
             },
             new AppUserKeyBinding
             {
                 Id = 3,
                 Type = ReaderType.Pdf,
-                Close = 13
+                Close = "Escape"
             }
         };
     }
@@ -133,11 +133,11 @@ public class KeyBindingControllerTests
             Type = ReaderType.Book,
             AppUser = user,
             AppUserId = user.Id,
-            NextPage = 55,
-            PreviousPage = 51,
-            Close = 13,
-            FullScreen = 49,
-            ToggleMenu = 63
+            NextPage = "PageDown",
+            PreviousPage = "PageUp",
+            Close = "Escape",
+            FullScreen = "f",
+            ToggleMenu = "t"
         };
         user.KeyBindings.Add(kB);
         await _unitOfWork.CommitAsync();

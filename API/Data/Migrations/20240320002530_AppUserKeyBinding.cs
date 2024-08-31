@@ -18,12 +18,12 @@ namespace API.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     AppUserId = table.Column<int>(type: "INTEGER", nullable: false),
                     Type = table.Column<int>(type: "INTEGER", nullable: false),
-                    NextPage = table.Column<int>(type: "INTEGER", nullable: false),
-                    PreviousPage = table.Column<int>(type: "INTEGER", nullable: false),
-                    Close = table.Column<int>(type: "INTEGER", nullable: false),
-                    ToggleMenu = table.Column<int>(type: "INTEGER", nullable: false),
-                    GoToPage = table.Column<int>(type: "INTEGER", nullable: false),
-                    FullScreen = table.Column<int>(type: "INTEGER", nullable: false)
+                    NextPage = table.Column<int>(type: "STRING", nullable: false),
+                    PreviousPage = table.Column<int>(type: "STRING", nullable: false),
+                    Close = table.Column<int>(type: "STRING", nullable: false),
+                    ToggleMenu = table.Column<int>(type: "STRING", nullable: false),
+                    GoToPage = table.Column<int>(type: "STRING", nullable: false),
+                    FullScreen = table.Column<int>(type: "STRING", nullable: false)
                 },
                 constraints: table =>
                 {
