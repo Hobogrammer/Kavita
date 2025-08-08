@@ -12,7 +12,8 @@
     "prod": "npm run cache-locale-prime && ng build --configuration production && npm run minify-langs && npm run cache-locale",
     "explore": "ng build --stats-json && webpack-bundle-analyzer dist/stats.json",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "test": "jest"
   },
   "private": true,
   "dependencies": {
@@ -27,6 +28,7 @@
     "@angular/platform-browser": "^19.2.5",
     "@angular/platform-browser-dynamic": "^19.2.5",
     "@angular/router": "^19.2.5",
+    "@angular/service-worker": "^19.2.5",
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@iharbeck/ngx-virtual-scroller": "^19.0.1",
     "@iplab/ngx-file-upload": "^19.0.3",
@@ -51,6 +53,7 @@
     "ngx-color-picker": "^19.0.0",
     "ngx-extended-pdf-viewer": "^23.0.0-alpha.7",
     "ngx-file-drop": "^16.0.0",
+    "ngx-indexed-db": "^21.0.0",
     "ngx-stars": "^1.6.5",
     "ngx-toastr": "^19.0.0",
     "nosleep.js": "^0.12.0",
@@ -71,13 +74,15 @@
     "@angular/compiler-cli": "^19.2.5",
     "@types/d3": "^7.4.3",
     "@types/file-saver": "^2.0.7",
+    "@types/jest": "^30.0.0",
     "@types/luxon": "^3.6.2",
     "@types/node": "^22.13.13",
     "@typescript-eslint/eslint-plugin": "^8.28.0",
     "@typescript-eslint/parser": "^8.28.0",
     "eslint": "^9.23.0",
+    "jest": "^30.0.5",
+    "jest-preset-angular": "^15.0.0",
     "jsonminify": "^0.4.2",
-    "karma-coverage": "~2.2.0",
     "ts-node": "~10.9.1",
     "typescript": "^5.5.4",
     "webpack-bundle-analyzer": "^4.10.2"
