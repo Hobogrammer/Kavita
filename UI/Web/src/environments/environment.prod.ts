@@ -1,5 +1,5 @@
 import { getBaseUrl } from "src/app/base-url.provider";
-const BASE_URL = getBaseUrl();
+const IP = 'localhost';
 
 export const environment = {
   production: true,
