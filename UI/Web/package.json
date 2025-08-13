@@ -80,6 +80,7 @@
     "@typescript-eslint/eslint-plugin": "^8.28.0",
     "@typescript-eslint/parser": "^8.28.0",
     "eslint": "^9.23.0",
+    "fake-indexeddb": "^6.1.0",
     "jest": "^30.0.5",
     "jest-preset-angular": "^15.0.0",
     "jsonminify": "^0.4.2",

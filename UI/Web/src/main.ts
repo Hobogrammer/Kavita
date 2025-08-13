@@ -1,5 +1,5 @@
 /// <reference types="@angular/localize" />
-import {APP_INITIALIZER, ApplicationConfig, importProvidersFrom,} from '@angular/core';
+import {APP_INITIALIZER, ApplicationConfig, importProvidersFrom, isDevMode,} from '@angular/core';
 import {AppComponent} from './app/app.component';
 import {NgCircleProgressModule} from 'ng-circle-progress';
 import {ToastrModule} from 'ngx-toastr';
@@ -20,6 +20,9 @@ import {distinctUntilChanged} from "rxjs/operators";
 import {APP_BASE_HREF, PlatformLocation} from "@angular/common";
 import {provideTranslocoPersistTranslations} from '@jsverse/transloco-persist-translations';
 import {HttpLoader} from "./httpLoader";
+import {provideServiceWorker} from "@angular/service-worker";
+import {provideIndexedDb} from "ngx-indexed-db";
+import { dbConfig } from './app/shared/_services/local-repository.service';
 
 const disableAnimations = !('animate' in document.documentElement);
 
@@ -125,7 +128,7 @@ bootstrapApplication(AppComponent, {
             countDuplicates: true,
             autoDismiss: true
           }),
-          NgCircleProgressModule.forRoot(),
+          NgCircleProgressModule.forRoot()
         ),
         provideTransloco(translocoOptions),
         provideTranslocoLocale({
@@ -146,7 +149,14 @@ bootstrapApplication(AppComponent, {
           useFactory: getBaseHref,
           deps: [PlatformLocation]
         },
-        provideHttpClient(withInterceptorsFromDi())
+        provideHttpClient(withInterceptorsFromDi()),
+        provideServiceWorker('ngsw-worker.js'),
+        provideIndexedDb(dbConfig)
     ]
-} as ApplicationConfig)
+} as ApplicationConfig).then(() => {
+  if ('serviceWorker' in navigator && environment.production) {
+    navigator.serviceWorker.register('ngsw-worker.js');
+    console.log('Hi Bob');
+  }
+})
 .catch(err => console.error(err));
