@@ -37,7 +37,6 @@ import {
 import {routingErrorHandler} from "./app/_interceptors/routing-error.handler";
 import {registerECharts} from "./echarts";
 import {provideServiceWorker} from "@angular/service-worker";
-import {provideIndexedDb} from "ngx-indexed-db";
 import { dbConfig } from './app/shared/_services/local-repository.service';
 
 const disableAnimations = !('animate' in document.documentElement);
@@ -178,8 +177,7 @@ bootstrapApplication(AppComponent, {
         provideHttpClient(withInterceptors([jwtInterceptor, errorInterceptor, clientInfoInterceptor]), withFetch()),
         provideAppInitializer(() => bootstrapUser()),
         provideZoneChangeDetection(),
-        provideServiceWorker('ngsw-worker.js'),
-        provideIndexedDb(dbConfig)
+        provideServiceWorker('ngsw-worker.js')
     ]
 } as ApplicationConfig).then(() => {
   if ('serviceWorker' in navigator && environment.production) {
