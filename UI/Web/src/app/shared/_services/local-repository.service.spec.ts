@@ -1,12 +1,9 @@
 ﻿import "fake-indexeddb/auto";
 import {fakeAsync, TestBed} from '@angular/core/testing';
 import {LocalRepositoryService} from './local-repository.service'
-import {delay, first, of} from "rxjs";
-import { TestScheduler } from 'rxjs/testing';
-import { LibraryImpl } from "../local-object-store/local-repository";
+import { LibraryImpl, SeriesDetailImpl, SeriesImpl, SeriesMetadataImpl } from "../local-object-store/local-repository";
 
 describe('LocalRepositoryService',() => {
-  let testScheduler : TestScheduler;
   let localRepo: LocalRepositoryService;
 
   beforeEach(fakeAsync(() => {
@@ -17,10 +14,6 @@ describe('LocalRepositoryService',() => {
     }).compileComponents();
 
     localRepo = TestBed.inject(LocalRepositoryService);
-
-    testScheduler = new TestScheduler((actual, expected) => {
-        return expect(actual).toBe(expected);
-    });
   }));
 
   it('should be created', () => {
@@ -66,7 +59,36 @@ describe('LocalRepositoryService',() => {
   });
 
   describe('Series', () => {
+    it('should add series to local repository', () => {
+      const expectedSeries = {} as SeriesImpl;
+      localRepo.addSeries(expectedSeries).then(() => {
+        localRepo.getSeriesById(expectedSeries.id).then((result) => {
+          expect(result).toEqual(expectedSeries);
+        });
+      });
+    });
+  });
 
-  })
+  describe('SeriesDetail', () => {
+    it('should add series detail to local repository', () => {
+      const expectedSeriesDetail = {} as SeriesDetailImpl;
+      localRepo.addSeriesDetail(expectedSeriesDetail).then(() => {
+        localRepo.getSeriesDetailBySeriesId(expectedSeriesDetail.seriesId).then((result) => {
+          expect(result).toEqual(expectedSeriesDetail);
+        })
+      })
+    })
+  });
+
+  describe('SeriesMetadata', () => {
+   it('should add series metadata to local repository', () => {
+     const expectedSeriesMetadata = {} as SeriesMetadataImpl;
+     localRepo.addSeriesMetadata(expectedSeriesMetadata).then(() => {
+       localRepo.getSeriesMetadataBySeriesId(expectedSeriesMetadata.seriesId).then((result) => {
+         expect(result).toEqual(expectedSeriesMetadata);
+       })
+     })
+   })
+  });
 });
 
