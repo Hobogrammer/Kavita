@@ -1,4 +1,5 @@
 ﻿import "fake-indexeddb/auto";
+import {MockService} from 'ng-mocks';
 import {fakeAsync, TestBed} from '@angular/core/testing';
 import {LocalRepositoryService} from './local-repository.service'
 import { LibraryImpl, SeriesDetailImpl, SeriesImpl, SeriesMetadataImpl } from "../local-object-store/local-repository";
@@ -22,37 +23,13 @@ describe('LocalRepositoryService',() => {
 
   describe('Libraries', () => {
     it('should add libraries', () => {
-      const expectedLibrary = {
-        "id": 3,
-        "name": "epub_en_offline_test",
-        "lastScanned": "2025-07-30T17:42:43.9125949",
-        "type": 2,
-        "coverImage": null,
-        "folderWatching": true,
-        "includeInDashboard": true,
-        "includeInRecommended": true,
-        "manageCollections": false,
-        "manageReadingLists": false,
-        "includeInSearch": true,
-        "allowScrobbling": false,
-        "folders": [
-        "F:\\kavita_test\\english"
-      ],
-        "collapseSeriesRelationships": false,
-        "libraryFileTypes": [
-        2
-      ],
-        "excludePatterns": [
-        ""
-      ],
-        "allowMetadataMatching": false,
-        "enableMetadata": true,
-        "removePrefixForSortName": false
-    } as LibraryImpl;
+      const mockLibrary = MockService(LibraryImpl, {
+        id: 3
+      });
 
-      localRepo.addLibary(expectedLibrary).then(() => {
-        localRepo.getAllLibraries().then((result) => {
-          expect(result).toEqual(expectedLibrary);
+      localRepo.addLibary(mockLibrary).then(() => {
+        localRepo.getLibraryById(mockLibrary.id).then((result) => {
+          expect(result).toEqual(mockLibrary);
         });
       });
     }) ;
@@ -60,10 +37,13 @@ describe('LocalRepositoryService',() => {
 
   describe('Series', () => {
     it('should add series to local repository', () => {
-      const expectedSeries = {} as SeriesImpl;
-      localRepo.addSeries(expectedSeries).then(() => {
-        localRepo.getSeriesById(expectedSeries.id).then((result) => {
-          expect(result).toEqual(expectedSeries);
+      const mockSeries = MockService(SeriesImpl, {
+        id: 866
+      });
+
+      localRepo.addSeries(mockSeries).then(() => {
+        localRepo.getSeriesById(mockSeries.id).then((result) => {
+          expect(result).toEqual(mockSeries);
         });
       });
     });
@@ -71,10 +51,13 @@ describe('LocalRepositoryService',() => {
 
   describe('SeriesDetail', () => {
     it('should add series detail to local repository', () => {
-      const expectedSeriesDetail = {} as SeriesDetailImpl;
-      localRepo.addSeriesDetail(expectedSeriesDetail).then(() => {
-        localRepo.getSeriesDetailBySeriesId(expectedSeriesDetail.seriesId).then((result) => {
-          expect(result).toEqual(expectedSeriesDetail);
+      const mockSeriesDetail = MockService(SeriesDetailImpl, {
+        seriesId: 866
+      });
+
+      localRepo.addSeriesDetail(mockSeriesDetail).then(() => {
+        localRepo.getSeriesDetailBySeriesId(mockSeriesDetail.seriesId).then((result) => {
+          expect(result).toEqual(mockSeriesDetail);
         })
       })
     })
@@ -82,10 +65,13 @@ describe('LocalRepositoryService',() => {
 
   describe('SeriesMetadata', () => {
    it('should add series metadata to local repository', () => {
-     const expectedSeriesMetadata = {} as SeriesMetadataImpl;
-     localRepo.addSeriesMetadata(expectedSeriesMetadata).then(() => {
-       localRepo.getSeriesMetadataBySeriesId(expectedSeriesMetadata.seriesId).then((result) => {
-         expect(result).toEqual(expectedSeriesMetadata);
+     const mockSeriesMetadata = MockService(SeriesMetadataImpl, {
+       seriesId: 866
+     });
+
+     localRepo.addSeriesMetadata(mockSeriesMetadata).then(() => {
+       localRepo.getSeriesMetadataBySeriesId(mockSeriesMetadata.seriesId).then((result) => {
+         expect(result).toEqual(mockSeriesMetadata);
        })
      })
    })
