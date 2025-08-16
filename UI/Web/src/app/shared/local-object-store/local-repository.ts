@@ -133,20 +133,20 @@ export class SeriesMetadataImpl implements SeriesMetadata {
 export default class LocalRepository extends Dexie {
   libraries!: Table<Library, number>;
   series!: Table<Series, number>;
-  seriesDetail!: Table<SeriesDetail, number>;
+  seriesDetails!: Table<SeriesDetail, number>;
   seriesMetadata!: Table<SeriesMetadata, number>;
 
   constructor() {
     super('KavitaLocal');
     this.version(1).stores({
-      libraries: 'id, name',
+      libraries: 'id',
       series: 'id, name',
       seriesDetails: 'seriesId',
       seriesMetadata: 'seriesId'
     });
     this.libraries.mapToClass(LibraryImpl);
     this.series.mapToClass(SeriesImpl);
-    this.seriesDetail.mapToClass(SeriesDetailImpl);
+    this.seriesDetails.mapToClass(SeriesDetailImpl);
     this.seriesMetadata.mapToClass(SeriesMetadataImpl);
   }
 }
