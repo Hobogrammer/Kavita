@@ -21,7 +21,6 @@ import {APP_BASE_HREF, PlatformLocation} from "@angular/common";
 import {provideTranslocoPersistTranslations} from '@jsverse/transloco-persist-translations';
 import {HttpLoader} from "./httpLoader";
 import {provideServiceWorker} from "@angular/service-worker";
-import {provideIndexedDb} from "ngx-indexed-db";
 import { dbConfig } from './app/shared/_services/local-repository.service';
 
 const disableAnimations = !('animate' in document.documentElement);
@@ -150,8 +149,7 @@ bootstrapApplication(AppComponent, {
           deps: [PlatformLocation]
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideServiceWorker('ngsw-worker.js'),
-        provideIndexedDb(dbConfig)
+        provideServiceWorker('ngsw-worker.js')
     ]
 } as ApplicationConfig).then(() => {
   if ('serviceWorker' in navigator && environment.production) {
