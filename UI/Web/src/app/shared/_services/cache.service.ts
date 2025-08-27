@@ -43,18 +43,17 @@ export class CacheService {
         return;
     }
 
-      return (downloadCall || of(undefined)).pipe(
-        tap((d) => {
-          if (callback) callback(d);
-        }),
-        takeWhile((val: Download) => {
-          return val.state != 'DONE';
-        }),
-        finalize(() => {
-          if (callback) callback(undefined);
-        })),
-        takeUntilDestroyed(this.destroyRef)
-  ).subscribe(() => {});
+    return (downloadCall || of(undefined)).pipe(
+      tap((d) => {
+        if (callback) callback(d);
+      }),
+      takeWhile((val: Download) => {
+        return val.state != 'DONE';
+      }),
+      finalize(() => {
+        if (callback) callback(undefined);
+      })),
+      takeUntilDestroyed(this.destroyRef);
   }
 
   private downloadSeries(series: Series) {

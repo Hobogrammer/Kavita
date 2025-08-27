@@ -21,7 +21,6 @@ import {APP_BASE_HREF, PlatformLocation} from "@angular/common";
 import {provideTranslocoPersistTranslations} from '@jsverse/transloco-persist-translations';
 import {HttpLoader} from "./httpLoader";
 import {provideServiceWorker} from "@angular/service-worker";
-import { dbConfig } from './app/shared/_services/local-repository.service';
 
 const disableAnimations = !('animate' in document.documentElement);
 
@@ -154,7 +153,6 @@ bootstrapApplication(AppComponent, {
 } as ApplicationConfig).then(() => {
   if ('serviceWorker' in navigator && environment.production) {
     navigator.serviceWorker.register('ngsw-worker.js');
-    console.log('Hi Bob');
   }
 })
 .catch(err => console.error(err));
