@@ -1,5 +1,5 @@
 ﻿import {inject, Injectable } from "@angular/core";
-import LocalRepository from '../local-object-store/local-repository';
+import LocalRepository from 'src/app/shared/local-object-store/local-repository';
 import { Library } from "src/app/_models/library/library";
 import { Series } from "src/app/_models/series";
 import { SeriesDetail } from "src/app/_models/series-detail/series-detail";

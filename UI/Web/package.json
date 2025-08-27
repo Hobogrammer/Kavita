@@ -94,6 +94,7 @@
     "jest-preset-angular": "^15.0.0",
     "jsonminify": "^0.4.2",
     "ng-mocks": "^14.13.5",
+    "opfs-mock": "^2.3.0",
     "ts-node": "~10.9.1",
     "typescript": "^5.9.3",
     "webpack-bundle-analyzer": "^5.1.0"

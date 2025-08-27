@@ -37,7 +37,6 @@ import {
 import {routingErrorHandler} from "./app/_interceptors/routing-error.handler";
 import {registerECharts} from "./echarts";
 import {provideServiceWorker} from "@angular/service-worker";
-import { dbConfig } from './app/shared/_services/local-repository.service';
 
 const disableAnimations = !('animate' in document.documentElement);
 
@@ -182,7 +181,6 @@ bootstrapApplication(AppComponent, {
 } as ApplicationConfig).then(() => {
   if ('serviceWorker' in navigator && environment.production) {
     navigator.serviceWorker.register('ngsw-worker.js');
-    console.log('Hi Bob');
   }
 })
 .catch(err => console.error(err));

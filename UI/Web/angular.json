@@ -65,7 +65,8 @@
                 "silenceDeprecations": ["color-functions", "global-builtin", "import"]
               },
               "includePaths": ["src"]
-            }
+            },
+            "webWorkerTsConfig": "tsconfig.worker.json"
           },
           "configurations": {
             "production": {
@@ -130,7 +131,8 @@
         "test": {
           "builder": "@angular-devkit/build-angular:jest",
           "options": {
-            "tsConfig": "tsconfig.spec.json"
+            "tsConfig": "tsconfig.spec.json",
+            "webWorkerTsConfig": "tsconfig.worker.json"
           }
         },
         "lint": {
