@@ -1,10 +1,7 @@
 ﻿import {TestBed} from '@angular/core/testing';
-import {OpfsService} from './opfs.service';
 import {MockService} from "ng-mocks";
-import { DocumentWindow } from '../document-window';
 
-export type FileSystemDirectoryHandle = globalThis.FileSystemDirectoryHandle;
-describe('OpfsService', () => {
+describe('OpfsWorker', () => {
   let opfsService: OpfsService;
   let fileSystemDirectoryHandleSpy = jest.fn().mockImplementationOnce(() => {
 
@@ -17,9 +14,9 @@ describe('OpfsService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-     providers: [
-       OpfsService
-     ]
+      providers: [
+        OpfsService
+      ]
     }).overrideProvider(DocumentWindow, { useValue: mockDocWindow})
       .compileComponents();
 
