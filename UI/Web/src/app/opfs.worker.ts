@@ -7,7 +7,7 @@ addEventListener('message', ({ data }) => {
   postMessage(response);
 });
 
-class OpfsWorker {
+class Opfs {
   private opfsRoot!: FileSystemDirectoryHandle;
   private kavitaRoot!: FileSystemDirectoryHandle;
 
@@ -20,9 +20,24 @@ class OpfsWorker {
     });
   }
 
-  public async saveFileSync(filename: string, extension: string) {
-    let fileHandle: FileSystemFileHandle;
-    const syncAccessHandle = await this.opfsRoot.getFileHandle(filename + '.' + extension, {create: true});
+  public async saveFileSync(filename: string, extension: string, file: Blob) {
+    const fileHandle: FileSystemFileHandle = await this.opfsRoot.getFileHandle(filename + '.' + extension, {create: true});
+    const syncAccessHandle = await fileHandle.createSyncAccessHandle();
+    syncAccessHandle.write(await file.arrayBuffer(), {at: 0})
+    syncAccessHandle.flush();
+    syncAccessHandle.close();
+  }
+
+  public async getFile(filename: string): Promise<Blob> {
+    const fileHandle: FileSystemFileHandle = await this.opfsRoot.getFileHandle(filename, {create: false});
+    const file = await fileHandle.getFile();
+    return file;
+  }
+
+  public async deleteFile(filename: string) {
+    const fileSystemDirectoryHandle: FileSystemDirectoryHandle = await this.opfsRoot.getDirectoryHandle(filename, {create: false});
+    const directoryHandle = await fileSystemDirectoryHandle.getDirectoryHandle(filename);
+    await directoryHandle.removeEntry(filename);
   }
 }
 
