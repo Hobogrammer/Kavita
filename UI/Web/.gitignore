@@ -3,3 +3,8 @@ test-results/
 playwright-report/
 i18n-cache-busting.json
 e2e-tests/environments/environment.local.ts
+
+# Playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/

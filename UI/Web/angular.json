@@ -33,8 +33,8 @@
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
-                "@angular/localize/init",
-                "zone.js"
+              "@angular/localize/init",
+              "zone.js"
             ],
             "inlineStyleLanguage": "scss",
             "tsConfig": "tsconfig.app.json",
@@ -142,6 +142,17 @@
               "src/**/*.ts",
               "src/**/*.html"
             ]
+          }
+        },
+        "e2e": {
+          "builder": "playwright-ng-schematics:playwright",
+          "options": {
+            "devServerTarget": "kavita-webui:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "kavita-webui:serve:production"
+            }
           }
         }
       }
