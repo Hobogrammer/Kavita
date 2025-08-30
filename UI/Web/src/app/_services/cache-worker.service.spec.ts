@@ -1,12 +1,35 @@
-﻿import { MockService } from "ng-mocks";
+﻿import {MockInstance, MockService } from "ng-mocks";
 import { CacheWorkerService } from "./cache-worker.service";
-import path from "path";
+import { TestBed } from "@angular/core/testing";
 
+//Stub for Worker class
+class Worker {
+  private url: string;
+  private onmessage;
+ constructor(url: string) {
+  this.url = url;
+  this.onmessage = (msg: any) => {};
+ }
+
+ postMessage(msg: any) {
+   this.onmessage(msg);
+ }
+
+ cacheFile() {}
+}
 describe('CacheWorkerService', () => {
   let cacheWorkerService: CacheWorkerService;
+  const spyWorker = MockInstance(Worker, 'cacheFile', jest.fn());
 
   beforeEach(() => {
-    cacheWorkerService = new CacheWorkerService();
+    TestBed.configureTestingModule({
+      providers: [
+        {provide: Worker, useValue: spyWorker},
+        CacheWorkerService,
+      ],
+    }).compileComponents();
+
+    cacheWorkerService = TestBed.inject(CacheWorkerService);
   });
 
   it('should send cacheFile message to cache worker', () => {

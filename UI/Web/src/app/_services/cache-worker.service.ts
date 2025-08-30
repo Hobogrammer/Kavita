@@ -1,15 +1,14 @@
 ﻿/// <reference lib="webworker" />
-import { Injectable } from "@angular/core";
+import {inject, Injectable } from "@angular/core";
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CacheWorkerService {
   private worker: Worker;
 
   constructor() {
-    //this.worker = inject(CacheWorker);
-    this.worker = new Worker('cache-worker.js'); //TODO: Can we somehow create a WebWorkerFactory or provider? This would allow for Dependency Injection
+    this.worker = inject(Worker);
+
+    // Check if worker is defined, else throw a Kavita Exception or something
   }
 
   cacheFile(file: File, fileId: string, libraryId: string, seriesId: string) {
