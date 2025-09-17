@@ -3,10 +3,10 @@ import {inject, Injectable } from "@angular/core";
 
 @Injectable()
 export class CacheWorkerService {
-  private worker: Worker;
+  private worker: globalThis.Worker;
 
   constructor() {
-    this.worker = inject(Worker);
+    this.worker = inject(globalThis.Worker);
 
     // Check if worker is defined, else throw a Kavita Exception or something
   }

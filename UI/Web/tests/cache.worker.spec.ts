@@ -1,0 +1,2 @@
+﻿import {onInit} from 'wrightplay';
+

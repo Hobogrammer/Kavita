@@ -1,33 +1,17 @@
 ﻿import {MockInstance, MockService } from "ng-mocks";
 import { CacheWorkerService } from "./cache-worker.service";
 import { TestBed } from "@angular/core/testing";
-
-//Stub for Worker class
-class Worker {
-  private url: string;
-  private onmessage;
- constructor(url: string) {
-  this.url = url;
-  this.onmessage = (msg: any) => {};
- }
-
- postMessage(msg: any) {
-   this.onmessage(msg);
- }
-
- cacheFile() {}
-}
 describe('CacheWorkerService', () => {
   let cacheWorkerService: CacheWorkerService;
-  const spyWorker = MockInstance(Worker, 'cacheFile', jest.fn());
+
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        {provide: Worker, useValue: spyWorker},
         CacheWorkerService,
       ],
-    }).compileComponents();
+    }).overrideProvider(globalThis.Worker, { useValue: mockWorker})
+      .compileComponents();
 
     cacheWorkerService = TestBed.inject(CacheWorkerService);
   });
