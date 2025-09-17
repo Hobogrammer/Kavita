@@ -8,3 +8,6 @@ e2e-tests/environments/environment.local.ts
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+# Playwright
+/blob-report/
