@@ -1,13 +1,40 @@
 ﻿import {test, expect} from '@playwright/test';
-import { environment } from "src/environments/environment";
+import { Observable } from "rxjs";
+import { DashboardStream } from "src/app/_models/dashboard/dashboard-stream";
+import { StreamType } from "src/app/_models/dashboard/stream-type.enum";
+import { FileTypeGroup } from "src/app/_models/library/file-type-group.enum";
+import { Library, LibraryType } from "src/app/_models/library/library";
+import { MangaFormat } from "src/app/_models/manga-format";
+import { AgeRating } from "src/app/_models/metadata/age-rating";
+import { AgeRestriction } from "src/app/_models/metadata/age-restriction";
+import { PageLayoutMode } from "src/app/_models/page-layout-mode";
+import { Preferences } from "src/app/_models/preferences/preferences";
+import { SiteTheme } from "src/app/_models/preferences/site-theme";
+import { Series } from "src/app/_models/series";
+import { SeriesGroup } from "src/app/_models/series-group";
+import { SideNavStream } from "src/app/_models/sidenav/sidenav-stream";
+import { SideNavStreamType } from "src/app/_models/sidenav/sidenav-stream-type.enum";
+import { User } from "src/app/_models/user";
+import {environment} from "src/environments/environment";
 
-// Pre-setup required
-// 1. Create or seed accounts
-// 2. Login
-// 3. Create or seed content
 test("cache worker should be created on cache attempt", async ({page}) => {
 
-  // mock data required to load the login page
+  // mock api calls and data required to load the login page
+  const mockTheme = {
+    id:1,
+    name: "Dark",
+    normalizedName: "dark",
+    fileName: "dark.scss",
+    isDefault: true,
+    provider: 1,
+    previewUrls: [""],
+    description:"Default theme shipped with Kavita",
+    author: "",
+    compatibleVersion: null,
+    selector: "bg-dark",
+    filePath: "assets/css/dark.scss",
+  } as SiteTheme;
+
   await page.route(environment.apiUrl + 'admin/exists', async route => {
    await route.fulfill({contentType: "application/json;", status: 200, body: 'true' });
   });
@@ -22,12 +49,96 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(localeResponse)});
   });
 
+  // mock data and api calls required to load home/the dashboard
+
+  // TODO: Test helper object factory
+  const mockEpubLib = {
+    id: 1,
+    name: "Epub Test",
+    lastScanned: "2025-10-29t00:00:47.067679",
+    type: LibraryType.Book,
+    coverImage: null,
+    folderWatching: false,
+    includeInDashboard: true,
+    includeInRecommended: true,
+    manageCollections: false,
+    includeInSearch: true,
+    allowScrobbling: false,
+    folders: [
+      "/mockEpub"
+    ],
+    collapseSeriesRelationships:false,
+    libraryFileTypes:[
+      FileTypeGroup.Epub,
+      FileTypeGroup.Pdf
+    ],
+    excludePatterns:[""],
+    allowMetadataMatching:false,
+    enableMetadata:true,
+    removePrefixForSortName: true,
+    manageReadingLists: false
+  } as Library;
+
+  const mockEpubSeriesDetail = {
+
+  };
+
+  const mockEpubSeriesGroup = {
+    seriesName:"The Test Series",
+    seriesId: 1,
+    title: "The Test Series",
+    libraryId: mockEpubLib.id,
+    libraryType: mockEpubLib.type,
+    created: "2025-09-26T18:38:45.6064843",
+    chapterId: 0,
+    volumeId: 0,
+    id: 0,
+    count: 2
+  } as SeriesGroup;
+
+  const mockEpubSeries = {
+    id: mockEpubSeriesGroup.seriesId,
+    name: mockEpubSeriesGroup.seriesName,
+    originalName: mockEpubSeriesGroup.seriesName,
+    localizedName: mockEpubSeriesGroup.seriesName,
+    sortName: "Test Series, The",
+    pages: 49,
+    coverImageLocked: true,
+    pagesRead: 0,
+    latestReadDate: "2024-10-29T19:21:36.6603863",
+    lastChapterAdded: "2025-09-26T18:38:45.5997689",
+    userRating: 0,
+    hasUserRated: false,
+    format: MangaFormat.EPUB,
+    created: mockEpubSeriesGroup.created,
+    sortNameLocked: false,
+    localizedNameLocked: false,
+    wordCount: 99593,
+    libraryId: mockEpubLib.id,
+    libraryName: mockEpubLib.name,
+    minHoursToRead: 3,
+    maxHoursToRead: 10,
+    avgHoursToRead: 4.947491,
+    folderPath: "/mockEpub/The Test Series",
+    lowestFolderPath: "/mockEpub/The Test Series",
+    lastFolderScanned: "2025-09-26T18:44:16.2034692",
+    dontMatch: false,
+    isBlacklisted: false,
+    coverImage: "series8773.png",
+    primaryColor: "#633DFF",
+    secondaryColor: "#F66E58",
+    nameLocked: false,
+    volumes: [],
+  } as Series;
+
+  // Create a mostly complete JWToken
+  // Final section (signature) is not generated
   const currentTime = new Date();
   const tenDaysInSeconds = 24 * 60 * 60 * 10;
   const jwtHeader = { alg: "HS256", typ: "JWT" };
   const jwtPayload = {
     name: "admin",
-    nameid: 1,
+    nameId: 1,
     role: [
       "Admin",
       "Change Password",
@@ -38,55 +149,113 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     exp: currentTime.getUTCSeconds() + tenDaysInSeconds, // expiration time on or after which jwt should not be accepted
     iat: currentTime.getUTCSeconds() // time at which token was issued
   }
-  const jwt = [btoa(JSON.stringify(jwtHeader)), btoa(JSON.stringify(jwtPayload))]; // Didn't sign the request but it doesn't seem to care
-  // mock data required to load the dashboard
+
+  const jwt = [btoa(JSON.stringify(jwtHeader)), btoa(JSON.stringify(jwtPayload))]; // Convert stringified JSON to base64
+
+  const mockPrefs = {
+    theme: mockTheme,
+    globalPageLayoutMode: PageLayoutMode.List,
+    blurUnreadSummaries: false,
+    promptForDownloadSize: false,
+    noTransitions: false,
+    collapseSeriesRelationships: false,
+    shareReviews: false,
+    locale: "en",
+    aniListScrobblingEnabled: false,
+    wantToReadSync: false
+  } as Preferences;
+
+  const mockAgeRestriction = {
+    ageRating: AgeRating.NotApplicable,
+    includeUnknowns: false,
+  } as AgeRestriction;
+
+  const mockUser = {
+    username: 'admin',
+    email: 'admin@test.com',
+    token:  jwt.join('.'),
+    refreshToken: 'aTotallyRealRefreshToken',
+    apiKey: '12345',
+    kavitaVersion: '0.8.7.0',
+    preferences: mockPrefs,
+    ageRestriction: mockAgeRestriction,
+    roles: [
+      "Admin",
+      "Change Password",
+      "Change Restriction",
+      "Login"
+    ],
+    hasRunScrobbleEventGeneration: false,
+    scrobbleEventGenerationRan: ""
+  } as User;
+
   await page.route(environment.apiUrl + 'account/login', async route => {
-    const json = {
-      username: 'admin',
-      email: 'admin@test.com',
-      token:  jwt.join('.'),
-      refreshToken: 'CfDJ8NcfB1T7Sm1OrXAS0VcvzN+YhpLieymd6M/DGz3m1Rpeup4/iZVSkFUCCxQRQFZ2kc5bvWhr+Bbk/2jt/htk0PsONQ/7+Nan3Yobcd5NK0o8TsFr9iuFnJkRq+XDP3AU5jBOtQijB9HYNw+rFF9I2hb01G5I2kDaHfwsmK+tC039fxHvSbtZYS+E1bRvnmKpcQ==', // ask joe about this token
-      apiKey: '12345',
-      kavitaVersion: '0.8.7.0',
-      preferences: [{
-        theme: {
-          id: 1,
-          name: "Dark",
-          normalizedName: "dark",
-          fileName: "dark.scss",
-          isDefault: true,
-          provider: 1,
-          previewUrls: [""],
-          description: "Default theme shipped with Kavita",
-          author: null,
-          compatibleVersion: null,
-          selector: "bg-dark"
-        },
-      }],
-      ageRestriction: { ageRating: -1, includeUnknowns: false}
-    };
-    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(json)})
+    console.log("Serving Login")
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockUser)})
   });
 
   await page.route(environment.apiUrl + 'plugin/version?**', async route => {
-    await route.fulfill({contentType: "application/json", status: 200, body: '0.8.7.0'});
+    console.log("Serving Version")
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify('0.8.7.0')});
   });
 
   await page.route(environment.apiUrl + 'device', async route => {
-    console.log('his dark devices')
-    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify("[]")});
+    console.log("Serving device");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([])});
   });
 
   await page.route(environment.apiUrl + 'license/valid-license?**', async route => {
+    console.log("Serving License")
     await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(false)});
   });
 
   await page.route(environment.hubUrl + 'messages/negotiate?**', async route => {
-    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify({"negotiateVersion":1,"connectionId":"CkiMkPYyP0yzWnGbPdQDpQ","connectionToken":"gMyUQzklsSovnbLmprJgPA","availableTransports":[{"transport":"WebSockets","transferFormats":["Text","Binary"]},{"transport":"ServerSentEvents","transferFormats":["Text"]},{"transport":"LongPolling","transferFormats":["Text","Binary"]}]})});
+    console.log("Serving Messages")
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify({"negotiateVersion":1,"connectionId":"CkiMkPYyP0yzWnGbPdQDpQ","connectionToken":"gMyUQzklsSovnbLmprJgPA","availableTransports":[{"transport":"WebSockets","transferFormats":["Text","Binary"]}]})});
+  });
+
+  await page.routeWebSocket('ws://'+ environment.hubUrl.slice(7) + 'messages?**', ws => {
+    console.log("Serving on WebSocket");
+    ws.onMessage(message => {
+      switch (message) {
+        case "{'protocol':'json','version':1}":
+          ws.send(JSON.stringify({}));
+          ws.send(JSON.stringify({"type":1,"target":"OnlineUsers","arguments":[["admin"]]}));
+          break;
+        default:
+          ws.send("{}");
+          break;
+       }
+    });
   });
 
   await page.route(environment.apiUrl + 'stream/dashboard?**', async route => {
-    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([{"id":18,"name":"読んでいる本","isProvided":false,"order":0,"smartFilterEncoded":"name=%E8%AA%AD%E3%82%93%E3%81%A7%E3%81%84%E3%82%8B%E6%9C%AC&stmts=comparison%253D8%25C2%25A6field%253D7%25C2%25A6value%253D3%EF%BF%BDcomparison%253D0%25C2%25A6field%253D19%25C2%25A6value%253D3%EF%BF%BDcomparison%253D9%25C2%25A6field%253D20%25C2%25A6value%253D100%EF%BF%BDcomparison%253D1%25C2%25A6field%253D20%25C2%25A6value%253D0&sortOptions=sortField%3D7%C2%A6isAscending%3DFalse&limitTo=0&combination=1","smartFilterId":6,"streamType":4,"visible":true},{"id":75,"name":"読んでいる漫画","isProvided":false,"order":1,"smartFilterEncoded":"name=%E8%AA%AD%E3%82%93%E3%81%A7%E3%81%84%E3%82%8B%E6%BC%AB%E7%94%BB&stmts=comparison%253D3%25C2%25A6field%253D20%25C2%25A6value%253D100%EF%BF%BDcomparison%253D1%25C2%25A6field%253D20%25C2%25A6value%253D0%EF%BF%BDcomparison%253D0%25C2%25A6field%253D19%25C2%25A6value%253D5&sortOptions=sortField%3D7%C2%A6isAscending%3DFalse&limitTo=0&combination=1","smartFilterId":12,"streamType":4,"visible":true},{"id":20,"name":"Continue Reading","isProvided":false,"order":2,"smartFilterEncoded":"name=Continue%20Reading&stmts=comparison%253D0%25C2%25A6field%253D19%25C2%25A6value%253D4%EF%BF%BDcomparison%253D3%25C2%25A6field%253D20%25C2%25A6value%253D100%EF%BF%BDcomparison%253D1%25C2%25A6field%253D20%25C2%25A6value%253D0&sortOptions=sortField%3D7%C2%A6isAscending%3DFalse&limitTo=0&combination=1","smartFilterId":8,"streamType":4,"visible":true},{"id":14,"name":"Want to read","isProvided":false,"order":3,"smartFilterEncoded":"name=Want%20to%20read&stmts=comparison%253D3%25C2%25A6field%253D20%25C2%25A6value%253D1%EF%BF%BDcomparison%253D0%25C2%25A6field%253D26%25C2%25A6value%253Dtrue&sortOptions=sortField%3D9%C2%A6isAscending%3DTrue&limitTo=0&combination=1","smartFilterId":2,"streamType":4,"visible":true},{"id":2,"name":"recently-updated","isProvided":true,"order":4,"smartFilterEncoded":null,"smartFilterId":0,"streamType":2,"visible":true},{"id":3,"name":"newly-added","isProvided":true,"order":5,"smartFilterEncoded":null,"smartFilterId":0,"streamType":3,"visible":true}])});
+    const recentlyUpdated = {
+      id: 2,
+      name: "recently-updated",
+      isProvided: true,
+      order: 2,
+      smartFilterEncoded: undefined,
+      smartFilterId: 0,
+      streamType: StreamType.RecentlyUpdated,
+      visible:true,
+      api: Observable.prototype
+    } as DashboardStream;
+
+    const newlyAdded = {
+      id: 3,
+      name: "newly-added",
+      isProvided: true,
+      order: 1,
+      smartFilterEncoded: undefined,
+      smartFilterId: 0,
+      streamType: StreamType.NewlyAdded,
+      visible: true,
+      api: Observable.prototype
+    } as DashboardStream;
+
+    console.log("Serving Dashboard Streams")
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([recentlyUpdated, newlyAdded])});
   });
 
   await page.route(environment.apiUrl + 'scrobbling/token-expired?**', async route => {
@@ -94,15 +263,38 @@ test("cache worker should be created on cache attempt", async ({page}) => {
   });
 
   await page.route(environment.apiUrl + 'stream/sidenav?**', async route => {
-    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([{"id":17,"name":"Japanese","isProvided":false,"order":0,"smartFilterEncoded":null,"smartFilterId":0,"externalSourceId":0,"externalSource":null,"streamType":4,"visible":true,"libraryId":3,"library":{"id":3,"name":"Japanese","lastScanned":"2025-09-29T00:00:44.9015685","type":2,"coverImage":null,"folderWatching":true,"includeInDashboard":true,"includeInRecommended":true,"manageCollections":false,"manageReadingLists":false,"includeInSearch":true,"allowScrobbling":false,"folders":["/library"],"collapseSeriesRelationships":false,"libraryFileTypes":[2,3],"excludePatterns":[""],"allowMetadataMatching":true,"enableMetadata":true}},{"id":98,"name":"Manga","isProvided":false,"order":1,"smartFilterEncoded":null,"smartFilterId":0,"externalSourceId":0,"externalSource":null,"streamType":4,"visible":true,"libraryId":5,"library":{"id":5,"name":"Manga","lastScanned":"2025-09-29T00:00:48.8383244","type":0,"coverImage":null,"folderWatching":true,"includeInDashboard":true,"includeInRecommended":true,"manageCollections":true,"manageReadingLists":true,"includeInSearch":true,"allowScrobbling":false,"folders":["/manga"],"collapseSeriesRelationships":false,"libraryFileTypes":[1,2],"excludePatterns":[""],"allowMetadataMatching":true,"enableMetadata":true}},{"id":18,"name":"English","isProvided":false,"order":2,"smartFilterEncoded":null,"smartFilterId":0,"externalSourceId":0,"externalSource":null,"streamType":4,"visible":true,"libraryId":4,"library":{"id":4,"name":"English","lastScanned":"2025-09-29T00:00:47.067679","type":2,"coverImage":null,"folderWatching":true,"includeInDashboard":true,"includeInRecommended":true,"manageCollections":false,"manageReadingLists":false,"includeInSearch":true,"allowScrobbling":false,"folders":["/english"],"collapseSeriesRelationships":false,"libraryFileTypes":[2,3],"excludePatterns":[""],"allowMetadataMatching":true,"enableMetadata":true}},{"id":1,"name":"want-to-read","isProvided":true,"order":3,"smartFilterEncoded":null,"smartFilterId":0,"externalSourceId":0,"externalSource":null,"streamType":8,"visible":true,"libraryId":0,"library":null},{"id":5,"name":"all-series","isProvided":true,"order":4,"smartFilterEncoded":null,"smartFilterId":0,"externalSourceId":0,"externalSource":null,"streamType":7,"visible":true,"libraryId":0,"library":null},{"id":2,"name":"collections","isProvided":true,"order":5,"smartFilterEncoded":null,"smartFilterId":0,"externalSourceId":0,"externalSource":null,"streamType":1,"visible":true,"libraryId":0,"library":null},{"id":4,"name":"bookmarks","isProvided":true,"order":6,"smartFilterEncoded":null,"smartFilterId":0,"externalSourceId":0,"externalSource":null,"streamType":3,"visible":true,"libraryId":0,"library":null},{"id":226,"name":"browse-authors","isProvided":true,"order":6,"smartFilterEncoded":null,"smartFilterId":0,"externalSourceId":0,"externalSource":null,"streamType":9,"visible":true,"libraryId":0,"library":null}])});
+    const sideNav = {
+      id: 2,
+      name: mockEpubLib.name,
+      isProvided: false,
+      order: 1,
+      smartFilterEncoded: undefined,
+      smartFilterId: 0,
+      streamType: SideNavStreamType.Library,
+      externalSourceId: 0,
+      externalSource: undefined,
+      visible: true,
+      libraryId: mockEpubLib.id,
+      library: mockEpubLib
+    } as SideNavStream;
+
+    console.log("Serving Sidenav")
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([sideNav])});
   });
 
   await page.route(environment.apiUrl + 'library/libraries', async route => {
-    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([{"id":4,"name":"English","lastScanned":"2025-09-29T00:00:47.067679","type":2,"coverImage":null,"folderWatching":true,"includeInDashboard":true,"includeInRecommended":true,"manageCollections":false,"manageReadingLists":false,"includeInSearch":true,"allowScrobbling":false,"folders":["/english"],"collapseSeriesRelationships":false,"libraryFileTypes":[2,3],"excludePatterns":[""],"allowMetadataMatching":true,"enableMetadata":true},{"id":3,"name":"Japanese","lastScanned":"2025-09-29T00:00:44.9015685","type":2,"coverImage":null,"folderWatching":true,"includeInDashboard":true,"includeInRecommended":true,"manageCollections":false,"manageReadingLists":false,"includeInSearch":true,"allowScrobbling":false,"folders":["/library"],"collapseSeriesRelationships":false,"libraryFileTypes":[2,3],"excludePatterns":[""],"allowMetadataMatching":true,"enableMetadata":true},{"id":5,"name":"Manga","lastScanned":"2025-09-29T00:00:48.8383244","type":0,"coverImage":null,"folderWatching":true,"includeInDashboard":true,"includeInRecommended":true,"manageCollections":true,"manageReadingLists":true,"includeInSearch":true,"allowScrobbling":false,"folders":["/manga"],"collapseSeriesRelationships":false,"libraryFileTypes":[1,2],"excludePatterns":[""],"allowMetadataMatching":true,"enableMetadata":true}])});
+    console.log("Serving libraries");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([mockEpubLib])});
   });
 
-  await page.route(environment.apiUrl + 'filter/decode', async route => {
-    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify({"id":0,"name":"読んでいる本","statements":[{"comparison":8,"field":7,"value":"3"},{"comparison":0,"field":19,"value":"3"},{"comparison":9,"field":20,"value":"100"},{"comparison":1,"field":20,"value":"0"}],"combination":1,"sortOptions":{"sortField":7,"isAscending":false},"limitTo":0})});
+  await page.route(environment.apiUrl + 'series/recently-updated-series', async route => {
+    console.log("Serving recently updated");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([mockEpubSeriesGroup])});
+  });
+
+  await page.route(environment.apiUrl + 'series/recently-added-v2?*', async route => {
+    console.log("Serving recently added");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([mockEpubSeries])});
   });
 
   await page.goto('/login');
@@ -112,9 +304,15 @@ test("cache worker should be created on cache attempt", async ({page}) => {
   await page.getByPlaceholder("Password").fill('adminadmin');
   await page.getByRole('button', { name: 'Sign in' }).click();
   await page.waitForURL('/home');
+  await page.waitForLoadState('load', {timeout: 10000} );
 
   // initially worker count should be 0
   expect(page.workers().length).toBe(0);
-
-  //
+  expect(page.url()).toBe('http://localhost:4200/home');
+  await page.pause();
+  await expect(page.getByRole('button', { name: mockUser.username })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Home'})).toBeVisible();
+  await expect(page.getByRole('link', { name: mockEpubLib.name})).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Recently Updated Series'})).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Newly Added Series'})).toBeVisible();
 });
