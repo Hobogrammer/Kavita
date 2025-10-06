@@ -1,20 +1,31 @@
 ﻿import {test, expect} from '@playwright/test';
 import { Observable } from "rxjs";
+import { Chapter } from "src/app/_models/chapter";
 import { DashboardStream } from "src/app/_models/dashboard/dashboard-stream";
 import { StreamType } from "src/app/_models/dashboard/stream-type.enum";
 import { FileTypeGroup } from "src/app/_models/library/file-type-group.enum";
 import { Library, LibraryType } from "src/app/_models/library/library";
+import { MangaFile } from "src/app/_models/manga-file";
 import { MangaFormat } from "src/app/_models/manga-format";
 import { AgeRating } from "src/app/_models/metadata/age-rating";
 import { AgeRestriction } from "src/app/_models/metadata/age-restriction";
+import { PublicationStatus } from "src/app/_models/metadata/publication-status";
+import { SeriesMetadata } from "src/app/_models/metadata/series-metadata";
 import { PageLayoutMode } from "src/app/_models/page-layout-mode";
 import { Preferences } from "src/app/_models/preferences/preferences";
 import { SiteTheme } from "src/app/_models/preferences/site-theme";
+import { Rating, RatingAuthority } from "src/app/_models/rating";
 import { Series } from "src/app/_models/series";
+import { HourEstimateRange } from "src/app/_models/series-detail/hour-estimate-range";
+import { RelatedSeries } from "src/app/_models/series-detail/related-series";
+import { SeriesDetail } from "src/app/_models/series-detail/series-detail";
+import { SeriesDetailPlus } from "src/app/_models/series-detail/series-detail-plus";
 import { SeriesGroup } from "src/app/_models/series-group";
 import { SideNavStream } from "src/app/_models/sidenav/sidenav-stream";
 import { SideNavStreamType } from "src/app/_models/sidenav/sidenav-stream-type.enum";
 import { User } from "src/app/_models/user";
+import { Volume } from "src/app/_models/volume";
+import { ScrobbleProvider } from "src/app/_services/scrobbling.service";
 import {environment} from "src/environments/environment";
 
 test("cache worker should be created on cache attempt", async ({page}) => {
@@ -69,8 +80,7 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     ],
     collapseSeriesRelationships:false,
     libraryFileTypes:[
-      FileTypeGroup.Epub,
-      FileTypeGroup.Pdf
+      FileTypeGroup.Epub
     ],
     excludePatterns:[""],
     allowMetadataMatching:false,
@@ -78,10 +88,6 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     removePrefixForSortName: true,
     manageReadingLists: false
   } as Library;
-
-  const mockEpubSeriesDetail = {
-
-  };
 
   const mockEpubSeriesGroup = {
     seriesName:"The Test Series",
@@ -93,7 +99,7 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     chapterId: 0,
     volumeId: 0,
     id: 0,
-    count: 2
+    count: 1
   } as SeriesGroup;
 
   const mockEpubSeries = {
@@ -297,6 +303,7 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([mockEpubSeries])});
   });
 
+  // Fill in login form
   await page.goto('/login');
 
   await expect(page.getByLabel('Username')).toBeVisible();
@@ -304,7 +311,6 @@ test("cache worker should be created on cache attempt", async ({page}) => {
   await page.getByPlaceholder("Password").fill('adminadmin');
   await page.getByRole('button', { name: 'Sign in' }).click();
   await page.waitForURL('/home');
-  await page.waitForLoadState('load', {timeout: 10000} );
 
   // initially worker count should be 0
   expect(page.workers().length).toBe(0);
@@ -315,4 +321,311 @@ test("cache worker should be created on cache attempt", async ({page}) => {
   await expect(page.getByRole('link', { name: mockEpubLib.name})).toBeVisible();
   await expect(page.getByRole('link', { name: 'Recently Updated Series'})).toBeVisible();
   await expect(page.getByRole('link', { name: 'Newly Added Series'})).toBeVisible();
+
+  // mock api and data to load series page
+
+  await page.route(environment.apiUrl + 'user/has-library-access?*', async route => {
+    console.log("Serving Has-Library-Access");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(true)});
+  });
+
+  await page.route(environment.apiUrl + 'scrobbling/has-hold?*', async route => {
+    console.log("Serving scrobbling hold");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(false)});
+  });
+
+  await page.route(environment.apiUrl + 'scrobbling/library-allows-scrobbling?*', async route => {
+    console.log("Serving library allow scrobbling");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(false)});
+  });
+
+  const mockEpubSeriesMetadata = {
+    seriesId: mockEpubSeries.id,
+    summary: "All about TEST",
+
+    totalCount: 0, // ask joe about this eventually
+    maxCount: 1, // ask joe about this eventually
+
+    genres: [],
+    tags: [],
+    writers: [],
+    coverArtists: [],
+    publishers: [],
+    characters: [],
+    pencillers: [],
+    inkers: [],
+    imprints: [],
+    colorists: [],
+    letterers: [],
+    editors: [],
+    translators: [],
+    teams: [],
+    locations: [],
+    ageRating: AgeRating.Everyone,
+    releaseYear: 1988,
+    language: "en",
+    publicationStatus: PublicationStatus.Completed,
+    webLinks: "",
+
+    summaryLocked: false,
+    genresLocked: false,
+    tagsLocked: false,
+    writerLocked: false,
+    coverArtistLocked: false,
+    publisherLocked: false,
+    characterLocked: false,
+    pencillerLocked: false,
+    inkerLocked: false,
+    imprintLocked: false,
+    coloristLocked: false,
+    lettererLocked: false,
+    editorLocked: false,
+    translatorLocked: false,
+    teamLocked: false,
+    locationLocked: false,
+    ageRatingLocked: false,
+    releaseYearLocked: false,
+    languageLocked: false,
+    publicationStatusLocked: false
+  } as SeriesMetadata;
+
+  await page.route(environment.apiUrl + 'series/metadata?*', async route => {
+    console.log("Serving Series Metadata");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockEpubSeriesMetadata)});
+  });
+
+  await page.route(environment.apiUrl + 'series/want-to-read?*', async route => {
+    console.log("Serving Want to Read");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(false)});
+  });
+
+  await page.route(environment.apiUrl + 'readinglist/list-for-series?*', async route => {
+    console.log("Serving readinglist");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([])});
+  });
+
+  await page.route(environment.apiUrl + 'collection/all-series?*', async route => {
+    console.log("Serving collection for series");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([])});
+  });
+
+  await page.route(environment.apiUrl + 'reader/series-bookmarks?*', async route => {
+    console.log("Serving reader service series bookmarks");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([])});
+  });
+
+  const mockEpubSeriesTimeLeft = {
+    minHours: 1,
+    maxHours: 999,
+    avgHours: 666
+  } as HourEstimateRange;
+
+  await page.route(environment.apiUrl + 'reader/time-left?*', async route => {
+    console.log("Serving writer service time left");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockEpubSeriesTimeLeft)});
+  });
+
+  await page.route(environment.apiUrl + 'reader/has-progress?*', async route => {
+    console.log("Serving reader service has progress");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(false)});
+  });
+
+  // reader/continue-point? -- might not get called since `false` is returned for `reader/has-progress`
+
+  await page.route(environment.apiUrl + 'type/*', async route => {
+    console.log("Serving library service type");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockEpubLib.type)});
+  });
+
+  await page.route(environment.apiUrl + 'series/*', async route => {
+    console.log("Serving series service series");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockEpubSeries)});
+  });
+
+  const mockEpubSeriesDetailPlus = {
+    reviews: []
+  } as SeriesDetailPlus;
+
+  await page.route(environment.apiUrl + 'metadata/series-detail-plus?*', async route => {
+    console.log("Serving metadata service series detail plus");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockEpubSeriesDetailPlus)});
+  });
+
+  // series/all-related?
+  const mockEpubSeriesRelated = {
+    sourceSeriesId: mockEpubSeries.id,
+    sequels: [],
+    prequels: [],
+    spinOffs: [],
+    adaptations: [],
+    sideStories: [],
+    characters: [],
+    contains: [],
+    others: [],
+    alternativeSettings: [],
+    alternativeVersions: [],
+    doujinshis: [],
+    parent: [],
+    editions: [],
+    annuals: []
+  } as RelatedSeries;
+
+  await page.route(environment.apiUrl + 'series/all-related?*', async route => {
+    console.log("Serving SeriesService related series");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockEpubSeriesRelated)});
+  });
+
+  // TODO: actually create this test asset
+  const mockMangaFile = {
+    id: 587,
+    filePath: mockEpubSeries.folderPath + "/Test Series - Vol 1.epub",
+    pages: 234,
+    format: MangaFormat.EPUB,
+    created: "2023-05-19T21:16:18.9677091",
+    bytes: 10000
+  } as MangaFile;
+
+  const mockVolumeChapter = {
+    id: 43,
+    range: "-100000",
+    number: "-100000",
+    minNumber: -100000,
+    maxNumber: -100000,
+    files: [
+      mockMangaFile
+    ],
+    coverImage: "cover.png",
+    coverImageLocked: false,
+    pages: 234,
+    volumeId: 0,
+    pagesRead: 0,
+    isSpecial: false,
+    title: "Book -100000",
+    createdUtc: "2023-05-19T21:16:18.9677091",
+    titleName: "Testing, the Beginning",
+    summary: "Lets start TESTING",
+    minHoursToRead: 1,
+    maxHoursToRead: 999,
+    avgHoursToRead: 666,
+    ageRating: AgeRating.Everyone,
+    releaseDate: "",
+    wordCount: 45083,
+    volumeTitle: "Testing, the Beginning",
+    webLinks: "",
+    isbn: "",
+    lastReadingProgress: "",
+    sortOrder: -10000,
+    primaryColor: "",
+    secondaryColor: "",
+    year: "1988",
+    language: mockEpubSeriesMetadata.language,
+    publicationStatus: PublicationStatus.Completed,
+    count: 1,
+    totalCount: 0,
+    genres: [],
+    tags: [],
+    writers: [],
+    coverArtists: [],
+    publishers: [],
+    characters: [],
+    pencillers: [],
+    inkers: [],
+    imprints: [],
+    colorists: [],
+    letterers: [],
+    editors: [],
+    translators: [],
+    teams: [],
+    locations: [],
+    summaryLocked: false,
+    genresLocked: false,
+    tagsLocked: false,
+    writerLocked: false,
+    coverArtistLocked: false,
+    publisherLocked: false,
+    characterLocked: false,
+    pencillerLocked: false,
+    inkerLocked: false,
+    imprintLocked: false,
+    coloristLocked: false,
+    lettererLocked: false,
+    editorLocked: false,
+    translatorLocked: false,
+    teamLocked: false,
+    locationLocked: false,
+    ageRatingLocked: false,
+    languageLocked: false,
+    isbnLocked: false,
+    titleNameLocked: false,
+    sortOrderLocked: false,
+    releaseDateLocked: false,
+  } as Chapter;
+
+  const mockVolume = {
+    id: 23,
+    minNumber: 1,
+    maxNumber: 1,
+    name: "Testing, The Beginning",
+    createdUtc: "2023-05-19T21:16:18.9677091",
+    lastModifiedUtc: "2023-05-19T21:16:18.9677091",
+    pages: 234,
+    pagesRead: 0,
+    wordCount: 0,
+    chapters: [
+      mockVolumeChapter
+    ],
+    timeEstimate: mockEpubSeriesTimeLeft,
+    minHoursToRead: 1,
+    maxHoursToRead: 999,
+    avgHoursToRead: 666,
+
+    coverImage: "cover.png",
+    coverImageLocked: false,
+    primaryColor: "",
+    secondaryColor: "",
+  } as Volume;
+
+  const mockEpubSeriesDetail = {
+    specials: [],
+    chapters: [],
+    volumes: [
+      mockVolume,
+    ],
+    storylineChapters: [],
+    unreadCount: 1,
+    totalCount: 1,
+  } as SeriesDetail;
+
+  await page.route(environment.apiUrl + 'series/series-detail?*', async route => {
+    console.log("Serving SeriesService series detail");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockEpubSeriesDetail)});
+  });
+
+  const mockEpubSeriesRating = {
+    averageScore: 0,
+    meanScore: 0,
+    favoriteCount: 0,
+    provider: ScrobbleProvider.Kavita,
+    providerUrl: undefined,
+    authority: RatingAuthority.User
+  } as Rating;
+
+  await page.route(environment.apiUrl + 'rating/overall-series?*', async route => {
+    console.log("Serving ReviewService overall rating");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockEpubSeriesRating)});
+  });
+
+  // TODO: create this test asset
+  await page.route(environment.apiUrl + 'image/series-cover?*', async route => {
+    console.log("Serving ImageService cover");
+    await route.fulfill({contentType: "image/png", status: 200, path: "../data/cover.png"});
+  });
+
+  // TODO: create this test asset
+  await page.route(environment.apiUrl + 'image/publisher?*', async route => {
+    console.log('Serving ImageService publisher');
+    await route.fulfill({contentType: "image/png", status: 200, path: "../data/publisher.png"});
+  });
+
+  // Click on series to go to series page
 });
