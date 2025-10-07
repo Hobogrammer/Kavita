@@ -9,6 +9,7 @@ import { MangaFile } from "src/app/_models/manga-file";
 import { MangaFormat } from "src/app/_models/manga-format";
 import { AgeRating } from "src/app/_models/metadata/age-rating";
 import { AgeRestriction } from "src/app/_models/metadata/age-restriction";
+import { Person } from "src/app/_models/metadata/person";
 import { PublicationStatus } from "src/app/_models/metadata/publication-status";
 import { SeriesMetadata } from "src/app/_models/metadata/series-metadata";
 import { PageLayoutMode } from "src/app/_models/page-layout-mode";
@@ -23,6 +24,7 @@ import { SeriesDetailPlus } from "src/app/_models/series-detail/series-detail-pl
 import { SeriesGroup } from "src/app/_models/series-group";
 import { SideNavStream } from "src/app/_models/sidenav/sidenav-stream";
 import { SideNavStreamType } from "src/app/_models/sidenav/sidenav-stream-type.enum";
+import { Tag } from "src/app/_models/tag";
 import { User } from "src/app/_models/user";
 import { Volume } from "src/app/_models/volume";
 import { ScrobbleProvider } from "src/app/_services/scrobbling.service";
@@ -102,6 +104,208 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     count: 1
   } as SeriesGroup;
 
+  const mockEpubSeriesTimeLeft = {
+    minHours: 1,
+    maxHours: 999,
+    avgHours: 666
+  } as HourEstimateRange;
+
+  const mockPublisher = {
+    id: 87,
+    name: "Mock Publisher",
+    description: "A mock publisher. Please don't send manuscripts",
+    aliases: [],
+    coverImageLocked: false,
+    primaryColor: "",
+    secondaryColor: "",
+  } as Person;
+
+  const mockWriter = {
+    id: 56,
+    name: "Arthur Bookington",
+    description: "Probably puts words on pages" ,
+    aliases: [],
+    coverImageLocked: false,
+    primaryColor: "",
+    secondaryColor: "",
+  } as Person;
+
+  const mockTag = {
+    id: 39,
+    title: "Tag"
+  } as Tag;
+
+  const mockEpubSeriesMetadata = {
+    seriesId: 1,
+    summary: "All about TEST",
+
+    totalCount: 0, // ask joe about this eventually
+    maxCount: 1, // ask joe about this eventually
+
+    genres: [],
+    tags: [
+      mockTag
+    ],
+    writers: [
+      mockWriter,
+    ],
+    coverArtists: [],
+    publishers: [
+      mockPublisher
+    ],
+    characters: [],
+    pencillers: [],
+    inkers: [],
+    imprints: [],
+    colorists: [],
+    letterers: [],
+    editors: [],
+    translators: [],
+    teams: [],
+    locations: [],
+    ageRating: AgeRating.Everyone,
+    releaseYear: 1988,
+    language: "en",
+    publicationStatus: PublicationStatus.Completed,
+    webLinks: "",
+
+    summaryLocked: false,
+    genresLocked: false,
+    tagsLocked: false,
+    writerLocked: false,
+    coverArtistLocked: false,
+    publisherLocked: false,
+    characterLocked: false,
+    pencillerLocked: false,
+    inkerLocked: false,
+    imprintLocked: false,
+    coloristLocked: false,
+    lettererLocked: false,
+    editorLocked: false,
+    translatorLocked: false,
+    teamLocked: false,
+    locationLocked: false,
+    ageRatingLocked: false,
+    releaseYearLocked: false,
+    languageLocked: false,
+    publicationStatusLocked: false
+  } as SeriesMetadata;
+
+  const mockMangaFile = {
+    id: 587,
+    filePath:"/mockEpub/Test Series - Vol 1.epub",
+    pages: 234,
+    format: MangaFormat.EPUB,
+    created: "2023-05-19T21:16:18.9677091",
+    bytes: 10000
+  } as MangaFile;
+
+  const mockVolumeChapter = {
+    id: 43,
+    range: "-100000",
+    number: "-100000",
+    minNumber: -100000,
+    maxNumber: -100000,
+    files: [
+      mockMangaFile
+    ],
+    coverImage: "cover.png",
+    coverImageLocked: false,
+    pages: 234,
+    volumeId: 0,
+    pagesRead: 0,
+    isSpecial: false,
+    title: "Book -100000",
+    createdUtc: "2023-05-19T21:16:18.9677091",
+    titleName: "Testing, the Beginning",
+    summary: "Lets start TESTING",
+    minHoursToRead: 1,
+    maxHoursToRead: 999,
+    avgHoursToRead: 666,
+    ageRating: AgeRating.Everyone,
+    releaseDate: "",
+    wordCount: 45083,
+    volumeTitle: "Testing, the Beginning",
+    webLinks: "",
+    isbn: "",
+    lastReadingProgress: "",
+    sortOrder: -10000,
+    primaryColor: "#3E41FF",
+    secondaryColor: "#FB513D",
+    year: "1988",
+    language: mockEpubSeriesMetadata.language,
+    publicationStatus: PublicationStatus.Completed,
+    count: 1,
+    totalCount: 0,
+    genres: [],
+    tags: [
+      mockTag
+    ],
+    writers: [
+      mockWriter
+    ],
+    coverArtists: [],
+    publishers: [
+      mockPublisher
+    ],
+    characters: [],
+    pencillers: [],
+    inkers: [],
+    imprints: [],
+    colorists: [],
+    letterers: [],
+    editors: [],
+    translators: [],
+    teams: [],
+    locations: [],
+    summaryLocked: false,
+    genresLocked: false,
+    tagsLocked: false,
+    writerLocked: false,
+    coverArtistLocked: false,
+    publisherLocked: false,
+    characterLocked: false,
+    pencillerLocked: false,
+    inkerLocked: false,
+    imprintLocked: false,
+    coloristLocked: false,
+    lettererLocked: false,
+    editorLocked: false,
+    translatorLocked: false,
+    teamLocked: false,
+    locationLocked: false,
+    ageRatingLocked: false,
+    languageLocked: false,
+    isbnLocked: false,
+    titleNameLocked: false,
+    sortOrderLocked: false,
+    releaseDateLocked: false,
+  } as Chapter;
+
+  const mockVolume = {
+    id: 23,
+    minNumber: 1,
+    maxNumber: 1,
+    name: "Testing, The Beginning",
+    createdUtc: "2023-05-19T21:16:18.9677091",
+    lastModifiedUtc: "2023-05-19T21:16:18.9677091",
+    pages: 234,
+    pagesRead: 0,
+    wordCount: 0,
+    chapters: [
+      mockVolumeChapter
+    ],
+    timeEstimate: mockEpubSeriesTimeLeft,
+    minHoursToRead: 1,
+    maxHoursToRead: 999,
+    avgHoursToRead: 666,
+
+    coverImage: "cover.png",
+    coverImageLocked: false,
+    primaryColor: "",
+    secondaryColor: "",
+  } as Volume;
+
   const mockEpubSeries = {
     id: mockEpubSeriesGroup.seriesId,
     name: mockEpubSeriesGroup.seriesName,
@@ -134,7 +338,31 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     primaryColor: "#633DFF",
     secondaryColor: "#F66E58",
     nameLocked: false,
-    volumes: [],
+    volumes: [
+      mockVolume
+    ],
+    webLinks: "", // not defined in Series object but required to successfully load
+    publishers: [ // "    "       "   "     "     "    "       "    "           "
+      mockPublisher
+    ],
+    tags: [
+      mockTag
+    ],
+    writers: [
+      mockWriter
+    ],
+    genres: [],
+    coverArtists: [],
+    characters: [],
+    pencillers: [],
+    inkers: [],
+    imprints: [],
+    colorists: [],
+    letterers: [],
+    editors: [],
+    translators: [],
+    teams: [],
+    locations: [],
   } as Series;
 
   // Create a mostly complete JWToken
@@ -315,7 +543,6 @@ test("cache worker should be created on cache attempt", async ({page}) => {
   // initially worker count should be 0
   expect(page.workers().length).toBe(0);
   expect(page.url()).toBe('http://localhost:4200/home');
-  await page.pause();
   await expect(page.getByRole('button', { name: mockUser.username })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Home'})).toBeVisible();
   await expect(page.getByRole('link', { name: mockEpubLib.name})).toBeVisible();
@@ -324,7 +551,7 @@ test("cache worker should be created on cache attempt", async ({page}) => {
 
   // mock api and data to load series page
 
-  await page.route(environment.apiUrl + 'user/has-library-access?*', async route => {
+  await page.route(environment.apiUrl + 'users/has-library-access?***', async route => {
     console.log("Serving Has-Library-Access");
     await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(true)});
   });
@@ -339,67 +566,17 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(false)});
   });
 
-  const mockEpubSeriesMetadata = {
-    seriesId: mockEpubSeries.id,
-    summary: "All about TEST",
-
-    totalCount: 0, // ask joe about this eventually
-    maxCount: 1, // ask joe about this eventually
-
-    genres: [],
-    tags: [],
-    writers: [],
-    coverArtists: [],
-    publishers: [],
-    characters: [],
-    pencillers: [],
-    inkers: [],
-    imprints: [],
-    colorists: [],
-    letterers: [],
-    editors: [],
-    translators: [],
-    teams: [],
-    locations: [],
-    ageRating: AgeRating.Everyone,
-    releaseYear: 1988,
-    language: "en",
-    publicationStatus: PublicationStatus.Completed,
-    webLinks: "",
-
-    summaryLocked: false,
-    genresLocked: false,
-    tagsLocked: false,
-    writerLocked: false,
-    coverArtistLocked: false,
-    publisherLocked: false,
-    characterLocked: false,
-    pencillerLocked: false,
-    inkerLocked: false,
-    imprintLocked: false,
-    coloristLocked: false,
-    lettererLocked: false,
-    editorLocked: false,
-    translatorLocked: false,
-    teamLocked: false,
-    locationLocked: false,
-    ageRatingLocked: false,
-    releaseYearLocked: false,
-    languageLocked: false,
-    publicationStatusLocked: false
-  } as SeriesMetadata;
-
   await page.route(environment.apiUrl + 'series/metadata?*', async route => {
     console.log("Serving Series Metadata");
     await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockEpubSeriesMetadata)});
   });
 
-  await page.route(environment.apiUrl + 'series/want-to-read?*', async route => {
+  await page.route(environment.apiUrl + 'want-to-read?*', async route => {
     console.log("Serving Want to Read");
     await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(false)});
   });
 
-  await page.route(environment.apiUrl + 'readinglist/list-for-series?*', async route => {
+  await page.route(environment.apiUrl + 'readinglist/lists-for-series?*', async route => {
     console.log("Serving readinglist");
     await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([])});
   });
@@ -414,12 +591,6 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([])});
   });
 
-  const mockEpubSeriesTimeLeft = {
-    minHours: 1,
-    maxHours: 999,
-    avgHours: 666
-  } as HourEstimateRange;
-
   await page.route(environment.apiUrl + 'reader/time-left?*', async route => {
     console.log("Serving writer service time left");
     await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockEpubSeriesTimeLeft)});
@@ -430,9 +601,12 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(false)});
   });
 
-  // reader/continue-point? -- might not get called since `false` is returned for `reader/has-progress`
+  await page.route(environment.apiUrl + 'reader/continue-point?*', async route => {
+    console.log("Serving continue point");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockVolumeChapter)});
+  });
 
-  await page.route(environment.apiUrl + 'type/*', async route => {
+  await page.route(environment.apiUrl + 'library/type?*', async route => {
     console.log("Serving library service type");
     await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockEpubLib.type)});
   });
@@ -451,7 +625,6 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockEpubSeriesDetailPlus)});
   });
 
-  // series/all-related?
   const mockEpubSeriesRelated = {
     sourceSeriesId: mockEpubSeries.id,
     sequels: [],
@@ -475,116 +648,6 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockEpubSeriesRelated)});
   });
 
-  // TODO: actually create this test asset
-  const mockMangaFile = {
-    id: 587,
-    filePath: mockEpubSeries.folderPath + "/Test Series - Vol 1.epub",
-    pages: 234,
-    format: MangaFormat.EPUB,
-    created: "2023-05-19T21:16:18.9677091",
-    bytes: 10000
-  } as MangaFile;
-
-  const mockVolumeChapter = {
-    id: 43,
-    range: "-100000",
-    number: "-100000",
-    minNumber: -100000,
-    maxNumber: -100000,
-    files: [
-      mockMangaFile
-    ],
-    coverImage: "cover.png",
-    coverImageLocked: false,
-    pages: 234,
-    volumeId: 0,
-    pagesRead: 0,
-    isSpecial: false,
-    title: "Book -100000",
-    createdUtc: "2023-05-19T21:16:18.9677091",
-    titleName: "Testing, the Beginning",
-    summary: "Lets start TESTING",
-    minHoursToRead: 1,
-    maxHoursToRead: 999,
-    avgHoursToRead: 666,
-    ageRating: AgeRating.Everyone,
-    releaseDate: "",
-    wordCount: 45083,
-    volumeTitle: "Testing, the Beginning",
-    webLinks: "",
-    isbn: "",
-    lastReadingProgress: "",
-    sortOrder: -10000,
-    primaryColor: "",
-    secondaryColor: "",
-    year: "1988",
-    language: mockEpubSeriesMetadata.language,
-    publicationStatus: PublicationStatus.Completed,
-    count: 1,
-    totalCount: 0,
-    genres: [],
-    tags: [],
-    writers: [],
-    coverArtists: [],
-    publishers: [],
-    characters: [],
-    pencillers: [],
-    inkers: [],
-    imprints: [],
-    colorists: [],
-    letterers: [],
-    editors: [],
-    translators: [],
-    teams: [],
-    locations: [],
-    summaryLocked: false,
-    genresLocked: false,
-    tagsLocked: false,
-    writerLocked: false,
-    coverArtistLocked: false,
-    publisherLocked: false,
-    characterLocked: false,
-    pencillerLocked: false,
-    inkerLocked: false,
-    imprintLocked: false,
-    coloristLocked: false,
-    lettererLocked: false,
-    editorLocked: false,
-    translatorLocked: false,
-    teamLocked: false,
-    locationLocked: false,
-    ageRatingLocked: false,
-    languageLocked: false,
-    isbnLocked: false,
-    titleNameLocked: false,
-    sortOrderLocked: false,
-    releaseDateLocked: false,
-  } as Chapter;
-
-  const mockVolume = {
-    id: 23,
-    minNumber: 1,
-    maxNumber: 1,
-    name: "Testing, The Beginning",
-    createdUtc: "2023-05-19T21:16:18.9677091",
-    lastModifiedUtc: "2023-05-19T21:16:18.9677091",
-    pages: 234,
-    pagesRead: 0,
-    wordCount: 0,
-    chapters: [
-      mockVolumeChapter
-    ],
-    timeEstimate: mockEpubSeriesTimeLeft,
-    minHoursToRead: 1,
-    maxHoursToRead: 999,
-    avgHoursToRead: 666,
-
-    coverImage: "cover.png",
-    coverImageLocked: false,
-    primaryColor: "",
-    secondaryColor: "",
-  } as Volume;
-
   const mockEpubSeriesDetail = {
     specials: [],
     chapters: [],
@@ -594,6 +657,9 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     storylineChapters: [],
     unreadCount: 1,
     totalCount: 1,
+    publishers: [
+      mockPublisher
+    ]
   } as SeriesDetail;
 
   await page.route(environment.apiUrl + 'series/series-detail?*', async route => {
@@ -615,17 +681,22 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockEpubSeriesRating)});
   });
 
-  // TODO: create this test asset
   await page.route(environment.apiUrl + 'image/series-cover?*', async route => {
     console.log("Serving ImageService cover");
-    await route.fulfill({contentType: "image/png", status: 200, path: "../data/cover.png"});
+    await route.fulfill({contentType: "image/png", status: 200, path: "src/assets/images/image-placeholder.dark.png"});
   });
 
   // TODO: create this test asset
   await page.route(environment.apiUrl + 'image/publisher?*', async route => {
     console.log('Serving ImageService publisher');
-    await route.fulfill({contentType: "image/png", status: 200, path: "../data/publisher.png"});
+    await route.fulfill({contentType: "image/png", status: 200, path: "src/assets/images/ExternalServices/MAL.png"});
   });
 
   // Click on series to go to series page
+  await page.locator('app-card-item').getByRole('link', { name: mockEpubSeries.name }).click()
+  await page.waitForURL('/library/*/series/*');
+
+  expect(page.url()).toBe('http://localhost:4200/library/' + mockEpubLib.id + '/series/' + mockEpubSeries.id);
+  await expect(page.getByText(mockEpubLib.name)).toBeVisible();
+  await expect(page.getByRole('link', { name: mockVolume.name })).toBeVisible();
 });
