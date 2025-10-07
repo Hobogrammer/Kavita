@@ -1,3 +1,4 @@
+import '@angular/compiler'; // Required to fix JIT compiler error when running playwright
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {map} from 'rxjs/operators';
