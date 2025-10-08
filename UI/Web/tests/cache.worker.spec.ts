@@ -1,6 +1,7 @@
 ﻿import {test, expect} from '@playwright/test';
 import { Observable } from "rxjs";
 import { Chapter } from "src/app/_models/chapter";
+import { ChapterDetailPlus } from "src/app/_models/chapter-detail-plus";
 import { DashboardStream } from "src/app/_models/dashboard/dashboard-stream";
 import { StreamType } from "src/app/_models/dashboard/stream-type.enum";
 import { FileTypeGroup } from "src/app/_models/library/file-type-group.enum";
@@ -686,7 +687,6 @@ test("cache worker should be created on cache attempt", async ({page}) => {
     await route.fulfill({contentType: "image/png", status: 200, path: "src/assets/images/image-placeholder.dark.png"});
   });
 
-  // TODO: create this test asset
   await page.route(environment.apiUrl + 'image/publisher?*', async route => {
     console.log('Serving ImageService publisher');
     await route.fulfill({contentType: "image/png", status: 200, path: "src/assets/images/ExternalServices/MAL.png"});
@@ -699,4 +699,41 @@ test("cache worker should be created on cache attempt", async ({page}) => {
   expect(page.url()).toBe('http://localhost:4200/library/' + mockEpubLib.id + '/series/' + mockEpubSeries.id);
   await expect(page.getByText(mockEpubLib.name)).toBeVisible();
   await expect(page.getByRole('link', { name: mockVolume.name })).toBeVisible();
+
+  await page.route(environment.apiUrl + 'volume?*', async route => {
+    console.log("Serving volume service volume");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockVolume)});
+  });
+
+  const mockChapterDetailPlus = {
+    rating: 0,
+    hasBeenRated: false,
+    reviews: [],
+    ratings: []
+  } as ChapterDetailPlus;
+
+  await page.route(environment.apiUrl + 'chapter/chapter-detail-plus?*', async route => {
+    console.log("Serving chapter detail");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockChapterDetailPlus)});
+  });
+
+  await page.route(environment.apiUrl + 'readinglist/lists-for-chapter?*', async route => {
+    console.log("Serving readinglist for chapter");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify([])});
+  });
+
+  await page.route(environment.apiUrl + 'rating/overall-chapter?*', async route => {
+    console.log("Serving rating service overall chapter");
+    await route.fulfill({contentType: "application/json", status: 200, body: JSON.stringify(mockEpubSeriesRating)});
+  });
+
+  await page.route(environment.apiUrl + 'image/volume-cover?*', async route => {
+    console.log("Serving image service volume cover");
+    await route.fulfill({contentType: "image/png", status: 200, path: "src/assets/images/image-placeholder.dark.png"});
+  });
+
+  await page.getByRole('link', { name: mockVolume.name }).click();
+  await page.waitForURL('/library/*/series/*/volume/*');
+  expect(page.url()).toBe('http://localhost:4200/library/' +
+    mockEpubLib.id + '/series/' + mockEpubSeries.id + '/volume/' + mockVolume.id);
 });
