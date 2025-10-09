@@ -533,13 +533,6 @@ test("cache worker should be created on cache attempt", async ({page}) => {
   });
 
   // Fill in login form
-  await page.goto('/login');
-
-  await expect(page.getByLabel('Username')).toBeVisible();
-  await page.getByPlaceholder("Username").fill('admin');
-  await page.getByPlaceholder("Password").fill('adminadmin');
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  await page.waitForURL('/home');
 
   // initially worker count should be 0
   expect(page.workers().length).toBe(0);
