@@ -37,7 +37,7 @@ test("cache worker should be created on cache attempt", async ({page}) => {
   const mockEpubLib = {
     id: 1,
     name: "Epub Test",
-    lastScanned: "2025-10-29t00:00:47.067679",
+    lastScanned: "2025-10-29t00:00:47.067679", // YYYY-MM-DDtHH:mm:ss.SSSSSS
     type: LibraryType.Book,
     coverImage: null,
     folderWatching: false,
