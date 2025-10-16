@@ -20,14 +20,14 @@ export class LoginPage {
     filePath: "assets/css/dark.scss",
   } as SiteTheme;
 
-  constructor(private page: Page) {}
+  constructor(private page: Page, private isAdminExist: boolean = true) {
+    // Set routes required to load login page
+    setRoute(this.page, environment.apiUrl + 'admin/exists', isAdminExist);
+    setRoute(this.page, environment.apiUrl + 'theme', [this.siteTheme]);
+    setRoute(this.page, environment.apiUrl + 'locale', localeResponse);
+  }
 
   async login(username: string, password: string) {
-    // Set routes required to load login page
-    await setRoute(this.page, environment.apiUrl + 'admin/exists', true);
-    await setRoute(this.page, environment.apiUrl + 'theme', [this.siteTheme]);
-    await setRoute(this.page, environment.apiUrl + 'locale', localeResponse);
-
     // Navigate to login page
     await this.page.goto('/login');
     await this.page.waitForLoadState();
@@ -35,6 +35,8 @@ export class LoginPage {
     // Fill login form
     await this.page.getByPlaceholder("Username").fill(username);
     await this.page.getByPlaceholder("Password").fill(password);
+
+    // Click Sign in
     await this.page.getByRole('button', { name: 'Sign in' }).click();
   }
 }
