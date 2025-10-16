@@ -1,16 +1,11 @@
 ﻿import {test, expect} from '@playwright/test';
 import {LoginPage} from "pages/LoginPage";
-import {AgeRating} from "src/app/_models/metadata/age-rating";
-import {AgeRestriction} from "src/app/_models/metadata/age-restriction";
-import {PageLayoutMode} from "src/app/_models/page-layout-mode";
-import {Preferences } from "src/app/_models/preferences/preferences";
-import {SiteTheme} from "src/app/_models/preferences/site-theme";
 import {User} from "src/app/_models/user";
 import {environment} from "src/environments/environment";
 import {setRoute} from "utils/playwright-utils";
-import TestUserBuilder from "utils/test-user-builder"
+import {UserBuilder} from "utils/user-builder";
 
-test.describe('Login functionality', () => {
+test.describe('Login page', () => {
   test('redirects to account creation flow if there is no existing admin account', async ({page}) => {
     // Set routes required to load login page
     await setRoute(page, environment.apiUrl + 'admin/exists', false);
@@ -24,51 +19,16 @@ test.describe('Login functionality', () => {
   });
 
   test('redirects to `/home` if successful', async ({page}) => {
-  const siteTheme: SiteTheme = {
-      id:1,
-      name: "Dark",
-      normalizedName: "dark",
-      fileName: "dark.scss",
-      isDefault: true,
-      provider: 1,
-      previewUrls: [""],
-      description:"Default theme shipped with Kavita",
-      author: "",
-      compatibleVersion: null,
-      selector: "bg-dark",
-      filePath: "assets/css/dark.scss",
-    } as SiteTheme;
-
-    const prefs = {
-      theme: siteTheme,
-      globalPageLayoutMode: PageLayoutMode.List,
-      blurUnreadSummaries: false,
-      promptForDownloadSize: false,
-      noTransitions: false,
-      collapseSeriesRelationships: false,
-      shareReviews: false,
-      locale: "en",
-      aniListScrobblingEnabled: false,
-      wantToReadSync: false
-    } as Preferences;
-
-    const ageRestriction = {
-      ageRating: AgeRating.NotApplicable,
-      includeUnknowns: false,
-    } as AgeRestriction;
-
-    const user: User = new TestUserBuilder()
-      .withUsername("admin")
-      .withEmail("admin@admin.com")
-      .withRoles(
+    const user: User = new UserBuilder()
+      .setUsername("admin")
+      .setEmail("admin@admin.com")
+      .addRoles(
         [
           "Admin",
           "Change Password",
           "Change Restriction",
           "Login"
         ])
-      .withPreferences(prefs)
-      .withAgeRestriction(ageRestriction)
       .build();
 
     // Set route required to sucessfully login
@@ -92,7 +52,7 @@ test.describe('Login functionality', () => {
     await loginPage.login('aUserForSure', "CamelBatterySomethingSomething");
 
     // Assert error shown and user is still shown the login page
-    await expect(page.getByRole("alert", { name: "Your credentials are not correct"})).toBeVisible();
+    await expect(page.getByRole("alert", {name: "Your credentials are not correct"})).toBeVisible();
     await expect(page).toHaveURL('/login');
   });
 });
