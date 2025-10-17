@@ -3,7 +3,7 @@ import {Library, LibraryType} from "src/app/_models/library/library";
 
 export class LibraryBuilder {
   private library: Partial<Library> = {
-    lastScanned: Date.now().toString(), // TODO: String Format YYYY-MM-DDtHH:mm:ss.SSSSSS
+    lastScanned: new Date().toISOString(),
     coverImage: null,
     folderWatching: false,
     includeInDashboard: true,
