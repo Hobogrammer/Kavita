@@ -223,7 +223,7 @@ export class SeriesBuilder {
     return this;
   }
 
-  addCoverArtists(coverArtists: Array<Genre>): this {
+  addCoverArtists(coverArtists: Array<Person>): this {
     // @ts-ignore
     this.series.coverArtists = [...coverArtists];
     return this;
@@ -279,6 +279,6 @@ export class SeriesBuilder {
     return this;
   }
   build(): Series {
-    return this.series as Series;
+    return {...this.series} as Series;
   }
 }
