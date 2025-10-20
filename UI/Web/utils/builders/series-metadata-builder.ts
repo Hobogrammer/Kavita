@@ -67,8 +67,8 @@ export class SeriesMetadataBuilder {
     return this;
   }
 
-  setPublisherStatus(publisherStatus: PublicationStatus): this {
-    this.seriesMetadata.publicationStatus = publisherStatus;
+  setPublicationStatus(publicationStatus: PublicationStatus): this {
+    this.seriesMetadata.publicationStatus = publicationStatus;
     return this;
   }
 

@@ -50,6 +50,16 @@ export class UserBuilder {
     return this;
   }
 
+  setHasRunScrobbleEventGeneration(hasRunScrobbleEventGeneration: boolean): this {
+    this.user.hasRunScrobbleEventGeneration = hasRunScrobbleEventGeneration;
+    return this;
+  }
+
+  setScrobbleEventGenerationRan(scrobbleEventGenerationRan: string): this {
+    this.user.scrobbleEventGenerationRan = scrobbleEventGenerationRan;
+    return this;
+  }
+
   build(): User {
     this.user.token = this.createJwt();
     return {...this.user} as User;

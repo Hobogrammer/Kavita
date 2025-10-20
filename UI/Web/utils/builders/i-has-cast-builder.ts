@@ -1,0 +1,3 @@
+﻿type IHasCastBuilder {
+// cast stuff
+}
