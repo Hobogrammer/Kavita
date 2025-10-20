@@ -86,7 +86,7 @@ export class SeriesBuilder {
   }
 
   setLibraryName(libraryName: string): this {
-    // @ts-ignore
+
     this.series.libraryName = libraryName;
     return this;
   }
@@ -201,7 +201,7 @@ export class SeriesBuilder {
   }
 
   addPublishers(publishers: Array<Person>): this {
-    // @ts-ignore
+
     this.series.publishers = [...publishers];
     return this;
   }
@@ -218,63 +218,51 @@ export class SeriesBuilder {
     return this;
   }
   addWriters(writers: Array<Person>): this {
-    // @ts-ignore
     this.series.writers = [...writers];
     return this;
   }
 
   addCoverArtists(coverArtists: Array<Person>): this {
-    // @ts-ignore
     this.series.coverArtists = [...coverArtists];
     return this;
   }
   addCharacters(characters: Array<Person>): this {
-    // @ts-ignore
     this.series.characters = [...characters];
     return this;
   }
   addPencillers(pencillers: Array<Person>): this {
-    // @ts-ignore
     this.series.pencillers = [...pencillers];
     return this;
   }
   addInkers(inkers: Array<Person>): this {
-    // @ts-ignore
     this.series.inkers = [...inkers];
     return this;
   }
   addImprints(imprints: Array<Person>): this {
-    // @ts-ignore
     this.series.imprints = [...imprints];
     return this;
   }
   addColorists(colorists: Array<Person>): this {
-    // @ts-ignore
     this.series.colorists = [...colorists];
     return this;
   }
   addLetterers(letterers: Array<Person>): this {
-    // @ts-ignore
     this.series.letterers = [...letterers];
     return this;
   }
   addEditors(editors: Array<Person>): this {
-    // @ts-ignore
     this.series.editors = [...editors];
     return this;
   }
   addTranslators(translators: Array<Person>): this {
-    // @ts-ignore
     this.series.translators = [...translators];
     return this;
   }
   addTeams(teams: Array<Person>): this {
-    // @ts-ignore
     this.series.teams = [...teams];
     return this;
   }
   addLocations(locations: Array<Person>): this {
-    // @ts-ignore
     this.series.locations = [...locations];
     return this;
   }

@@ -42,14 +42,6 @@ export class SeriesFactory {
     return series;
   }
 
-  static createMetadataForSeries(series: Series): SeriesMetadata {
-    const metadata = new SeriesMetadataBuilder()
-      .
-      .build();
-
-    return metadata;
-  }
-
   private createVolumes(volumeCount: number): Array<Volume> {
     const volumes: Array<Volume> = new Array<Volume>();
 
@@ -60,4 +52,11 @@ export class SeriesFactory {
 
     return volumes;
   }
+}
+export function createMetadataForSeries(series: Series): SeriesMetadata {
+  return new SeriesMetadataBuilder()
+    .setSeriesId(series.id)
+    .addWriters(series.writers)
+    .addPublishers(series.publishers)
+    .build();
 }
