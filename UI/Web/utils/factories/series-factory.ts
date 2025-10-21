@@ -1,16 +1,18 @@
 ﻿import {Library} from "src/app/_models/library/library";
 import {Series} from "src/app/_models/series";
 import {faker} from '@faker-js/faker';
-import { SeriesBuilder } from "./series-builder";
-import { Volume } from "src/app/_models/volume";
-import { MangaFormat } from "src/app/_models/manga-format";
-import { Person } from "src/app/_models/metadata/person";
-import { SeriesMetadata } from "src/app/_models/metadata/series-metadata";
-import { SeriesMetadataBuilder } from "./series-metadata-builder";
+import {Volume} from "src/app/_models/volume";
+import {MangaFormat} from "src/app/_models/manga-format";
+import {Person} from "src/app/_models/metadata/person";
+import {SeriesMetadata} from "src/app/_models/metadata/series-metadata";
+import {SeriesDetail} from "src/app/_models/series-detail/series-detail";
+import {SeriesBuilder} from "utils/builders/series-builder";
+import {SeriesMetadataBuilder} from "utils/builders/series-metadata-builder";
+
 export class SeriesFactory {
   constructor() {}
 
-  createSeries(library: Library, format: MangaFormat, volumeCount: number = 5): Series {
+  public static createSeries(library: Library, format: MangaFormat, volumeCount: number = 5): Series {
     const name: string = faker.book.series();
     const volumes: Array<Volume> = this.createVolumes(volumeCount);
     const publisher = {
@@ -42,6 +44,25 @@ export class SeriesFactory {
     return series;
   }
 
+  public static createSeriesMetadataForSeries(series: Series): SeriesMetadata {
+    return new SeriesMetadataBuilder()
+      .setSeriesId(series.id)
+      .addWriters(series.writers)
+      .addPublishers(series.publishers)
+      .build();
+  }
+
+  public static createSeriesDetailForSeries(series: Series): SeriesDetail {
+    return {
+      specials: [],
+      chapters: [],
+      volumes: series.volumes,
+      storylineChapters: [],
+      unreadCount: 1,
+      totalCount: 1,
+      publishers: series.publishers
+    } as SeriesDetail;
+  }
   private createVolumes(volumeCount: number): Array<Volume> {
     const volumes: Array<Volume> = new Array<Volume>();
 
@@ -52,11 +73,4 @@ export class SeriesFactory {
 
     return volumes;
   }
-}
-export function createMetadataForSeries(series: Series): SeriesMetadata {
-  return new SeriesMetadataBuilder()
-    .setSeriesId(series.id)
-    .addWriters(series.writers)
-    .addPublishers(series.publishers)
-    .build();
 }
