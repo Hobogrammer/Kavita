@@ -1,19 +1,13 @@
-import {AgeRating} from "src/app/_models/metadata/age-rating";
 import {AgeRestriction} from "src/app/_models/metadata/age-restriction";
-import {PageLayoutMode} from "src/app/_models/page-layout-mode";
 import {Preferences} from "src/app/_models/preferences/preferences";
 import {User} from "src/app/_models/user";
-import {defaultSiteTheme} from "utils/playwright-utils";
 
 export class UserBuilder {
-  private user: Partial<User> = {
-    refreshToken: 'aTotallyRealRefreshToken',
-    apiKey: '12345',
-    hasRunScrobbleEventGeneration: false,
-    scrobbleEventGenerationRan: '',
-    roles: [],
-    preferences: this.createDefaultPreferences(),
-    ageRestriction: this.createDefaultAgeRestriction()
+  private user: Partial<User> = {}
+
+  addRoles(roles: string[]): this {
+    this.user.roles = [...roles];
+    return this;
   }
 
   setAgeRestriction(ageRestriction: AgeRestriction): this {
@@ -30,6 +24,11 @@ export class UserBuilder {
     return this;
   }
 
+  setHasRunScrobbleEventGeneration(hasRunScrobbleEventGeneration: boolean): this {
+    this.user.hasRunScrobbleEventGeneration = hasRunScrobbleEventGeneration;
+    return this;
+  }
+
   setPreferences(preferences: Preferences): this {
     this.user.preferences = preferences;
     return this;
@@ -40,18 +39,8 @@ export class UserBuilder {
     return this;
   }
 
-  addRoles(roles: string[]): this {
-    this.user.roles = [...roles];
-    return this;
-  }
-
   setUsername(username: string): this {
     this.user.username = username;
-    return this;
-  }
-
-  setHasRunScrobbleEventGeneration(hasRunScrobbleEventGeneration: boolean): this {
-    this.user.hasRunScrobbleEventGeneration = hasRunScrobbleEventGeneration;
     return this;
   }
 
@@ -84,25 +73,4 @@ export class UserBuilder {
     return [btoa(JSON.stringify(jwtHeader)), btoa(JSON.stringify(jwtPayload))].join('.');
   }
 
-  private createDefaultAgeRestriction(): AgeRestriction  {
-    return {
-      ageRating: AgeRating.NotApplicable,
-      includeUnknowns: false,
-    } as AgeRestriction;
-  }
-
-  private createDefaultPreferences(): Preferences {
-    return {
-      theme: defaultSiteTheme,
-      globalPageLayoutMode: PageLayoutMode.List,
-      blurUnreadSummaries: false,
-      promptForDownloadSize: false,
-      noTransitions: false,
-      collapseSeriesRelationships: false,
-      shareReviews: false,
-      locale: "en",
-      aniListScrobblingEnabled: false,
-      wantToReadSync: false
-    } as Preferences;
-  }
 }

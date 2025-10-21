@@ -2,23 +2,7 @@
 import {Library, LibraryType} from "src/app/_models/library/library";
 
 export class LibraryBuilder {
-  private library: Partial<Library> = {
-    lastScanned: new Date().toISOString(),
-    coverImage: null,
-    folderWatching: false,
-    includeInDashboard: true,
-    includeInRecommended: true,
-    includeInSearch: true,
-    allowScrobbling: false,
-    folders: [],
-    collapseSeriesRelationships: false,
-    libraryFileTypes: [],
-    excludePatterns: [""],
-    allowMetadataMatching: false,
-    enableMetadata: true,
-    removePrefixForSortName: true,
-    manageReadingLists: false
-  }
+  private library: Partial<Library> = {}
 
   setId(id: number): this {
     this.library.id = id;
@@ -65,7 +49,7 @@ export class LibraryBuilder {
     return this;
   }
 
-  setincludeInRecommended(includeInRecommended: boolean): this {
+  setIncludeInRecommended(includeInRecommended: boolean): this {
     this.library.includeInRecommended = includeInRecommended;
     return this;
   }
@@ -73,7 +57,7 @@ export class LibraryBuilder {
     this.library.manageCollections = manageCollections;
     return this;
   }
-  setincludeInSearch(includeInSearch: boolean): this {
+  setIncludeInSearch(includeInSearch: boolean): this {
     this.library.includeInSearch = includeInSearch;
     return this;
   }
@@ -102,6 +86,11 @@ export class LibraryBuilder {
   }
   setManageReadingLists(manageReadingLists: boolean): this {
     this.library.manageReadingLists = manageReadingLists;
+    return this;
+  }
+
+  setLastScanned(lastScanned: string): this {
+    this.library.lastScanned = lastScanned;
     return this;
   }
 

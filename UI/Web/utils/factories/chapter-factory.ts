@@ -1,7 +1,6 @@
 ﻿import { Chapter } from "src/app/_models/chapter";
 
-export class ChapterFactory {
-  constructor() {}
+export abstract class ChapterFactory {
 
   createEpubChapter(): Chapter {
     return new ChapterBuilder()
