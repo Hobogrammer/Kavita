@@ -1,3 +1,4 @@
-﻿type IHasCastBuilder {
+﻿abstract class IHasCastBuilder {
 // cast stuff
+
 }
