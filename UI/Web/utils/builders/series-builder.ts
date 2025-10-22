@@ -86,7 +86,7 @@ export class SeriesBuilder {
   }
 
   setLibraryName(libraryName: string): this {
-
+    // @ts-ignore
     this.series.libraryName = libraryName;
     return this;
   }
