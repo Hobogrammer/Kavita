@@ -1,11 +1,11 @@
 ﻿import {faker} from "@faker-js/faker";
-import {AgeRating} from "src/app/_models/metadata/age-rating";
-import {AgeRestriction} from "src/app/_models/metadata/age-restriction";
-import {PageLayoutMode} from "src/app/_models/page-layout-mode";
-import {Preferences} from "src/app/_models/preferences/preferences";
-import {User} from "src/app/_models/user";
-import {UserBuilder} from "utils/builders/user-builder";
-import {defaultSiteTheme} from "utils/playwright-utils";
+import {AgeRating} from "../../src/app/_models/metadata/age-rating";
+import {AgeRestriction} from "../../src/app/_models/metadata/age-restriction";
+import {PageLayoutMode} from "../../src/app/_models/page-layout-mode";
+import {Preferences} from "../../src/app/_models/preferences/preferences";
+import {User} from "../../src/app/_models/user";
+import {UserBuilder} from "../builders/user-builder";
+import {defaultSiteTheme} from "../playwright-utils";
 
 export abstract class UserFactory {
 
@@ -26,7 +26,7 @@ export abstract class UserFactory {
      .setAgeRestriction(this.createDefaultAgeRestriction())
      .setPreferences(this.createDefaultPreferences())
      .addRoles([
-       this.ADMIN_ROLE,
+       this.LOGIN_ROLE,
        this.CHANGE_PASSWORD_ROLE
      ])
      .setHasRunScrobbleEventGeneration(false)
