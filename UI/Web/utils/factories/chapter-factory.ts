@@ -1,11 +1,11 @@
 ﻿import {faker} from "@faker-js/faker";
-import {Chapter} from "src/app/_models/chapter";
-import {MangaFile} from "src/app/_models/manga-file";
-import {MangaFormat} from "src/app/_models/manga-format";
-import {AgeRating} from "src/app/_models/metadata/age-rating";
-import {PublicationStatus} from "src/app/_models/metadata/publication-status";
-import {Series} from "src/app/_models/series";
-import {ChapterBuilder} from "utils/builders/chapter-builder";
+import {Chapter} from "../../src/app/_models/chapter";
+import {MangaFile} from "../../src/app/_models/manga-file";
+import {MangaFormat} from "../../src/app/_models/manga-format";
+import {AgeRating} from "../../src/app/_models/metadata/age-rating";
+import {PublicationStatus} from "../../src/app/_models/metadata/publication-status";
+import {Series} from "../../src/app/_models/series";
+import {ChapterBuilder} from "../builders/chapter-builder";
 
 export abstract class ChapterFactory {
   private static NEGATIVE_HUNDRED_K: string = "-100000";

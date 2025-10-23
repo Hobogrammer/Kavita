@@ -1,10 +1,10 @@
 ﻿import {faker} from "@faker-js/faker";
-import {AgeRating} from "src/app/_models/metadata/age-rating";
-import {Genre} from "src/app/_models/metadata/genre";
-import {Person} from "src/app/_models/metadata/person";
-import {PublicationStatus} from "src/app/_models/metadata/publication-status";
-import {SeriesMetadata} from "src/app/_models/metadata/series-metadata";
-import {Tag} from "src/app/_models/tag";
+import {AgeRating} from "../../src/app/_models/metadata/age-rating";
+import {Genre} from "../../src/app/_models/metadata/genre";
+import {Person} from "../../src/app/_models/metadata/person";
+import {PublicationStatus} from "../../src/app/_models/metadata/publication-status";
+import {SeriesMetadata} from "../../src/app/_models/metadata/series-metadata";
+import {Tag} from "../../src/app/_models/tag";
 
 export class SeriesMetadataBuilder {
   private seriesMetadata: Partial<SeriesMetadata> = {

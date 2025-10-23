@@ -5,6 +5,7 @@ import {Preferences} from "../../src/app/_models/preferences/preferences";
 import {defaultSiteTheme} from "../playwright-utils";
 import {PageLayoutMode} from "../../src/app/_models/page-layout-mode";
 import {AgeRating} from "../../src/app/_models/metadata/age-rating";
+
 describe('UserFactory', () => {
   const expectedPref = {
     theme: defaultSiteTheme,
