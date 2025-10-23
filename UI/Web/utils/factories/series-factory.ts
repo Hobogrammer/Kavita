@@ -1,20 +1,20 @@
 ﻿import {Library} from "src/app/_models/library/library";
 import {Series} from "src/app/_models/series";
 import {faker} from '@faker-js/faker';
-import {Volume} from "src/app/_models/volume";
-import {MangaFormat} from "src/app/_models/manga-format";
-import {Person} from "src/app/_models/metadata/person";
-import {SeriesMetadata} from "src/app/_models/metadata/series-metadata";
-import {SeriesDetail} from "src/app/_models/series-detail/series-detail";
-import {SeriesBuilder} from "utils/builders/series-builder";
-import {SeriesMetadataBuilder} from "utils/builders/series-metadata-builder";
-import {HourEstimateRange} from "src/app/_models/series-detail/hour-estimate-range";
+import {Volume} from "../../src/app/_models/volume";
+import {MangaFormat} from "../../src/app/_models/manga-format";
+import {Person} from "../../src/app/_models/metadata/person";
+import {SeriesMetadata} from "../../src/app/_models/metadata/series-metadata";
+import {SeriesDetail} from "../../src/app/_models/series-detail/series-detail";
+import {SeriesBuilder} from "../builders/series-builder";
+import {SeriesMetadataBuilder} from "../builders/series-metadata-builder";
+import {HourEstimateRange} from "../../src/app/_models/series-detail/hour-estimate-range";
 import {ChapterFactory} from "./chapter-factory";
 
 export class SeriesFactory {
-  constructor() {}
+  private constructor() {}
 
-  public static createSeries(library: Library, format: MangaFormat): Series {
+  public static create(library: Library, format: MangaFormat): Series {
     const name: string = faker.book.series();
     const publisher = {
       id: faker.number.int(),
@@ -34,7 +34,7 @@ export class SeriesFactory {
       primaryColor: faker.color.rgb(),
       secondaryColor: faker.color.rgb(),
       coverImageLocked: false
-    }
+    } as Person;
 
     const series: Series = new SeriesBuilder()
       .setId(faker.number.int())
