@@ -7,43 +7,7 @@ import { Volume } from "src/app/_models/volume";
 
 // TODO: Implement an IHasCast Model
 export class SeriesBuilder {
-  private series: Partial<Series> = {
-    id: 0,
-    coverImage: "src/assets/images/image-placeholder.png",
-    coverImageLocked: false,
-    sortNameLocked: false,
-    localizedNameLocked: false,
-    latestReadDate: new Date().toISOString(),
-    lastChapterAdded: new Date().toISOString(),
-    userRating: 0,
-    pages: 0,
-    pagesRead: 0,
-    wordCount: 0,
-    minHoursToRead: 1,
-    maxHoursToRead: 999999,
-    avgHoursToRead: 666666,
-    dontMatch: false,
-    isBlacklisted: false,
-    nameLocked: false,
-    volumes: [],
-    // @ts-ignore
-    webLinks: "",
-    publishers: [],
-    tags: [],
-    writers: [],
-    genres: [],
-    coverArtists: [],
-    characters: [],
-    pencillers: [],
-    inkers: [],
-    imprints: [],
-    colorists: [],
-    letterers: [],
-    editors: [],
-    translators: [],
-    teams: [],
-    locations: [],
-  }
+  private series: Partial<Series> = {}
 
   setId(id: number): this {
     this.series.id = id;
@@ -52,6 +16,11 @@ export class SeriesBuilder {
 
   setName(name: string): this {
     this.series.name = name;
+    return this;
+  }
+
+  setNameLocked(nameLocked: boolean): this {
+    this.series.nameLocked = nameLocked;
     return this;
   }
 
@@ -201,7 +170,6 @@ export class SeriesBuilder {
   }
 
   addPublishers(publishers: Array<Person>): this {
-
     this.series.publishers = [...publishers];
     return this;
   }

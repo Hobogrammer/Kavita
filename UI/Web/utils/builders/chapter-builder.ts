@@ -5,8 +5,9 @@ import {Genre} from "src/app/_models/metadata/genre";
 import {Person} from "src/app/_models/metadata/person";
 import {PublicationStatus} from "src/app/_models/metadata/publication-status";
 import {Tag} from "src/app/_models/tag";
+import { Builder } from "./builder";
 
-export class ChapterBuilder {
+export class ChapterBuilder extends Builder<Chapter> {
   private chapter: Partial<Chapter> = {}
 
   setId(id: number): this {
