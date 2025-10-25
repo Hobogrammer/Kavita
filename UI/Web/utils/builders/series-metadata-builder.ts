@@ -1,5 +1,4 @@
-﻿import {faker} from "@faker-js/faker";
-import {AgeRating} from "../../src/app/_models/metadata/age-rating";
+﻿import {AgeRating} from "../../src/app/_models/metadata/age-rating";
 import {Genre} from "../../src/app/_models/metadata/genre";
 import {Person} from "../../src/app/_models/metadata/person";
 import {PublicationStatus} from "../../src/app/_models/metadata/publication-status";
@@ -7,50 +6,7 @@ import {SeriesMetadata} from "../../src/app/_models/metadata/series-metadata";
 import {Tag} from "../../src/app/_models/tag";
 
 export class SeriesMetadataBuilder {
-  private seriesMetadata: Partial<SeriesMetadata> = {
-    totalCount: 0,
-    maxCount: 1,
-    webLinks: "",
-    language: faker.location.language().alpha2,
-    releaseYear: faker.date.past().getFullYear(),
-    publicationStatus: PublicationStatus.Completed,
-    ageRating: AgeRating.Everyone,
-    genres: [],
-    tags: [],
-    writers: [],
-    coverArtists: [],
-    publishers: [],
-    characters: [],
-    pencillers: [],
-    inkers: [],
-    imprints: [],
-    colorists: [],
-    letterers: [],
-    editors: [],
-    translators: [],
-    teams: [],
-    locations: [],
-    summaryLocked: false,
-    genresLocked: false,
-    tagsLocked: false,
-    writerLocked: false,
-    coverArtistLocked: false,
-    publisherLocked: false,
-    characterLocked: false,
-    pencillerLocked: false,
-    inkerLocked: false,
-    imprintLocked: false,
-    coloristLocked: false,
-    lettererLocked: false,
-    editorLocked: false,
-    translatorLocked: false,
-    teamLocked: false,
-    locationLocked: false,
-    ageRatingLocked: false,
-    releaseYearLocked: false,
-    languageLocked: false,
-    publicationStatusLocked: false
-  }
+  private seriesMetadata: Partial<SeriesMetadata> = {}
 
   public setSeriesId(seriesId: number): this {
     this.seriesMetadata.seriesId = seriesId;
@@ -62,13 +18,28 @@ export class SeriesMetadataBuilder {
     return this;
   }
 
+  setSummaryLocked(summaryLocked: boolean): this {
+    this.seriesMetadata.summaryLocked = summaryLocked;
+    return this;
+  }
+
   setReleaseYear(releaseYear: number): this {
     this.seriesMetadata.releaseYear = releaseYear;
     return this;
   }
 
+  setReleaseYearLocked(releaseYearLocked: boolean): this {
+    this.seriesMetadata.releaseYearLocked = releaseYearLocked;
+    return this;
+  }
+
   setPublicationStatus(publicationStatus: PublicationStatus): this {
     this.seriesMetadata.publicationStatus = publicationStatus;
+    return this;
+  }
+
+  setPublicationStatusLocked(publicationStatusLocked: boolean): this {
+    this.seriesMetadata.publicationStatusLocked = publicationStatusLocked;
     return this;
   }
 
@@ -84,6 +55,11 @@ export class SeriesMetadataBuilder {
 
   setLanguage(language: string): this {
     this.seriesMetadata.language = language;
+    return this;
+  }
+
+  setLanguageLocked(languageLocked: boolean): this {
+    this.seriesMetadata.languageLocked = languageLocked;
     return this;
   }
 
@@ -132,8 +108,8 @@ export class SeriesMetadataBuilder {
     return this;
   }
 
-  setWritersLocked(writersLocked: boolean): this {
-    this.seriesMetadata.writerLocked = writersLocked;
+  setWriterLocked(writerLocked: boolean): this {
+    this.seriesMetadata.writerLocked = writerLocked;
     return this;
   }
 

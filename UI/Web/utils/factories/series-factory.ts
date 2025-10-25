@@ -10,6 +10,8 @@ import {SeriesBuilder} from "../builders/series-builder";
 import {SeriesMetadataBuilder} from "../builders/series-metadata-builder";
 import {HourEstimateRange} from "../../src/app/_models/series-detail/hour-estimate-range";
 import {ChapterFactory} from "./chapter-factory";
+import { PublicationStatus } from "../../src/app/_models/metadata/publication-status";
+import { AgeRating } from "../../src/app/_models/metadata/age-rating";
 
 export class SeriesFactory {
   private constructor() {}
@@ -39,18 +41,47 @@ export class SeriesFactory {
     const series: Series = new SeriesBuilder()
       .setId(faker.number.int())
       .setName(name)
+      .setNameLocked(false)
       .setOriginalName(name)
       .setLocalizedName(name)
+      .setLocalizedNameLocked(false)
       .setSortName(name)
+      .setSortNameLocked(false)
       .setFormat(format)
       .addVolumes([])
+      .setCoverImage(faker.image.url())
+      .setCoverImageLocked(false)
+      .setUserRating(0)
+      .setPagesRead(0)
+      .setWordCount(faker.number.int())
       .setPages(faker.number.int())
+      .setMinHoursToRead(1)
+      .setMaxHoursToRead(999)
+      .setAvgHoursToRead(faker.number.int({min: 1, max: 999}))
+      .setLastChapterAdded(faker.date.past().toISOString())
+      .setLatestReadDate(faker.date.recent().toISOString())
       .setLibraryId(library.id)
       .setLibraryName(library.name)
       .setPrimaryColor(faker.color.rgb())
       .setSecondaryColor(faker.color.rgb())
       .addPublishers([publisher])
       .addWriters([writer])
+      .addTags([])
+      .addGenres([])
+      .addCoverArtists([])
+      .addCharacters([])
+      .addPencillers([])
+      .addInkers([])
+      .addImprints([])
+      .addColorists([])
+      .addLetterers([])
+      .addEditors([])
+      .addTranslators([])
+      .addTeams([])
+      .addLocations([])
+      .setDontMatch(false)
+      .setIsBlacklisted(false)
+      .setWebLinks("")
       .build();
 
     return series;
@@ -59,8 +90,48 @@ export class SeriesFactory {
   public static createSeriesMetadataForSeries(series: Series): SeriesMetadata {
     return new SeriesMetadataBuilder()
       .setSeriesId(series.id)
+      .setSummary(faker.lorem.paragraph())
+      .setSummaryLocked(false)
       .addWriters(series.writers)
+      .setWriterLocked(false)
       .addPublishers(series.publishers)
+      .setPublisherLocked(false)
+      .addTags([])
+      .setTagsLocked(false)
+      .addGenres([])
+      .setGenresLocked(false)
+      .addCoverArtists(series.coverArtists)
+      .setCoverArtistLocked(false)
+      .addInkers(series.inkers)
+      .setInkerLocked(false)
+      .addCharacters(series.characters)
+      .setCharacterLocked(false)
+      .addPencillers(series.pencillers)
+      .setPencillerLocked(false)
+      .addImprints(series.imprints)
+      .setImprintLocked(false)
+      .addColorists(series.colorists)
+      .setColoristLocked(false)
+      .addLetterers(series.letterers)
+      .setLettererLocked(false)
+      .addEditors(series.editors)
+      .setEditorLocked(false)
+      .addTranslators(series.translators)
+      .setTranslatorLocked(false)
+      .addTeams(series.teams)
+      .setTeamLocked(false)
+      .addLocations(series.locations)
+      .setLocationLocked(false)
+      .setLanguage(faker.location.language().alpha2)
+      .setLanguageLocked(false)
+      .setPublicationStatus(PublicationStatus.Completed)
+      .setPublicationStatusLocked(false)
+      .setReleaseYear(faker.date.past().getFullYear())
+      .setReleaseYearLocked(false)
+      .setAgeRating(AgeRating.Everyone)
+      .setWebLinks("")
+      .setMaxCount(1)
+      .setTotalCount(0)
       .build();
   }
 
@@ -70,12 +141,12 @@ export class SeriesFactory {
       chapters: [],
       volumes: series.volumes,
       storylineChapters: [],
-      unreadCount: 1,
-      totalCount: 1,
-      publishers: series.publishers
+      unreadCount: series.volumes.length,
+      totalCount: series.volumes.length,
     } as SeriesDetail;
   }
-  static createVolumesForSeries(series: Series, volumeCount: number = 5): Array<Volume> {
+
+  public static createVolumesForSeries(series: Series, totalVolumeCount: number = 5): Array<Volume> {
     const volumes: Array<Volume> = new Array<Volume>();
     const volumeId = faker.number.int({min: 1, max: 999});
     const seriesTimeLeft = {
@@ -84,7 +155,7 @@ export class SeriesFactory {
       avgHours: faker.number.int({min: 1, max: 999}),
     } as HourEstimateRange;
 
-    for (let count = 0; count < volumeCount; count++) {
+    for (let count = 0; count < totalVolumeCount; count++) {
       const volume = {
         id: volumeId,
         minNumber: 1,
@@ -96,7 +167,7 @@ export class SeriesFactory {
         pagesRead: 0,
         wordCount: faker.number.int(),
         chapters: [
-          ChapterFactory.createChapterForSeries(count, series, volumeCount, volumeId)
+          ChapterFactory.createChapterForSeries(count, series, totalVolumeCount, volumeId)
         ],
         timeEstimate: seriesTimeLeft,
         minHoursToRead: seriesTimeLeft.minHours,
