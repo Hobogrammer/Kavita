@@ -167,7 +167,7 @@ export class SeriesFactory {
         pagesRead: 0,
         wordCount: faker.number.int(),
         chapters: [
-          ChapterFactory.createChapterForSeries(count, series, totalVolumeCount, volumeId)
+          ChapterFactory.createChapterForSeries(count + 1, series, totalVolumeCount, volumeId)
         ],
         timeEstimate: seriesTimeLeft,
         minHoursToRead: seriesTimeLeft.minHours,
