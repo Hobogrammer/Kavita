@@ -132,7 +132,25 @@ describe('SeriesFactory', () => {
       expect(volumes.length).toEqual(expectedVolumeCount);
       volumes.forEach(volume => {
         expect(volume.chapters.length).toEqual(1);
-        // TODO: Fill the rest of this out
+        expect(volume.id).toBeDefined();
+        expect(volume.minNumber).toBe(1);
+        expect(volume.maxNumber).toBe(1);
+        expect(volume.name).toBeDefined();
+        expect(volume.createdUtc).toBeDefined();
+        expect(volume.lastModifiedUtc).toBeDefined();
+        expect(volume.pages).toBeDefined();
+        expect(volume.pagesRead).toBe(0);
+        expect(volume.wordCount).toBeDefined();
+        expect(volume.timeEstimate).toBeDefined();
+        expect(volume.timeEstimate?.minHours).toBe(1);
+        expect(volume.timeEstimate?.maxHours).toBe(999);
+        expect(volume.minHoursToRead).toEqual(volume.timeEstimate?.minHours);
+        expect(volume.maxHoursToRead).toEqual(volume.timeEstimate?.maxHours);
+        expect(volume.avgHoursToRead).toBeDefined();
+        expect(volume.coverImage).toBeDefined();
+        expect(volume.coverImageLocked).toBe(false);
+        expect(volume.primaryColor).toBeDefined();
+        expect(volume.secondaryColor).toBeDefined();
       });
     });
   });
