@@ -110,6 +110,7 @@ test.describe('Series Detail page', () => {
       if (series.summary) {
         await expect(seriesPage.summary).toHaveText(series.summary);
       }
+      expect(seriesPage.editButton).toBeHidden();
     });
   });
 });
