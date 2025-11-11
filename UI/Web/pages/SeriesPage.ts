@@ -1,11 +1,9 @@
 ﻿import {Locator, Page } from "@playwright/test";
-import { Series } from "src/app/_models/series";
 
 export class SeriesPage {
   readonly page: Page;
   readonly title: Locator;
   readonly summary: Locator;
-  readonly books: Locator;
   readonly reviewTab: Locator;
   readonly detailsTab: Locator;
   readonly booksTab: Locator;
@@ -17,7 +15,6 @@ export class SeriesPage {
     this.page = page;
     this.title = this.page.locator('.title span');
     this.summary = this.page.locator('app-read-more');
-    this.books = this.page.locator('card-container').locator('app-volume-card');
     this.reviewTab = this.page.getByRole('tab', { name: 'Reviews'});
     this.detailsTab = this.page.getByRole('tab', { name: 'Details'});
     this.booksTab = this.page.getByRole('tab', { name: 'Books'});
@@ -40,5 +37,10 @@ export class SeriesPage {
 
   async goToStorylineTab() {
     this.storylineTab.click();
+  }
+
+  async getBooks() {
+    // all() gets all of the locators when called so we have to call for them after page load
+    return this.page.locator('div.card.card-item-container').all();
   }
 }
