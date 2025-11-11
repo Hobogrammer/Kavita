@@ -4,11 +4,8 @@ import {FileTypeGroup} from "src/app/_models/library/file-type-group.enum";
 import {LibraryType} from "src/app/_models/library/library";
 import {HourEstimateRange} from "src/app/_models/series-detail/hour-estimate-range";
 import {User} from "src/app/_models/user";
-import {environment} from "src/environments/environment";
 import {UserFactory } from "utils/factories/user-factory";
-import {LibraryBuilder} from "utils/builders/library-builder"
-import {defaultSiteTheme, RequiredHomeParams,
-  RequiredLoginParams, RequiredSeriesParams, setHomeRoutes, setLoginRoutes, setRoute, setSeriesRoutes, setWebSocketRoute} from "utils/playwright-utils";
+import {RequiredLoginParams, RequiredSeriesParams, setLoginRoutes, setSeriesRoutes} from "utils/playwright-utils";
 import {SeriesDetailPlus} from "src/app/_models/series-detail/series-detail-plus";
 import {RelatedSeries} from "src/app/_models/series-detail/related-series";
 import {ScrobbleProvider} from "src/app/_services/scrobbling.service";
@@ -19,12 +16,6 @@ import {SeriesDetail} from "src/app/_models/series-detail/series-detail";
 import {SeriesFactory} from "utils/factories/series-factory";
 import { MangaFormat } from "src/app/_models/manga-format";
 import { SeriesPage } from "pages/SeriesPage";
-import { faker } from "@faker-js/faker";
-import { DashboardStream } from "src/app/_models/dashboard/dashboard-stream";
-import { StreamType } from "src/app/_models/dashboard/stream-type.enum";
-import { Observable } from "rxjs";
-import { SideNavStreamType } from "src/app/_models/sidenav/sidenav-stream-type.enum";
-import { SideNavStream } from "src/app/_models/sidenav/sidenav-stream";
 import { LibraryFactory } from "utils/factories/library-factory";
 
 test.describe('Series Detail page', () => {
@@ -36,8 +27,6 @@ test.describe('Series Detail page', () => {
       const seriesMetadata: SeriesMetadata = SeriesFactory.createSeriesMetadataForSeries(series);
       series.volumes = SeriesFactory.createVolumesForSeries(series);
       const seriesDetail: SeriesDetail = SeriesFactory.createSeriesDetailForSeries(series);
-      const seriesGroup = SeriesFactory.createSeriesGroupForSeries(library, series);
-
 
       const seriesTimeLeft = {
         minHours: 1,
@@ -76,68 +65,12 @@ test.describe('Series Detail page', () => {
         authority: RatingAuthority.User
       } as Rating;
 
-      const recentlyUpdated = {
-        id: 2,
-        name: "recently-updated",
-        isProvided: true,
-        order: 2,
-        smartFilterEncoded: undefined,
-        smartFilterId: 0,
-        streamType: StreamType.RecentlyUpdated,
-        visible:true,
-        api: Observable.prototype
-      } as DashboardStream;
-
-      const newlyAdded = {
-        id: 3,
-        name: "newly-added",
-        isProvided: true,
-        order: 1,
-        smartFilterEncoded: undefined,
-        smartFilterId: 0,
-        streamType: StreamType.NewlyAdded,
-        visible: true,
-        api: Observable.prototype
-      } as DashboardStream;
-
-      const sideNav = {
-        id: 2,
-        name: library.name,
-        isProvided: false,
-        order: 1,
-        smartFilterEncoded: undefined,
-        smartFilterId: 0,
-        streamType: SideNavStreamType.Library,
-        externalSourceId: 0,
-        externalSource: undefined,
-        visible: true,
-        libraryId: library.id,
-        library: library
-      } as SideNavStream;
-
-      // Home page requirements
-
       const loginParams = {
         adminExists: true,
         user: user
       } as RequiredLoginParams;
 
       setLoginRoutes(page, loginParams);
-
-      const homeParams = {
-        pluginVersion: '0.8.7.0',
-        device: [],
-        validLicense: false,
-        user: user,
-        dashboard: [recentlyUpdated, newlyAdded],
-        sideNav: [sideNav],
-        libraries: [library],
-        recentlyUpdated: [seriesGroup],
-        recentlyAdded: [series],
-        tokenExpired: false
-      } as RequiredHomeParams;
-
-      setHomeRoutes(page, homeParams);
 
       // Series Page requirements
       const seriesParams = {
