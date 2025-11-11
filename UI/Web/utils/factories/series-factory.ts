@@ -12,6 +12,7 @@ import {HourEstimateRange} from "../../src/app/_models/series-detail/hour-estima
 import {ChapterFactory} from "./chapter-factory";
 import { PublicationStatus } from "../../src/app/_models/metadata/publication-status";
 import { AgeRating } from "../../src/app/_models/metadata/age-rating";
+import { SeriesGroup } from "src/app/_models/series-group";
 
 export class SeriesFactory {
   private constructor() {}
@@ -42,6 +43,7 @@ export class SeriesFactory {
       .setId(faker.number.int())
       .setName(name)
       .setNameLocked(false)
+      .setFolderPath(library.folders[0] + '/' + name)
       .setOriginalName(name)
       .setLocalizedName(name)
       .setLocalizedNameLocked(false)
@@ -90,7 +92,7 @@ export class SeriesFactory {
   public static createSeriesMetadataForSeries(series: Series): SeriesMetadata {
     return new SeriesMetadataBuilder()
       .setSeriesId(series.id)
-      .setSummary(faker.lorem.paragraph())
+      .setSummary(faker.lorem.text())
       .setSummaryLocked(false)
       .addWriters(series.writers)
       .setWriterLocked(false)
@@ -173,7 +175,7 @@ export class SeriesFactory {
         minHoursToRead: seriesTimeLeft.minHours,
         maxHoursToRead: seriesTimeLeft.maxHours,
         avgHoursToRead: seriesTimeLeft.avgHours,
-        coverImage: faker.image.url(),
+        coverImage: "src/assets/images/image-placeholder.png",
         coverImageLocked: false,
         primaryColor: faker.color.rgb(),
         secondaryColor: faker.color.rgb()
@@ -183,5 +185,20 @@ export class SeriesFactory {
     }
 
     return volumes;
+  }
+
+  public static createSeriesGroupForSeries(library: Library, series: Series): SeriesGroup {
+    return {
+      seriesName: series.name,
+      seriesId: series.id,
+      title: series.name,
+      libraryId: library.id,
+      libraryType: library.type,
+      created: series.created,
+      chapterId: 0,
+      volumeId: 0,
+      id: 0,
+      count: series.volumes.length
+    } as SeriesGroup;
   }
 }
