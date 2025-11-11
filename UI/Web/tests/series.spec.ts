@@ -7,7 +7,8 @@ import {User} from "src/app/_models/user";
 import {environment} from "src/environments/environment";
 import {UserFactory } from "utils/factories/user-factory";
 import {LibraryBuilder} from "utils/builders/library-builder"
-import {setRoute} from "utils/playwright-utils";
+import {defaultSiteTheme, RequiredHomeParams,
+  RequiredLoginParams, RequiredSeriesParams, setHomeRoutes, setLoginRoutes, setRoute, setSeriesRoutes, setWebSocketRoute} from "utils/playwright-utils";
 import {SeriesDetailPlus} from "src/app/_models/series-detail/series-detail-plus";
 import {RelatedSeries} from "src/app/_models/series-detail/related-series";
 import {ScrobbleProvider} from "src/app/_services/scrobbling.service";
@@ -17,92 +18,165 @@ import {SeriesMetadata} from "src/app/_models/metadata/series-metadata";
 import {SeriesDetail} from "src/app/_models/series-detail/series-detail";
 import {SeriesFactory} from "utils/factories/series-factory";
 import { MangaFormat } from "src/app/_models/manga-format";
+import { SeriesPage } from "pages/SeriesPage";
+import { faker } from "@faker-js/faker";
+import { DashboardStream } from "src/app/_models/dashboard/dashboard-stream";
+import { StreamType } from "src/app/_models/dashboard/stream-type.enum";
+import { Observable } from "rxjs";
+import { SideNavStreamType } from "src/app/_models/sidenav/sidenav-stream-type.enum";
+import { SideNavStream } from "src/app/_models/sidenav/sidenav-stream";
+import { LibraryFactory } from "utils/factories/library-factory";
 
 test.describe('Series Detail page', () => {
-  test('should show expected metadata', async ({page}) => {
-    const user: User = UserFactory.createUser();
-    const library = new LibraryBuilder()
-      .setName("epub")
-      .setType(LibraryType.Book)
-      .addExcludePatterns([""])
-      .addFolders(["/epubs"])
-      .addLibraryFileTypes([FileTypeGroup.Epub])
-      .build();
-    const series: Series = SeriesFactory.createSeries(library, MangaFormat.EPUB);
-    const seriesMetadata: SeriesMetadata = SeriesFactory.createSeriesMetadataForSeries(series);
-    const seriesDetail: SeriesDetail = SeriesFactory.createSeriesDetailForSeries(series);
+  test.describe('as a regular user', () => {
+    test('should show expected metadata', async ({page}) => {
+      const user: User = UserFactory.createUser();
+      const library = LibraryFactory.create("epub", LibraryType.Book, [FileTypeGroup.Epub], ["/epubs"]);
+      let series: Series = SeriesFactory.create(library, MangaFormat.EPUB);
+      const seriesMetadata: SeriesMetadata = SeriesFactory.createSeriesMetadataForSeries(series);
+      series.volumes = SeriesFactory.createVolumesForSeries(series);
+      const seriesDetail: SeriesDetail = SeriesFactory.createSeriesDetailForSeries(series);
+      const seriesGroup = SeriesFactory.createSeriesGroupForSeries(library, series);
 
-    const seriesTimeLeft = {
-      minHours: 1,
-      maxHours: 999,
-      avgHours: 666
-    } as HourEstimateRange;
 
-    const seriesDetailPlus = {
-      reviews: []
-    } as SeriesDetailPlus;
+      const seriesTimeLeft = {
+        minHours: 1,
+        maxHours: 999,
+        avgHours: 666
+      } as HourEstimateRange;
 
-    const seriesRelated = {
-      sourceSeriesId: series.id,
-      sequels: [],
-      prequels: [],
-      spinOffs: [],
-      adaptations: [],
-      sideStories: [],
-      characters: [],
-      contains: [],
-      others: [],
-      alternativeSettings: [],
-      alternativeVersions: [],
-      doujinshis: [],
-      parent: [],
-      editions: [],
-      annuals: []
-    } as RelatedSeries;
+      const seriesDetailPlus = {
+        reviews: []
+      } as SeriesDetailPlus;
 
-    const seriesRating = {
-      averageScore: 0,
-      meanScore: 0,
-      favoriteCount: 0,
-      provider: ScrobbleProvider.Kavita,
-      providerUrl: undefined,
-      authority: RatingAuthority.User
-    } as Rating;
+      const seriesRelated = {
+        sourceSeriesId: series.id,
+        sequels: [],
+        prequels: [],
+        spinOffs: [],
+        adaptations: [],
+        sideStories: [],
+        characters: [],
+        contains: [],
+        others: [],
+        alternativeSettings: [],
+        alternativeVersions: [],
+        doujinshis: [],
+        parent: [],
+        editions: [],
+        annuals: []
+      } as RelatedSeries;
 
-    // Set route required to sucessfully login
-    await setRoute(page, environment.apiUrl + 'account/login', user);
+      const seriesRating = {
+        averageScore: 0,
+        meanScore: 0,
+        favoriteCount: 0,
+        provider: ScrobbleProvider.Kavita,
+        providerUrl: undefined,
+        authority: RatingAuthority.User
+      } as Rating;
 
-    // Series Page requirements
-    await setRoute(page, environment.apiUrl + 'users/has-library-access?*', true);
-    await setRoute(page, environment.apiUrl + 'scrobbling/has-hold?*', false);
-    await setRoute(page, environment.apiUrl + 'scrobbling/library-allows-scrobbling?*', false);
-    await setRoute(page, environment.apiUrl + 'series/metadata?*', seriesMetadata);
-    await setRoute(page, environment.apiUrl + 'want-to-read?*', false);
-    await setRoute(page, environment.apiUrl + 'readinglist/lists-for-series?*', []);
-    await setRoute(page, environment.apiUrl + 'collection/all-series?*', []);
-    await setRoute(page, environment.apiUrl + 'reader/series-bookmarks?*', []);
-    await setRoute(page, environment.apiUrl + 'reader/time-left?*', seriesTimeLeft);
-    await setRoute(page, environment.apiUrl + 'reader/has-progress?*', false);
-    await setRoute(page, environment.apiUrl + 'reader/continue-point?*', series.volumes[0].chapters[0]);
-    await setRoute(page, environment.apiUrl + 'library/type?*', library.type);
-    await setRoute(page, environment.apiUrl + 'series/*', series);
-    await setRoute(page, environment.apiUrl + 'metadata/series-detail-plus?*', seriesDetailPlus);
-    await setRoute(page, environment.apiUrl + 'series/all-related?*', seriesRelated);
-    await setRoute(page, environment.apiUrl + 'series/series-detail?*', seriesDetail);
-    await setRoute(page, environment.apiUrl + 'rating/overall-series?*', seriesRating);
-    await setRoute(page, environment.apiUrl + 'image/series-cover?*', "src/assets/images/image-placeholder.png",
-      {contentType: 'image/png'});
-    await setRoute(page, environment.apiUrl + 'image/publisher?*', "src/assets/images/ExternalServices/MAL.png",
-      {contentType: 'image/png'});
+      const recentlyUpdated = {
+        id: 2,
+        name: "recently-updated",
+        isProvided: true,
+        order: 2,
+        smartFilterEncoded: undefined,
+        smartFilterId: 0,
+        streamType: StreamType.RecentlyUpdated,
+        visible:true,
+        api: Observable.prototype
+      } as DashboardStream;
 
-    // Login
-    const loginPage = new LoginPage(page);
-    await loginPage.login(user.username, "imagineYourPasswordHere");
+      const newlyAdded = {
+        id: 3,
+        name: "newly-added",
+        isProvided: true,
+        order: 1,
+        smartFilterEncoded: undefined,
+        smartFilterId: 0,
+        streamType: StreamType.NewlyAdded,
+        visible: true,
+        api: Observable.prototype
+      } as DashboardStream;
 
-    await page.goto('/library/' + library.id + '/series/' + series.id);
-    await page.waitForLoadState()
-    const seriesPage = new SeriesPage(page);
-    //
-    await expect(page)
+      const sideNav = {
+        id: 2,
+        name: library.name,
+        isProvided: false,
+        order: 1,
+        smartFilterEncoded: undefined,
+        smartFilterId: 0,
+        streamType: SideNavStreamType.Library,
+        externalSourceId: 0,
+        externalSource: undefined,
+        visible: true,
+        libraryId: library.id,
+        library: library
+      } as SideNavStream;
+
+      // Home page requirements
+
+      const loginParams = {
+        adminExists: true,
+        user: user
+      } as RequiredLoginParams;
+
+      setLoginRoutes(page, loginParams);
+
+      const homeParams = {
+        pluginVersion: '0.8.7.0',
+        device: [],
+        validLicense: false,
+        user: user,
+        dashboard: [recentlyUpdated, newlyAdded],
+        sideNav: [sideNav],
+        libraries: [library],
+        recentlyUpdated: [seriesGroup],
+        recentlyAdded: [series],
+        tokenExpired: false
+      } as RequiredHomeParams;
+
+      setHomeRoutes(page, homeParams);
+
+      // Series Page requirements
+      const seriesParams = {
+        hasLibraryAccess: true,
+        hasScrobblingHold: false,
+        libraryAllowsScrobbling: false,
+        metadata: seriesMetadata,
+        wantToRead: false,
+        listForSeries: [],
+        collection: [],
+        bookmarks: [],
+        timeLeft: seriesTimeLeft,
+        hasProgress: false,
+        continuePoint: series.volumes[0].chapters[0],
+        libraryType: library.type,
+        series: series,
+        detailPlus: seriesDetailPlus,
+        related: seriesRelated,
+        detail: seriesDetail,
+        rating: seriesRating,
+        coverImageFilePath: "src/assets/images/image-placeholder.dark.png",
+        publisherImageFilePath: "src/assets/images/error-person-missing.dark.png",
+        libraryImageFilePath: "src/assets/images/ExternalServices/GoogleBooks.png"
+      } as RequiredSeriesParams;
+
+      setSeriesRoutes(page, seriesParams);
+
+      // Login
+      const loginPage = new LoginPage(page);
+      await loginPage.login(user.username, "imagineYourPasswordHere");
+
+      await page.goto('/library/' + library.id + '/series/' + series.id);
+      await page.waitForLoadState('networkidle');
+      const seriesPage = new SeriesPage(page);
+      await expect(seriesPage.title).toHaveText(series.name);
+      await expect(seriesPage.title).toBeVisible();
+      if (series.summary) {
+        await expect(seriesPage.summary).toHaveText(series.summary);
+      }
+    });
   });
 });

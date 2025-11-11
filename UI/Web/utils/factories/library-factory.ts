@@ -14,7 +14,7 @@ export class LibraryFactory {
       .addFolders(folders)
       .addLibraryFileTypes(fileTypes)
       .addExcludePatterns([""])
-      .setCoverImage(faker.image.url())
+      .setCoverImage("src/assets/images/ExternalServices/MAL.png")
       .setFolderWatching(false)
       .setIncludeInDashboard(true)
       .setIncludeInRecommended(true)
@@ -23,7 +23,7 @@ export class LibraryFactory {
       .setAllowScrobbling(false)
       .setCollapseSeriesRelationships(false)
       .setAllowMetadataMatching(false)
-      .setEnableMetadata(false)
+      .setEnableMetadata(true)
       .setManageReadingLists(false)
       .setLastScanned(faker.date.past().toISOString())
       .build();

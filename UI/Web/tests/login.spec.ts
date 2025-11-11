@@ -3,7 +3,7 @@ import {LoginPage} from "pages/LoginPage";
 import {User} from "src/app/_models/user";
 import {environment} from "src/environments/environment";
 import {setRoute} from "utils/playwright-utils";
-import {UserBuilder} from "utils/user-builder";
+import {UserBuilder} from "../utils/builders/user-builder";
 
 test.describe('Login page', () => {
   test('redirects to account creation flow if there is no existing admin account', async ({page}) => {
@@ -52,6 +52,7 @@ test.describe('Login page', () => {
     await loginPage.login('aUserForSure', "CamelBatterySomethingSomething");
 
     // Assert error shown and user is still shown the login page
+    // TODO: Move this locator portion to the LoginPage
     await expect(page.getByRole("alert", {name: "Your credentials are not correct"})).toBeVisible();
     await expect(page).toHaveURL('/login');
   });
