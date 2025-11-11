@@ -5,25 +5,25 @@ export class SeriesPage {
   readonly page: Page;
   readonly title: Locator;
   readonly summary: Locator;
-  readonly tabs: Locator;
   readonly books: Locator;
   readonly reviewTab: Locator;
   readonly detailsTab: Locator;
   readonly booksTab: Locator;
   readonly relatedTab: Locator;
   readonly storylineTab: Locator;
+  readonly editButton: Locator;
 
   constructor(page: Page){
     this.page = page;
-    this.title = this.page.locator('.title span')
-    this.summary = this.page.locator('app-read-more')
-    this.tabs = this.page.locator('carousel-tabs-container').locator('nav-item');
-    this.books = this.page.locator('card-container').locator('app-volume-card')
+    this.title = this.page.locator('.title span');
+    this.summary = this.page.locator('app-read-more');
+    this.books = this.page.locator('card-container').locator('app-volume-card');
     this.reviewTab = this.page.getByRole('tab', { name: 'Reviews'});
     this.detailsTab = this.page.getByRole('tab', { name: 'Details'});
     this.booksTab = this.page.getByRole('tab', { name: 'Books'});
     this.relatedTab = this.page.getByRole('tab', { name: 'Related'});
     this.storylineTab = this.page.getByRole('tab', { name: 'Storyline'});
+    this.editButton = this.page.locator('#edit-btn--komf');
   }
 
   async goToRelatedTab() {
