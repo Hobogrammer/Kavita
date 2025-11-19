@@ -32,7 +32,7 @@ export class SeriesPage {
   }
 
   async goToDetailsTab() {
-    this.detailsTab.click();
+    await this.detailsTab.click();
   }
 
   async goToStorylineTab() {
@@ -42,5 +42,9 @@ export class SeriesPage {
   async getBooks() {
     // all() gets all of the locators when called so we have to call for them after page load
     return this.page.locator('div.card.card-item-container').all();
+  }
+
+  async getDetailsTabWriters() {
+    return this.page.locator('app-person-badge').all();
   }
 }
