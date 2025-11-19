@@ -124,20 +124,39 @@ test.describe('Series Detail page', () => {
     }
   });
 
-  test.only('shows expected books', async ({page}) => {
+  test('shows expected books', async ({page}) => {
     setLoginRoutes(page, loginParams);
     setSeriesRoutes(page, seriesParams);
+    const loginPage = new LoginPage(page);
+    await loginPage.login(user.username, faker.internet.password());
+    await page.goto('/library/' + library.id + '/series/' + series.id);
+    await page.waitForLoadState('networkidle');
+    const seriesPage = new SeriesPage(page);
+
+    await expect(seriesPage.booksTab).toContainClass('active');
+    const books: Array<Locator> = await seriesPage.getBooks();
+    expect(books.length).toEqual(series.volumes.length);
+  });
+
+  test('shows details in details tab', async ({page}) => {
+    setLoginRoutes(page, loginParams);
+    setSeriesRoutes(page, seriesParams);
+
     const loginPage = new LoginPage(page);
     await loginPage.login(user.username, faker.internet.password());
 
     await page.goto('/library/' + library.id + '/series/' + series.id);
     await page.waitForLoadState('networkidle');
     const seriesPage = new SeriesPage(page);
-
-    await page.pause();
-    expect(seriesPage.booksTab).toContainClass('active');
-    const books: Array<Locator> = seriesPage.getBooks();
-    expect(books.length).toEqual(series.volumes.length);
+    await seriesPage.goToDetailsTab();
+    const detailsWriters: Array<Locator> = await seriesPage.getDetailsTabWriters();
+    await expect(detailsWriters.length).toEqual(series.writers.length);
+    const writersNames: Array<string> = series.writers.map((writer) => writer.name);
+    detailsWriters.forEach(detailsWriter => {
+      detailsWriter.textContent().then(name => {
+        expect(writersNames.includes(name)).toBe(true);
+      })
+    });
   });
 
   test.describe('as a regular user', () => {
@@ -156,15 +175,12 @@ test.describe('Series Detail page', () => {
 
   test.describe('as an admin', () => {
     test('should show the edit button', async ({page}) => {
-      user = UserFactory.createAdmin();
-      loginParams = {
-        adminExists: true,
-        user: user
-      };
+      const admin = UserFactory.createAdmin();
+      loginParams.user = admin;
       setLoginRoutes(page, loginParams);
       setSeriesRoutes(page, seriesParams);
       const loginPage = new LoginPage(page);
-      await loginPage.login(user.username, faker.internet.password());
+      await loginPage.login(admin.username, faker.internet.password());
 
       await page.goto('/library/' + library.id + '/series/' + series.id);
       await page.waitForLoadState('networkidle');
