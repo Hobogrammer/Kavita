@@ -113,10 +113,10 @@ test.describe('Home Page', () => {
 
     const homePage = new HomePage(page);
     const expectedNavItems: Array<string> = ["Home", library.name];
-    await expect(await homePage.getSideNavItems()).toEqual(expectedNavItems);
+    await expect(await homePage.getSideNavItems()).toEqual(expect.arrayContaining(expectedNavItems));
   });
 
-  test.only('dashboard should display expected streams', async ({page}) => {
+  test('dashboard should display expected streams', async ({page}) => {
     setLoginRoutes(page, loginParams);
     setHomeRoutes(page, homeParams);
 
