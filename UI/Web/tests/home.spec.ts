@@ -13,7 +13,8 @@ import { SideNavStream } from "src/app/_models/sidenav/sidenav-stream";
 import { SideNavStreamType } from "src/app/_models/sidenav/sidenav-stream-type.enum";
 import { StreamType } from "src/app/_models/dashboard/stream-type.enum";
 import { Observable } from "rxjs";
-import { LoginPage } from "pages/LoginPage"
+import { LoginPage } from "pages/LoginPage";
+import { HomePage } from "pages/HomePage";
 import { faker } from "@faker-js/faker";
 
 test.describe('Home Page', () => {
@@ -70,7 +71,7 @@ test.describe('Home Page', () => {
       externalSource: undefined,
       visible: true,
       libraryId: library.id,
-      library: Library
+      library: library
     } as SideNavStream;
 
     homeParams = {
@@ -97,6 +98,8 @@ test.describe('Home Page', () => {
     await expect(page).toHaveURL('/home');
 
     const homePage = new HomePage(page);
+    let navUsername = await homePage.getUsername();
+    await expect(navUsername).toBe(user.username);
   });
 
   test('side navigation bar should show the expected', async ({page}) => {
@@ -109,9 +112,11 @@ test.describe('Home Page', () => {
     await expect(page).toHaveURL('/home');
 
     const homePage = new HomePage(page);
+    const expectedNavItems: Array<string> = ["Home", library.name];
+    await expect(await homePage.getSideNavItems()).toEqual(expectedNavItems);
   });
 
-  test('dashboard should display expected streams', async ({page}) => {
+  test.only('dashboard should display expected streams', async ({page}) => {
     setLoginRoutes(page, loginParams);
     setHomeRoutes(page, homeParams);
 
@@ -121,5 +126,8 @@ test.describe('Home Page', () => {
     await expect(page).toHaveURL('/home');
 
     const homePage = new HomePage(page);
+    const expectedDashBoardStreams: Array<string> = ["Newly Added Series", "Recently Updated Series"];
+    const dashboardRows = await homePage.getDashboardRows();
+    await expect(await homePage.getDashboardRowTitles(dashboardRows)).toEqual(expect.arrayContaining(expectedDashBoardStreams));
   });
 });

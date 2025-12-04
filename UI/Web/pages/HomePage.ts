@@ -14,18 +14,22 @@ export class HomePage {
   }
 
   async getSideNavItems() {
-    return this.sideNav.locator('.side-nav-item a').allTextContents();
+    let items = await this.sideNav.locator('.side-nav-item').allTextContents();
+    return items.map((item) => item.trim());
   }
 
-  async getUserName() {
-    return this.header.locator('.primary-text').allTextContents();
+  async getUsername() {
+    let usernameArray = await this.header.locator('.primary-text').allTextContents();
+    return usernameArray[0];
   }
 
   async getDashboardRows(): Array<Locator> {
-    return this.dashboard.locator('app-carousel-reel').all();
+    return await this.dashboard.locator('app-carousel-reel').all();
   }
 
-  async getDashboardRowTitles(dashboardRow: Locator) {
-    return dashboardRow.locator('.card-title-container').allTextContents()
+  async getDashboardRowTitles(dashboardRows: Array<Locator>) {
+    let dashboardRowTitles = await Promise.all(dashboardRows.map(async (row) =>
+      await row.locator('.section-title').allTextContents()));
+    return dashboardRowTitles.map((arr) => arr[0]);
   }
 }
