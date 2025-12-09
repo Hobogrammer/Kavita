@@ -1,6 +1,6 @@
 import {test, expect} from '@playwright/test';
 import { User } from "src/app/_models/user";
-import { RequiredHomeParams, RequiredLoginParams, setLoginRoutes, setHomeRoutes} from 'utils/playwright-utils';
+import { HomeRoutes, LoginRoutes, setLoginRoutes, setHomeRoutes} from 'utils/playwright-utils';
 import { SeriesFactory} from "utils/factories/series-factory";
 import {LibraryFactory} from "utils/factories/library-factory";
 import {UserFactory} from "utils/factories/user-factory";
@@ -21,8 +21,8 @@ test.describe('Home Page', () => {
   let user: User;
   let library: Library;
   let series: Series;
-  let loginParams: RequiredLoginParams;
-  let homeParams: RequiredHomeParams;
+  let loginRoutes: LoginRoutes;
+  let homeRoutes: HomeRoutes;
   const CURRENT_VERSION: string = '0.8.8.6';
 
   test.beforeEach(async ({page}) => {
@@ -30,7 +30,7 @@ test.describe('Home Page', () => {
     library = LibraryFactory.create("epub", LibraryType.Book, [FileTypeGroup.Epub], ["/epubs"]);
     series = SeriesFactory.create(library, MangaFormat.EPUB);
 
-    loginParams = {
+    loginRoutes = {
       adminExists: true,
       user: user
     };
@@ -74,7 +74,7 @@ test.describe('Home Page', () => {
       library: library
     } as SideNavStream;
 
-    homeParams = {
+    homeRoutes = {
       pluginVersion: CURRENT_VERSION,
       device: [],
       validLicense: false,
@@ -89,8 +89,8 @@ test.describe('Home Page', () => {
   });
 
   test('should display user name in navigation bar', async ({page}) => {
-    setLoginRoutes(page, loginParams);
-    setHomeRoutes(page, homeParams);
+    setLoginRoutes(page, loginRoutes);
+    setHomeRoutes(page, homeRoutes);
 
     const loginPage = new LoginPage(page);
     await loginPage.login(user.username, faker.internet.password());
@@ -103,8 +103,8 @@ test.describe('Home Page', () => {
   });
 
   test('side navigation bar should show the expected', async ({page}) => {
-    setLoginRoutes(page, loginParams);
-    setHomeRoutes(page, homeParams);
+    setLoginRoutes(page, loginRoutes);
+    setHomeRoutes(page, homeRoutes);
 
     const loginPage = new LoginPage(page);
     await loginPage.login(user.username, faker.internet.password());
@@ -117,8 +117,8 @@ test.describe('Home Page', () => {
   });
 
   test('dashboard should display expected streams', async ({page}) => {
-    setLoginRoutes(page, loginParams);
-    setHomeRoutes(page, homeParams);
+    setLoginRoutes(page, loginRoutes);
+    setHomeRoutes(page, homeRoutes);
 
     const loginPage = new LoginPage(page);
     await loginPage.login(user.username, faker.internet.password());

@@ -18,4 +18,12 @@ export class VolumePage {
     this.detailsTab = this.page.getByRole('tab', { name: 'Details'});
     this.booksTab = this.page.getByRole('tab', { name: 'Books'});
   }
+
+  async goToDetailsTab() {
+    await this.detailsTab.click();
+  }
+
+  async getDetailsTabWriters() {
+    return this.page.locator('app-person-badge').all();
+  }
 }
