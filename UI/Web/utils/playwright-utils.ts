@@ -14,9 +14,10 @@ import { SeriesGroup } from "src/app/_models/series-group";
 import { SideNavStream } from "src/app/_models/sidenav/sidenav-stream";
 import { User } from "src/app/_models/user";
 import { environment } from "src/environments/environment";
-import * as defaultLocale from "tests/data/locale.json"
+import * as defaultLocale from "tests/data/locale.json";
+import { faker } from "@faker-js/faker";
 
-export interface RequiredHomeParams {
+export interface HomeRoutes {
   pluginVersion: string;
   device: Array<any>;
   validLicense: boolean;
@@ -29,12 +30,12 @@ export interface RequiredHomeParams {
   tokenExpired: boolean;
 };
 
-export interface RequiredLoginParams {
+export interface LoginRoutes {
   adminExists: boolean;
   user: User;
 };
 
-export interface RequiredSeriesParams {
+export interface SeriesRoutes {
   hasLibraryAccess: boolean;
   hasScrobblingHold: boolean;
   libraryAllowsScrobbling: boolean;
@@ -57,15 +58,25 @@ export interface RequiredSeriesParams {
   libraryImageFilePath: string;
 };
 
-export async function setHomeRoutes(page: Page, params: RequiredHomeParams) {
-  await setRoute(page, environment.apiUrl + 'plugin/version?*', params.pluginVersion);
-  await setRoute(page, environment.apiUrl + 'device', params.device);
-  await setRoute(page, environment.apiUrl + 'license/valid-license?*', params.validLicense);
+export interface VolumeRoutes {
+  volume: Volume;
+  chapterDetailPlus: ChapterDetailPlus;
+  listsForChapter: Array<Chapter>;
+  rating: Rating;
+  volumeImageFilePath: string;
+};
+
+export async function setHomeRoutes(page: Page, routes: HomeRoutes) {
+  await setRoute(page, environment.apiUrl + 'plugin/version?*', routes.pluginVersion);
+  await setRoute(page, environment.apiUrl + 'device', routes.device);
+  await setRoute(page, environment.apiUrl + 'license/valid-license?*', routes.validLicense);
+  const connectionId: string = faker.string.alpha({length: 22, casing: 'mixed'});
+  const connectionToken: string = faker.string.alpha({length: 22, casing: 'mixed'});
   await setRoute(page, environment.hubUrl + 'messages/negotiate?*',
     {
       "negotiateVersion":1,
-      "connectionId":"CkiMkPYyP0yzWnGbPdQDpQ",
-      "connectionToken":"gMyUQzklsSovnbLmprJgPA",
+      "connectionId": connectionId,
+      "connectionToken": connectionToken,
       "availableTransports":
         [
           {
@@ -76,49 +87,62 @@ export async function setHomeRoutes(page: Page, params: RequiredHomeParams) {
     }
   );
 
-  await setWebSocketRoute(page, environment.hubUrl.slice(7) + 'messages?**', params.user);
-  await setRoute(page, environment.apiUrl + 'scrobbling/token-expired?**', params.tokenExpired);
-  await setRoute(page, environment.apiUrl + 'stream/dashboard?**', params.dashboard);
-  await setRoute(page, environment.apiUrl + 'stream/sidenav?**', params.sideNav);
-  await setRoute(page, environment.apiUrl + 'library/libraries', params.libraries);
-  await setRoute(page, environment.apiUrl + 'series/recently-updated-series', params.recentlyUpdated);
-  await setRoute(page, environment.apiUrl + 'series/recently-added-v2?**', params.recentlyAdded);
+  await setWebSocketRoute(page, environment.hubUrl.slice(7) + 'messages?**', routes.user);
+  await setRoute(page, environment.apiUrl + 'scrobbling/token-expired?**', routes.tokenExpired);
+  await setRoute(page, environment.apiUrl + 'stream/dashboard?**', routes.dashboard);
+  await setRoute(page, environment.apiUrl + 'stream/sidenav?**', routes.sideNav);
+  await setRoute(page, environment.apiUrl + 'library/libraries', routes.libraries);
+  await setRoute(page, environment.apiUrl + 'series/recently-updated-series', routes.recentlyUpdated);
+  await setRoute(page, environment.apiUrl + 'series/recently-added-v2?**', routes.recentlyAdded);
 }
 
-export async function setLoginRoutes(page: Page, params: RequiredLoginParams) {
-  setRoute(page, environment.apiUrl + 'admin/exists', params.adminExists);
+export async function setLoginRoutes(page: Page, routes: LoginRoutes) {
+  setRoute(page, environment.apiUrl + 'admin/exists', routes.adminExists);
   setRoute(page, environment.apiUrl + 'theme', [defaultSiteTheme]);
   setRoute(page, environment.apiUrl + 'locale', defaultLocale);
-  setRoute(page, environment.apiUrl + 'account/login', params.user);
+  setRoute(page, environment.apiUrl + 'account/login', routes.user);
 }
 
-export async function setSeriesRoutes(page: Page, params: RequiredSeriesParams) {
-  await setRoute(page, environment.apiUrl + 'users/has-library-access?*', params.hasLibraryAccess);
+export async function setSeriesRoutes(page: Page, routes: SeriesRoutes) {
+  await setRoute(page, environment.apiUrl + 'users/has-library-access?*', routes.hasLibraryAccess);
   await setRoute(page, environment.apiUrl + 'license/info?*', undefined, { status: 204 });
-  await setRoute(page, environment.apiUrl + 'scrobbling/has-hold?*', params.hasScrobblingHold);
-  await setRoute(page, environment.apiUrl + 'series/*', params.series);
-  await setRoute(page, environment.apiUrl + 'scrobbling/library-allows-scrobbling?*', params.libraryAllowsScrobbling);
-  await setRoute(page, environment.apiUrl + 'series/metadata?**', params.metadata);
-  await setRoute(page, environment.apiUrl + 'want-to-read?*', params.wantToRead);
-  await setRoute(page, environment.apiUrl + 'readinglist/lists-for-series?*', params.listForSeries);
-  await setRoute(page, environment.apiUrl + 'collection/all-series?*', params.collection);
-  await setRoute(page, environment.apiUrl + 'reader/series-bookmarks?*', params.bookmarks);
-  await setRoute(page, environment.apiUrl + 'reader/time-left?*', params.timeLeft);
-  await setRoute(page, environment.apiUrl + 'reader/has-progress?*', params.hasProgress);
-  await setRoute(page, environment.apiUrl + 'reader/continue-point?*', params.continuePoint);
-  await setRoute(page, environment.apiUrl + 'library/type?*', params.libraryType);
-  await setRoute(page, environment.apiUrl + 'metadata/series-detail-plus?*', params.detailPlus);
-  await setRoute(page, environment.apiUrl + 'series/all-related?*', params.related);
-  await setRoute(page, environment.apiUrl + 'series/series-detail?*', params.detail);
-  await setRoute(page, environment.apiUrl + 'rating/overall-series?*', params.rating);
-  await setImageRoute(page, environment.apiUrl + 'image/library-cover?*', params.libraryImageFilePath);
-  await setImageRoute(page, environment.apiUrl + 'image/series-cover?*', params.coverImageFilePath);
-  await setImageRoute(page, environment.apiUrl + 'image/publisher?*', params.publisherImageFilePath);
+  await setRoute(page, environment.apiUrl + 'scrobbling/has-hold?*', routes.hasScrobblingHold);
+  await setRoute(page, environment.apiUrl + 'series/*', routes.series);
+  await setRoute(page, environment.apiUrl + 'series/metadata?*', routes.metadata);
+  await setRoute(page, environment.apiUrl + 'scrobbling/library-allows-scrobbling?*', routes.libraryAllowsScrobbling);
+  await setRoute(page, environment.apiUrl + 'want-to-read?*', routes.wantToRead);
+  await setRoute(page, environment.apiUrl + 'readinglist/lists-for-series?*', routes.listForSeries);
+  await setRoute(page, environment.apiUrl + 'collection/all-series?*', routes.collection);
+  await setRoute(page, environment.apiUrl + 'reader/series-bookmarks?*', routes.bookmarks);
+  await setRoute(page, environment.apiUrl + 'reader/time-left?*', routes.timeLeft);
+  await setRoute(page, environment.apiUrl + 'reader/has-progress?*', routes.hasProgress);
+  await setRoute(page, environment.apiUrl + 'reader/continue-point?*', routes.continuePoint);
+  await setRoute(page, environment.apiUrl + 'library/type?*', routes.libraryType);
+  await setRoute(page, environment.apiUrl + 'metadata/series-detail-plus?*', routes.detailPlus);
+  await setRoute(page, environment.apiUrl + 'series/all-related?*', routes.related);
+  await setRoute(page, environment.apiUrl + 'series/series-detail?*', routes.detail);
+  await setRoute(page, environment.apiUrl + 'rating/overall-series?*', routes.rating);
+  await setImageRoute(page, environment.apiUrl + 'image/library-cover?*', routes.libraryImageFilePath);
+  await setImageRoute(page, environment.apiUrl + 'image/series-cover?*', routes.coverImageFilePath);
+  await setImageRoute(page, environment.apiUrl + 'image/publisher?*', routes.publisherImageFilePath);
+}
+
+export async function setVolumeRoutes(page: Page, routes: VolumeRoutes) {
+  // plugin
+  // device
+  // lisence valid
+  // libraries
+  // has library access
+  // sidenav
+  await setRoute(page, environment.apiUrl + 'volume?*', routes.volume);
+  await setRoute(page, environment.apiUrl + 'chapter/chapter-detail-plus?*', routes.chapterDetailPlus);
+  await setRoute(page, environment.apiUrl + 'readingList/lists-for-chapter?*', routes.listsForChapter);
+  await setRoute(page, environment.apiUrl + 'rating/overall-chapter?*', routes.rating);
+  await setImageRoute(page, environment.apiUrl + 'image/volume-cover?*', routes.volumeImageFilePath);
 }
 
 export async function setRoute(page: Page, url: string, response: any, options?: any) {
   await page.route(url, async route => {
-    console.log('Fulfilling route: ' + url + ' with response: ' + JSON.stringify(response));
     if (options?.status !== 204) {
       await route.fulfill({
         contentType: options?.contentType || "application/json",
@@ -141,7 +165,6 @@ export async function setImageRoute(page: Page, url: string, filePath: string) {
 
 export async function setWebSocketRoute(page: Page, url: string, user: User) {
   await page.routeWebSocket('ws://'+ url, ws => {
-    console.log("Serving on WebSocket");
     ws.onMessage(message => {
       switch (message) {
         case "{'protocol':'json','version':1}":

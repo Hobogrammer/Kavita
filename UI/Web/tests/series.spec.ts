@@ -5,7 +5,7 @@ import {Library, LibraryType} from "src/app/_models/library/library";
 import {HourEstimateRange} from "src/app/_models/series-detail/hour-estimate-range";
 import {User} from "src/app/_models/user";
 import {UserFactory } from "utils/factories/user-factory";
-import {RequiredLoginParams, RequiredSeriesParams, setLoginRoutes, setSeriesRoutes} from "utils/playwright-utils";
+import {LoginRoutes, SeriesRoutes, setLoginRoutes, setSeriesRoutes} from "utils/playwright-utils";
 import {SeriesDetailPlus} from "src/app/_models/series-detail/series-detail-plus";
 import {RelatedSeries} from "src/app/_models/series-detail/related-series";
 import {ScrobbleProvider} from "src/app/_services/scrobbling.service";
@@ -29,8 +29,8 @@ test.describe('Series Detail page', () => {
   let seriesTimeLeft: HourEstimateRange;
   let seriesDetailPlus: SeriesDetailPlus;
   let seriesRating: Rating;
-  let loginParams: RequiredLoginParams;
-  let seriesParams: RequiredSeriesParams;
+  let loginRoutes: LoginRoutes;
+  let seriesRoutes: SeriesRoutes;
 
   test.beforeEach(() => {
     user = UserFactory.createUser();
@@ -77,12 +77,12 @@ test.describe('Series Detail page', () => {
       authority: RatingAuthority.User
     } as Rating;
 
-    loginParams = {
+    loginRoutes = {
       adminExists: true,
       user: user
     };
 
-    seriesParams = {
+    seriesRoutes = {
       hasLibraryAccess: true,
       hasScrobblingHold: false,
       libraryAllowsScrobbling: false,
@@ -107,8 +107,8 @@ test.describe('Series Detail page', () => {
   });
 
   test('should show expected metadata', async ({page}) => {
-    setLoginRoutes(page, loginParams);
-    setSeriesRoutes(page, seriesParams);
+    setLoginRoutes(page, loginRoutes);
+    setSeriesRoutes(page, seriesRoutes);
 
     // Login
     const loginPage = new LoginPage(page);
@@ -125,8 +125,8 @@ test.describe('Series Detail page', () => {
   });
 
   test('shows expected books', async ({page}) => {
-    setLoginRoutes(page, loginParams);
-    setSeriesRoutes(page, seriesParams);
+    setLoginRoutes(page, loginRoutes);
+    setSeriesRoutes(page, seriesRoutes);
     const loginPage = new LoginPage(page);
     await loginPage.login(user.username, faker.internet.password());
     await page.goto('/library/' + library.id + '/series/' + series.id);
@@ -139,8 +139,8 @@ test.describe('Series Detail page', () => {
   });
 
   test('shows details in details tab', async ({page}) => {
-    setLoginRoutes(page, loginParams);
-    setSeriesRoutes(page, seriesParams);
+    setLoginRoutes(page, loginRoutes);
+    setSeriesRoutes(page, seriesRoutes);
 
     const loginPage = new LoginPage(page);
     await loginPage.login(user.username, faker.internet.password());
@@ -161,8 +161,8 @@ test.describe('Series Detail page', () => {
 
   test.describe('as a regular user', () => {
     test('should not show edit button', async ({page}) => {
-      setLoginRoutes(page, loginParams);
-      setSeriesRoutes(page, seriesParams);
+      setLoginRoutes(page, loginRoutes);
+      setSeriesRoutes(page, seriesRoutes);
       const loginPage = new LoginPage(page);
       await loginPage.login(user.username, faker.internet.password());
 
@@ -176,9 +176,9 @@ test.describe('Series Detail page', () => {
   test.describe('as an admin', () => {
     test('should show the edit button', async ({page}) => {
       const admin = UserFactory.createAdmin();
-      loginParams.user = admin;
-      setLoginRoutes(page, loginParams);
-      setSeriesRoutes(page, seriesParams);
+      loginRoutes.user = admin;
+      setLoginRoutes(page, loginRoutes);
+      setSeriesRoutes(page, seriesRoutes);
       const loginPage = new LoginPage(page);
       await loginPage.login(admin.username, faker.internet.password());
 
