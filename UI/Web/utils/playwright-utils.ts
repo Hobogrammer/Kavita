@@ -59,11 +59,22 @@ export interface SeriesRoutes {
 };
 
 export interface VolumeRoutes {
+  pluginVersion: string;
+  device: Array<any>;
+  validLicense: boolean;
+  libraries: Array<Library>;
+  libraryType: LibraryType;
+  hasLibraryAccess: boolean;
+  sideNav: Array<SideNavStream>;
   volume: Volume;
   chapterDetailPlus: ChapterDetailPlus;
-  listsForChapter: Array<Chapter>;
+  listsForChapter: Array<any>;
   rating: Rating;
   volumeImageFilePath: string;
+  series: Series;
+  publisherImageFilePath: string;
+  libraryImageFilePath: string;
+  user: User;
 };
 
 export async function setHomeRoutes(page: Page, routes: HomeRoutes) {
@@ -128,17 +139,38 @@ export async function setSeriesRoutes(page: Page, routes: SeriesRoutes) {
 }
 
 export async function setVolumeRoutes(page: Page, routes: VolumeRoutes) {
-  // plugin
-  // device
-  // lisence valid
-  // libraries
-  // has library access
-  // sidenav
+  await setRoute(page, environment.apiUrl + 'plugin/version?*', routes.pluginVersion);
+  await setRoute(page, environment.apiUrl + 'device', routes.device);
+  await setRoute(page, environment.apiUrl + 'license/valid-license?*', routes.validLicense);
+  await setRoute(page, environment.apiUrl + 'users/has-library-access?*', routes.hasLibraryAccess);
+  await setRoute(page, environment.apiUrl + 'library/libraries', routes.libraries);
+  await setRoute(page, environment.apiUrl + 'library/type?*', routes.libraryType);
+  await setRoute(page, environment.apiUrl + 'series/*', routes.series);
+  await setRoute(page, environment.apiUrl + 'stream/sidenav?**', routes.sideNav);
   await setRoute(page, environment.apiUrl + 'volume?*', routes.volume);
   await setRoute(page, environment.apiUrl + 'chapter/chapter-detail-plus?*', routes.chapterDetailPlus);
-  await setRoute(page, environment.apiUrl + 'readingList/lists-for-chapter?*', routes.listsForChapter);
+  await setRoute(page, environment.apiUrl + 'readinglist/lists-for-chapter?*', routes.listsForChapter);
   await setRoute(page, environment.apiUrl + 'rating/overall-chapter?*', routes.rating);
+  await setImageRoute(page, environment.apiUrl + 'image/library-cover?*', routes.libraryImageFilePath);
   await setImageRoute(page, environment.apiUrl + 'image/volume-cover?*', routes.volumeImageFilePath);
+  const connectionId: string = faker.string.alpha({length: 22, casing: 'mixed'});
+  const connectionToken: string = faker.string.alpha({length: 22, casing: 'mixed'});
+  await setRoute(page, environment.hubUrl + 'messages/negotiate?*',
+    {
+      "negotiateVersion":1,
+      "connectionId": connectionId,
+      "connectionToken": connectionToken,
+      "availableTransports":
+        [
+          {
+            "transport":"WebSockets",
+            "transferFormats":["Text","Binary"]
+          }
+        ]
+    }
+  );
+
+  await setWebSocketRoute(page, environment.hubUrl.slice(7) + 'messages?**', routes.user);
 }
 
 export async function setRoute(page: Page, url: string, response: any, options?: any) {

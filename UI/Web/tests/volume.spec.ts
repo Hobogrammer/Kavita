@@ -17,6 +17,8 @@ import {SeriesDetail} from "src/app/_models/series-detail/series-detail";
 import {SeriesFactory} from "utils/factories/series-factory";
 import { MangaFormat } from "src/app/_models/manga-format";
 import { LibraryFactory } from "utils/factories/library-factory";
+import { SideNavStream } from "src/app/_models/sidenav/sidenav-stream";
+import { SideNavStreamType } from "src/app/_models/sidenav/sidenav-stream-type.enum";
 import { faker } from "@faker-js/faker";
 
 test.describe('Volume detail page', ()=> {
@@ -54,14 +56,40 @@ test.describe('Volume detail page', ()=> {
      ratings: []
    } as ChapterDetailPlus;
 
+   const sideNav = {
+     id: 2,
+     name: library.name,
+     isProvided: false,
+     order: 1,
+     smartFilterEncoded: undefined,
+     smartFilterId: 0,
+     streamType: SideNavStreamType.Library,
+     externalSourceId: 0,
+     externalSource: undefined,
+     visible: true,
+     libraryId: library.id,
+     library: library
+   } as SideNavStream;
+
    volume = series.volumes[Math.floor(Math.random() * series.volumes.length)];
 
    volumeRoutes = {
+     pluginVersion: '0.8.8',
+     device: [],
+     validLicense: false,
+     libraries: [library],
+     libraryType: library.type,
+     hasLibraryAccess: true,
+     sideNav: [sideNav],
      volume: volume,
      chapterDetailPlus: chapterDetailPlus,
      listsForChapter: [],
      rating: rating,
-     volumeImageFilePath: "src/assets/images/image-placeholder.dark.png"
+     series: series,
+     volumeImageFilePath: "src/assets/images/image-placeholder.dark.png",
+     publisherImageFilePath: "src/assets/images/error-person-missing.dark.png",
+     libraryImageFilePath: "src/assets/images/ExternalServices/GoogleBooks.png",
+     user: user
    };
  });
 
@@ -84,7 +112,6 @@ test.describe('Volume detail page', ()=> {
    const volume = series.volumes[Math.floor(Math.random() * series.volumes.length)];
    await page.goto('/library/' + library.id + '/series/' + series.id + '/volume/' + volume.id);
    const volumePage = new VolumePage(page);
-   await page.pause();
    await volumePage.goToDetailsTab();
    const detailsWriters: Array<Locator> = await volumePage.getDetailsTabWriters();
    await expect(detailsWriters.length).toEqual(volume.writers.length);
