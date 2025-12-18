@@ -19,6 +19,7 @@ export abstract class ChapterFactory {
       .setCount(count)
       .setVolumeId(count)
       .setTotalCount(totalCount)
+      .setTitleName(faker.book.title())
       .setLanguage("en")
       .setSummary(faker.lorem.paragraph())
       .setAgeRating(AgeRating.Everyone)

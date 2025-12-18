@@ -101,6 +101,8 @@ test.describe('Volume detail page', ()=> {
    await loginPage.login(user.username, faker.internet.password());
    await page.goto('/library/' + library.id + '/series/' + series.id + '/volume/' + volume.id);
    const volumePage = new VolumePage(page);
+
+   const expectedSubTitle = "Volume " + volume.name + " - " + volume.chapters[0].titleName;
  });
 
  test.only('Detail tab should show expected data', async ({page}) => {
@@ -109,12 +111,11 @@ test.describe('Volume detail page', ()=> {
 
    const loginPage = new LoginPage(page);
    await loginPage.login(user.username, faker.internet.password());
-   const volume = series.volumes[Math.floor(Math.random() * series.volumes.length)];
    await page.goto('/library/' + library.id + '/series/' + series.id + '/volume/' + volume.id);
    const volumePage = new VolumePage(page);
    await volumePage.goToDetailsTab();
    const detailsWriters: Array<Locator> = await volumePage.getDetailsTabWriters();
-   await expect(detailsWriters.length).toEqual(volume.writers.length);
+   await expect(detailsWriters.length).toEqual(volume.chapters[0].writers.length);
    const writersNames: Array<string> = series.writers.map((writer) => writer.name);
    detailsWriters.forEach(detailsWriter => {
      detailsWriter.textContent().then(name => {

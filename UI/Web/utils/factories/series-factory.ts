@@ -162,7 +162,7 @@ export class SeriesFactory {
         id: volumeId,
         minNumber: 1,
         maxNumber: 1,
-        name: faker.book.title(),
+        name: count + 1,
         createdUtc: faker.date.anytime().toISOString(),
         lastModifiedUtc: new Date().toISOString(),
         pages: faker.number.int(),
