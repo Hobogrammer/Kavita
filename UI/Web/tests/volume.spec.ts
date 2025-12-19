@@ -15,6 +15,7 @@ import {Series} from "src/app/_models/series";
 import {SeriesMetadata} from "src/app/_models/metadata/series-metadata";
 import {SeriesDetail} from "src/app/_models/series-detail/series-detail";
 import {SeriesFactory} from "utils/factories/series-factory";
+import {Chapter} from "src/app/_models/chapter";
 import { MangaFormat } from "src/app/_models/manga-format";
 import { LibraryFactory } from "utils/factories/library-factory";
 import { SideNavStream } from "src/app/_models/sidenav/sidenav-stream";
@@ -25,7 +26,7 @@ test.describe('Volume detail page', ()=> {
   let user: User;
   let library: Library;
   let series: Series;
-  let volume: Volume;
+  let volume: Chapter;
   let loginRoutes: LoginRoutes;
   let volumeRoutes: VolumeRoutes;
 
@@ -93,7 +94,7 @@ test.describe('Volume detail page', ()=> {
    };
  });
 
- test('should display volume detail metadata', async ({page}) => {
+ test.only('should display volume detail metadata', async ({page}) => {
    setLoginRoutes(page, loginRoutes);
    setVolumeRoutes(page, volumeRoutes);
 
@@ -102,10 +103,20 @@ test.describe('Volume detail page', ()=> {
    await page.goto('/library/' + library.id + '/series/' + series.id + '/volume/' + volume.id);
    const volumePage = new VolumePage(page);
 
-   const expectedSubTitle = "Volume " + volume.name + " - " + volume.chapters[0].titleName;
+   const title = await volumePage.seriesTitle.textContent();
+   expect(title).toEqual(series.name);
+   const expectedSubTitle = "Volume  " + volume.name + " - " + volume.chapters[0].titleName;
+   const subTitle: string = await volumePage.subTitle.textContent();
+   expect(subTitle.trim()).toEqual(expectedSubTitle); // TODO: change this to match series tests
+   expect(volumePage.summary).toHaveText(volume.chapters[0].summary);
+   const writers = await volumePage.getWriters();
+   const expectedWriters: Array<string> = volume.chapters.map(chapter => chapter.writers.map(writer => writer.name)); // TODO: Change to flat map
+   writers.forEach(writer => {
+     expect(expectedWriters.includes(writer)).toBe(true);
+   });
  });
 
- test.only('Detail tab should show expected data', async ({page}) => {
+ test('Detail tab should show expected data', async ({page}) => {
    setLoginRoutes(page, loginRoutes);
    setVolumeRoutes(page, volumeRoutes);
 
@@ -132,5 +143,9 @@ test.describe('Volume detail page', ()=> {
    await loginPage.login(user.username, faker.internet.password());
    await page.goto('/library/' + library.id + '/series/' + series.id + '/volume/' + volume.id);
    const volumePage = new VolumePage(page);
+
+   await expect(volumePage.booksTab).toContainClass('active');
+   const books: Array<Locator> = await volumePage.getBooks();
+   expect(books.length).toEqual(volume.chapters.length);
  });
 });

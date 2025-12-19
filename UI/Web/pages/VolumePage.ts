@@ -13,7 +13,9 @@ export class VolumePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.seriesTitle = this.page.locator('.title span');
+    this.seriesTitle = this.page.locator('.title');
+    this.summary = this.page.locator('app-read-more');
+    this.subTitle = this.page.locator('.subtitle span');
     this.reviewTab = this.page.getByRole('tab', { name: 'Reviews'});
     this.detailsTab = this.page.getByRole('tab', { name: 'Details'});
     this.booksTab = this.page.getByRole('tab', { name: 'Books'});
@@ -25,5 +27,14 @@ export class VolumePage {
 
   async getDetailsTabWriters() {
     return this.page.locator('app-person-badge').all();
+  }
+
+  async getBooks() {
+    return this.page.locator('div.card.card-item-container').all();
+  }
+
+  async getWriters() {
+    const metadata = await this.page.locator('app-badge-extender');
+    return await metadata.allTextContents();
   }
 }
