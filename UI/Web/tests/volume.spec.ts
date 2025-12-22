@@ -94,7 +94,7 @@ test.describe('Volume detail page', ()=> {
    };
  });
 
- test.only('should display volume detail metadata', async ({page}) => {
+ test('should display volume detail metadata', async ({page}) => {
    setLoginRoutes(page, loginRoutes);
    setVolumeRoutes(page, volumeRoutes);
 
@@ -103,14 +103,14 @@ test.describe('Volume detail page', ()=> {
    await page.goto('/library/' + library.id + '/series/' + series.id + '/volume/' + volume.id);
    const volumePage = new VolumePage(page);
 
-   const title = await volumePage.seriesTitle.textContent();
+   const title = await volumePage.getTitle();
    expect(title).toEqual(series.name);
    const expectedSubTitle = "Volume  " + volume.name + " - " + volume.chapters[0].titleName;
-   const subTitle: string = await volumePage.subTitle.textContent();
-   expect(subTitle.trim()).toEqual(expectedSubTitle); // TODO: change this to match series tests
+   const subTitle: string = await volumePage.getSubTitle();
+   expect(subTitle).toEqual(expectedSubTitle);
    expect(volumePage.summary).toHaveText(volume.chapters[0].summary);
    const writers = await volumePage.getWriters();
-   const expectedWriters: Array<string> = volume.chapters.map(chapter => chapter.writers.map(writer => writer.name)); // TODO: Change to flat map
+   const expectedWriters: Array<string> = volume.chapters.map(chapter => chapter.writers.map(writer => writer.name));
    writers.forEach(writer => {
      expect(expectedWriters.includes(writer)).toBe(true);
    });

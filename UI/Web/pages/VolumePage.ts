@@ -37,4 +37,14 @@ export class VolumePage {
     const metadata = await this.page.locator('app-badge-extender');
     return await metadata.allTextContents();
   }
+
+  async getTitle() {
+    const title = await this.seriesTitle.textContent();
+    return title.trim();
+  }
+
+  async getSubTitle() {
+    const subTitle = await this.subTitle.textContent();
+    return subTitle.trim();
+  }
 }
