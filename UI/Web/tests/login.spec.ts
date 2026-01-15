@@ -2,13 +2,24 @@
 import {LoginPage} from "pages/LoginPage";
 import {User} from "src/app/_models/user";
 import {environment} from "src/environments/environment";
-import {setRoute} from "utils/playwright-utils";
+import {LoginRoutes, setLoginRoutes, setRoute} from "utils/playwright-utils";
 import {UserBuilder} from "../utils/builders/user-builder";
 
 test.describe('Login page', () => {
+  let loginRoutes: LoginRoutes;
+
+  test.beforeEach(() => {
+    loginRoutes = {
+      adminExists: true,
+      oidc: {},
+      odicAuthenticated: false
+    };
+  });
+
   test('redirects to account creation flow if there is no existing admin account', async ({page}) => {
     // Set routes required to load login page
-    await setRoute(page, environment.apiUrl + 'admin/exists', false);
+    loginRoutes.adminExists = false;
+    setLoginRoutes(page, loginRoutes);
 
     // Navigate to test page
     await page.goto('/login');
@@ -32,7 +43,8 @@ test.describe('Login page', () => {
       .build();
 
     // Set route required to sucessfully login
-    await setRoute(page, environment.apiUrl + 'account/login', user);
+    loginRoutes.user = user;
+    setLoginRoutes(page, loginRoutes);
 
     // Login
     const loginPage = new LoginPage(page);
@@ -45,6 +57,8 @@ test.describe('Login page', () => {
 
   test('displays toast error if login unsuccessful', async ({page}) => {
     // Set a failing login response
+    await setLoginRoutes(page, loginRoutes);
+    // Override 'account/login' route response to return an error
     await setRoute(page, environment.apiUrl + 'account/login', "Your credentials are not correct", {status: 401});
 
     // Attempt to login

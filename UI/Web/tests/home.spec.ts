@@ -32,6 +32,8 @@ test.describe('Home Page', () => {
 
     loginRoutes = {
       adminExists: true,
+      oidc: {},
+      odicAuthenticated: false,
       user: user
     };
 
@@ -84,7 +86,9 @@ test.describe('Home Page', () => {
       libraries: [library],
       recentlyUpdated: [SeriesFactory.createSeriesGroupForSeries(library, series)],
       recentlyAdded: [series],
-      tokenExpired: false
+      tokenExpired: false,
+      odic: {},
+      odicAuthenticated: false
     };
   });
 

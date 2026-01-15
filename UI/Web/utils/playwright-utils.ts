@@ -28,11 +28,15 @@ export interface HomeRoutes {
   recentlyUpdated: Array<SeriesGroup>;
   recentlyAdded: Array<Series>;
   tokenExpired: boolean;
+  oidc: any;
+  oidcAuthenticated: boolean;
 };
 
 export interface LoginRoutes {
   adminExists: boolean;
   user: User;
+  oidc: any;
+  oidcAuthenticated: boolean;
 };
 
 export interface SeriesRoutes {
@@ -56,6 +60,8 @@ export interface SeriesRoutes {
   coverImageFilePath: string;
   publisherImageFilePath: string;
   libraryImageFilePath: string;
+  oidc: any;
+  oidcAuthenticated: boolean;
 };
 
 export interface VolumeRoutes {
@@ -75,9 +81,13 @@ export interface VolumeRoutes {
   publisherImageFilePath: string;
   libraryImageFilePath: string;
   user: User;
+  oidc: any;
+  oidcAuthenticated: boolean;
 };
 
 export async function setHomeRoutes(page: Page, routes: HomeRoutes) {
+  await setRoute(page, environment.apiUrl + 'settings/oidc', {});
+  await setRoute(page, environment.apiUrl + 'account/oidc-authenticated', routes.oidcAuthenticated);
   await setRoute(page, environment.apiUrl + 'plugin/version?*', routes.pluginVersion);
   await setRoute(page, environment.apiUrl + 'device', routes.device);
   await setRoute(page, environment.apiUrl + 'license/valid-license?*', routes.validLicense);
@@ -103,18 +113,22 @@ export async function setHomeRoutes(page: Page, routes: HomeRoutes) {
   await setRoute(page, environment.apiUrl + 'stream/dashboard?**', routes.dashboard);
   await setRoute(page, environment.apiUrl + 'stream/sidenav?**', routes.sideNav);
   await setRoute(page, environment.apiUrl + 'library/libraries', routes.libraries);
-  await setRoute(page, environment.apiUrl + 'series/recently-updated-series', routes.recentlyUpdated);
+  await setRoute(page, environment.apiUrl + 'series/recently-updated-series?*', routes.recentlyUpdated);
   await setRoute(page, environment.apiUrl + 'series/recently-added-v2?**', routes.recentlyAdded);
 }
 
 export async function setLoginRoutes(page: Page, routes: LoginRoutes) {
-  setRoute(page, environment.apiUrl + 'admin/exists', routes.adminExists);
-  setRoute(page, environment.apiUrl + 'theme', [defaultSiteTheme]);
-  setRoute(page, environment.apiUrl + 'locale', defaultLocale);
-  setRoute(page, environment.apiUrl + 'account/login', routes.user);
+  await setRoute(page, environment.apiUrl + 'settings/oidc', {});
+  await setRoute(page, environment.apiUrl + 'account/oidc-authenticated', routes.oidcAuthenticated);
+  await setRoute(page, environment.apiUrl + 'admin/exists', routes.adminExists);
+  await setRoute(page, environment.apiUrl + 'theme', [defaultSiteTheme]);
+  await setRoute(page, environment.apiUrl + 'locale', defaultLocale);
+  await setRoute(page, environment.apiUrl + 'account/login', routes.user);
 }
 
 export async function setSeriesRoutes(page: Page, routes: SeriesRoutes) {
+  await setRoute(page, environment.apiUrl + 'settings/oidc', {});
+  await setRoute(page, environment.apiUrl + 'account/oidc-authenticated', routes.oidcAuthenticated);
   await setRoute(page, environment.apiUrl + 'users/has-library-access?*', routes.hasLibraryAccess);
   await setRoute(page, environment.apiUrl + 'license/info?*', undefined, { status: 204 });
   await setRoute(page, environment.apiUrl + 'scrobbling/has-hold?*', routes.hasScrobblingHold);
@@ -139,6 +153,8 @@ export async function setSeriesRoutes(page: Page, routes: SeriesRoutes) {
 }
 
 export async function setVolumeRoutes(page: Page, routes: VolumeRoutes) {
+  await setRoute(page, environment.apiUrl + 'settings/oidc', {});
+  await setRoute(page, environment.apiUrl + 'account/oidc-authenticated', routes.oidcAuthenticated);
   await setRoute(page, environment.apiUrl + 'plugin/version?*', routes.pluginVersion);
   await setRoute(page, environment.apiUrl + 'device', routes.device);
   await setRoute(page, environment.apiUrl + 'license/valid-license?*', routes.validLicense);

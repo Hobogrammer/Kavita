@@ -79,7 +79,9 @@ test.describe('Series Detail page', () => {
 
     loginRoutes = {
       adminExists: true,
-      user: user
+      user: user,
+      oidc: {},
+      odicAuthenticated: false
     };
 
     seriesRoutes = {
@@ -102,7 +104,8 @@ test.describe('Series Detail page', () => {
       rating: seriesRating,
       coverImageFilePath: "src/assets/images/image-placeholder.dark.png",
       publisherImageFilePath: "src/assets/images/error-person-missing.dark.png",
-      libraryImageFilePath: "src/assets/images/ExternalServices/GoogleBooks.png"
+      libraryImageFilePath: "src/assets/images/ExternalServices/GoogleBooks.png",
+      odicAuthenticated: false
     };
   });
 
@@ -113,6 +116,7 @@ test.describe('Series Detail page', () => {
     // Login
     const loginPage = new LoginPage(page);
     await loginPage.login(user.username, "imagineYourPasswordHere");
+    await page.waitForLoadState('networkidle');
 
     await page.goto('/library/' + library.id + '/series/' + series.id);
     await page.waitForLoadState('networkidle');
@@ -129,6 +133,7 @@ test.describe('Series Detail page', () => {
     setSeriesRoutes(page, seriesRoutes);
     const loginPage = new LoginPage(page);
     await loginPage.login(user.username, faker.internet.password());
+    await page.waitForLoadState('networkidle');
     await page.goto('/library/' + library.id + '/series/' + series.id);
     await page.waitForLoadState('networkidle');
     const seriesPage = new SeriesPage(page);
@@ -144,6 +149,7 @@ test.describe('Series Detail page', () => {
 
     const loginPage = new LoginPage(page);
     await loginPage.login(user.username, faker.internet.password());
+    await page.waitForLoadState('networkidle');
 
     await page.goto('/library/' + library.id + '/series/' + series.id);
     await page.waitForLoadState('networkidle');
@@ -165,6 +171,7 @@ test.describe('Series Detail page', () => {
       setSeriesRoutes(page, seriesRoutes);
       const loginPage = new LoginPage(page);
       await loginPage.login(user.username, faker.internet.password());
+      await page.waitForLoadState('networkidle');
 
       await page.goto('/library/' + library.id + '/series/' + series.id);
       await page.waitForLoadState('networkidle');
@@ -173,6 +180,7 @@ test.describe('Series Detail page', () => {
     });
   });
 
+  // TODO: Figure out why this fails in FireFox
   test.describe('as an admin', () => {
     test('should show the edit button', async ({page}) => {
       const admin = UserFactory.createAdmin();

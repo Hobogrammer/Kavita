@@ -38,7 +38,9 @@ test.describe('Volume detail page', ()=> {
 
     loginRoutes = {
       adminExists: true,
-      user: user
+      user: user,
+      oidc: {},
+      odicAuthenticated: false
     };
 
    const rating = {
@@ -90,7 +92,8 @@ test.describe('Volume detail page', ()=> {
      volumeImageFilePath: "src/assets/images/image-placeholder.dark.png",
      publisherImageFilePath: "src/assets/images/error-person-missing.dark.png",
      libraryImageFilePath: "src/assets/images/ExternalServices/GoogleBooks.png",
-     user: user
+     user: user,
+     oidcAuthenticated: false
    };
  });
 
@@ -100,7 +103,9 @@ test.describe('Volume detail page', ()=> {
 
    const loginPage = new LoginPage(page);
    await loginPage.login(user.username, faker.internet.password());
+   await page.waitForLoadState('networkidle');
    await page.goto('/library/' + library.id + '/series/' + series.id + '/volume/' + volume.id);
+   await page.waitForLoadState('networkidle');
    const volumePage = new VolumePage(page);
 
    const title = await volumePage.getTitle();
@@ -122,7 +127,9 @@ test.describe('Volume detail page', ()=> {
 
    const loginPage = new LoginPage(page);
    await loginPage.login(user.username, faker.internet.password());
+   await page.waitForLoadState('networkidle');
    await page.goto('/library/' + library.id + '/series/' + series.id + '/volume/' + volume.id);
+   await page.waitForLoadState();
    const volumePage = new VolumePage(page);
    await volumePage.goToDetailsTab();
    const detailsWriters: Array<Locator> = await volumePage.getDetailsTabWriters();
@@ -135,13 +142,16 @@ test.describe('Volume detail page', ()=> {
    });
  });
 
+ // This test fails consistently only in FireFox. TODO: look into this
  test('Book tab should show expected volume', async ({page}) => {
    setLoginRoutes(page, loginRoutes);
    setVolumeRoutes(page, volumeRoutes);
 
    const loginPage = new LoginPage(page);
    await loginPage.login(user.username, faker.internet.password());
+   await page.waitForLoadState();
    await page.goto('/library/' + library.id + '/series/' + series.id + '/volume/' + volume.id);
+   await page.waitForLoadState();
    const volumePage = new VolumePage(page);
 
    await expect(volumePage.booksTab).toContainClass('active');
